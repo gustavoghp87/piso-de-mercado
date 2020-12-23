@@ -1,97 +1,23 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.Server(app);
-const socketIO = require('socket.io');
-const io = socketIO(server);
-const fs = require('fs');
-const formidable = require('formidable');
-const cors = require('cors')
+const formidable = require('formidable')
+const router = require('express').Router()
+const client = require('../controllers/database')
+//const db = client.db('chatencio')
+const collectionName = 'users'
 
-// mongo requires
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
-
-// mongo settings
-const url = 'mongodb://localhost:27017';
-const database = 'chat';
-const collectionName = 'users';
-let db;
-app.use(cors())
-app.use(express.json())
-
-// connect to the database
-MongoClient.connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}, (err, client) => {
-    assert.strictEqual(null, err);
-    console.log(`Connected successfully to '${database}' database at '${url}' server`);
-    db = client.db(database);
-
-    // start the server
-    app.use(express.static(__dirname + '/chat-app/dist/chat-app'));
-    app.use("/images", express.static(__dirname + '/images'));
-    // const port = 3000;
-    // app.listen(port, () => console.log(`Server listening on port ${port}`));
-    const port = process.env.PORT || 3000;
-    server.listen(port, () => {
-        console.log(`Server started on port: ${port}`);
-    });
-});
-
-io.on('connection', (socket) => {
-    // console.log('Visitor connected');
-
-    // join room
-    socket.on('join', (content) => {
-        console.log('someone joined');
-        console.log(content);
-        const collection = db.collection("messages");
-        collection.insertOne(content);
-        let room = content.groupName + content.channelName;
-        socket.join(room);
-        // socket.broadcast.in(room).emit(content);
-        io.sockets.in(room).emit('message', content);
-    });
-
-    socket.on('leave', (content) => {
-        console.log('Someone left');
-        console.log(content);
-        const collection = db.collection("messages");
-        collection.insertOne(content);
-        let room = content.groupName + content.channelName;
-        socket.leave(room);
-        // socket.broadcast.in(room).emit(content);
-        io.sockets.in(room).emit('message', content);
-    });
-
-    socket.on('new-message', (content) => {
-        console.log('NEW MESSAGE:');
-        console.log(content);
-        const collection = db.collection("messages");
-        collection.insertOne(content);
-        let room = content.groupName + content.channelName;
-        // io.emit('message', content);
-        io.sockets.in(room).emit('message', content);
-    });
-
-});
 
 // get messages for particular channel in a group
-app.get('/api/channel/messages', (req, res) => {
+router.get('/api/channel/messages', (req, res) => {
     console.log('GET request at /api/channel/messages');
-    const collection = db.collection("messages");
+    const collection = client.db('chatencio').collection("messages");
     const groupName = req.query.groupName;
     const channelName = req.query.channelName;
     collection.find({"groupName": groupName, "channelName": channelName}).toArray( (err, result) => {
-        assert.strictEqual(err, null);
         res.send(result);
     });
 });
 
 // upload image
-app.post('/api/image/upload', (req, res) => {
+router.post('/api/image/upload', (req, res) => {
     console.log('POST request at /api/image/upload');
     let form = new formidable.IncomingForm({ uploadDir: './images' });
     form.keepExtensions = true;
@@ -161,9 +87,8 @@ class UserDataTemplate {
 function retrieveUsers(callback) {
     let users;
 
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.find().toArray( (err, result) => {
-        assert.strictEqual(err, null);
         callback(result);
     });
 }
@@ -184,25 +109,24 @@ function retrieveUserData(username, callback) {
 // Add a new user to the system.
 function addUser(userData) {
     console.log(userData);
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.find().toArray( (err, result) => {
-        assert.strictEqual(err, null);
         let exists = false;
         for(user of result) {
             if(user.username === userData.username) exists = true;
         }
         if(!exists) {
             collection.insertOne(userData, (err, result) => {
-                assert.strictEqual(err, null);
+
             });
         }
     });
 }
 
 // update user profile image
-app.post('/api/user/update', (req, res) => {
+router.post('/api/user/update', (req, res) => {
     console.log('POST request at /api/user/update');
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     
     let imagePath = req.body.profileImage;
     imagePath = imagePath.slice(2);
@@ -212,17 +136,16 @@ app.post('/api/user/update', (req, res) => {
 });
 
 // Return user data back to client
-app.get('/api/user', (req, res) => {
+router.get('/api/user', (req, res) => {
     // createSuperUser();
     const username = req.query.username;
     console.log('GET request at /api/user');
     console.log(`\tFetching user data for: ${username}`);
     retrieveUserData(username, (userData => {
-        if(userData) {
+        if (userData) {
             console.log(`\tResponding with data on user: ${username}`);
             res.send(userData);
-        }
-        else {
+        } else {
             console.log(`\tUser ${username} was not found.`);
             console.log(`\tCreating user ${username} and saving to file`);
             userData = new UserDataTemplate();
@@ -237,37 +160,35 @@ app.get('/api/user', (req, res) => {
 });
 
 // // return an array of group names as strings for admin users
-app.get('/api/groups', (req, res) => {
+router.get('/api/groups', (req, res) => {
     console.log('GET request at /api/groups');
 
     getGroups(res);
 });
 
 // // Update email of client
-app.post('/api/email', (req, res) => {
+router.post('/api/email', (req, res) => {
     console.log('POST request at /api/email');
     const username = req.body.username;
     const email = req.body.email;
     
     // mongo updateOne user by username and update its email 
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.updateOne({"username": username}, {$set: {"email": email}}, (err, result) => {
-        assert.strictEqual(err, null);
         res.send({"success": true});
     });
 });
 
 // // admin creates a group
-app.post('/api/createGroup', (req, res) => {
+router.post('/api/createGroup', (req, res) => {
     console.log('POST request at /api/createGroup');
     let username = req.body.username;
     let groupName = req.body.groupName;
     console.log(`\tCreating new group ${groupName} for user ${username}`);
 
     // retrieve the user's info
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.find({"username": username}).toArray( (err, result) => {
-        assert.strictEqual(err, null);
         let groups = result[0].groups;
 
         // check if the group exists, if not, add it
@@ -286,12 +207,10 @@ app.post('/api/createGroup', (req, res) => {
 
         // update the user's groups list
         collection.updateOne({"username": username}, {$set: {"groups": groups}}, (err, result) => {
-            assert.strictEqual(err, null);
             
             // wait for a little time and then fetch the document
             setTimeout( () => {
                 collection.find({"username": username}).toArray( (err, result) => {
-                    assert.strictEqual(err, null);
                     getGroups(res);
                 })
             }, 200);
@@ -300,7 +219,7 @@ app.post('/api/createGroup', (req, res) => {
 });
 
 // admin removes a group
-app.delete('/api/removeGroup/:groupName', (req, res) => {
+router.delete('/api/removeGroup/:groupName', (req, res) => {
     console.log('DELETE request at /api/removeGroup');
     const groupName = req.params.groupName;
 
@@ -346,7 +265,7 @@ function getGroups(res) {
 }
 
 // get all channels in a group
-app.get('/api/:group/channels', (req, res) => {
+router.get('/api/:group/channels', (req, res) => {
     console.log('GET request at /api/:group/channels');
     const groupName = req.params.group;
     console.log(`\tCollating all channels for group ${groupName}`);
@@ -373,7 +292,7 @@ app.get('/api/:group/channels', (req, res) => {
 });
 
 // get all the users in a group
-app.get('/api/:groupName/users', (req, res) => {
+router.get('/api/:groupName/users', (req, res) => {
     console.log('GET request at /api/:groupName/users');
     const groupName = req.params.groupName;
     console.log(`\tReceived groupName: ${groupName}`);
@@ -400,18 +319,17 @@ function getAllUsersInGroup(groupName, res) {
 
 // write to the database updating all the users
 function writeUsers(users, callback) {
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     
     for(let i = 0; i < users.length; i++) {
         collection.updateOne({"username": users[i].username}, {$set: users[i]}, (err, result) => {
-            assert.strictEqual(err, null);
         });
     }
     callback();
 }
 
 // create new channel in a group
-app.post('/api/channel/create', (req, res) => {
+router.post('/api/channel/create', (req, res) => {
     console.log(`POST request at /api/channel/create`);
     console.log(req.body);
     const username = req.body.username;
@@ -463,7 +381,7 @@ app.post('/api/channel/create', (req, res) => {
 });
 
 // remove channel of a group
-app.delete('/api/channel/remove/:username.:groupName.:channelName', (req, res) => {
+router.delete('/api/channel/remove/:username.:groupName.:channelName', (req, res) => {
     console.log('DELETE request at /api/channel/remove:groupName.:channelName');
     console.log(req.params);
     const username = req.params.username;
@@ -504,7 +422,7 @@ app.delete('/api/channel/remove/:username.:groupName.:channelName', (req, res) =
 });
 
 // get all users and their data
-app.get('/api/users/all', (req, res) => {
+router.get('/api/users/all', (req, res) => {
     console.log('GET request at /api/users/all');
     retrieveUsers((users) => {
         // console.log(users);
@@ -513,7 +431,7 @@ app.get('/api/users/all', (req, res) => {
 });
 
 // remove user from a group
-app.delete('/api/remove/:groupName.:username', (req, res) => {
+router.delete('/api/remove/:groupName.:username', (req, res) => {
     console.log('DELETE request at /api/:groupName/:username/remove');
     let username = req.params.username;
     let groupName = req.params.groupName;
@@ -541,7 +459,7 @@ app.delete('/api/remove/:groupName.:username', (req, res) => {
 });
 
 // add user to a group
-app.post('/api/groups/add', (req, res) => {
+router.post('/api/groups/add', (req, res) => {
     console.log('POST request at /api/groups/add');
     const username = req.body.username;
     const groupName = req.body.groupName;
@@ -585,7 +503,7 @@ app.post('/api/groups/add', (req, res) => {
 });
 
 // add new user to a channel in a group TODO: duplicate key issue when creating new user
-app.post('/api/group/channel/add', (req, res) => {
+router.post('/api/group/channel/add', (req, res) => {
     console.log('POST request at /api/group/channel/add');
     // console.log(req.body);
     const username = req.body.username;
@@ -653,13 +571,12 @@ app.post('/api/group/channel/add', (req, res) => {
 });
 
 // remove user from the system
-app.delete('/api/removeUserFromSystem/:username', (req, res) => {
+router.delete('/api/removeUserFromSystem/:username', (req, res) => {
     console.log('DELETE request at /api/removeUserFromSystem/:username');
     const username = req.params.username;
     retrieveUsers((users) => {
-        const collection = db.collection(collectionName);
+        const collection = client.db('chatencio').collection(collectionName);
         collection.deleteOne({"username": username}, (err, result) => {
-            assert.strictEqual(err, null);
             retrieveUsers( (data) => {
                 res.send(data);
             });
@@ -670,7 +587,7 @@ app.delete('/api/removeUserFromSystem/:username', (req, res) => {
 });
 
 // remove user from channel
-app.delete('/api/removeUserFromChannel/:groupName.:channelName.:username', (req, res) => {
+router.delete('/api/removeUserFromChannel/:groupName.:channelName.:username', (req, res) => {
     console.log('DELETE request at /api/remove/:groupName.:channelName.:username');
     const username = req.params.username;
     const groupName = req.params.groupName;
@@ -701,7 +618,7 @@ app.delete('/api/removeUserFromChannel/:groupName.:channelName.:username', (req,
 });
 
 // make a user a group admin // TODO: check if this works
-app.post('/api/makeUserGroupAdmin', (req, res) => {
+router.post('/api/makeUserGroupAdmin', (req, res) => {
     console.log('POST request at /api/makeUserGroupAdmin');
     const username = req.body.username;
     console.log(username);
@@ -720,7 +637,7 @@ app.post('/api/makeUserGroupAdmin', (req, res) => {
 });
 
 // make a user a super admin
-app.post('/api/makeUserSuperAdmin', (req, res) => {
+router.post('/api/makeUserSuperAdmin', (req, res) => {
     console.log('POST request at /api/makeUserSuperAdmin');
     const username = req.body.username;
     console.log(username);
@@ -742,15 +659,15 @@ app.post('/api/makeUserSuperAdmin', (req, res) => {
     });
 });
 
-app.post('/api/user/validate', (req, res) => {
+router.post('/api/user/validate', (req, res) => {
     console.log("POST request at /api/user/validate", req.body);
     let username = req.body.username;
     let password = req.body.password;
 
     console.log(username, password);
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.find({"username": username}).toArray( (err, result) => {
-        // assert.strictEqual(err, null);
+
         console.log(result);
 
         // no user found
@@ -768,7 +685,7 @@ app.post('/api/user/validate', (req, res) => {
     });
 });
 
-app.post('/api/user/create', (req, res) => {
+router.post('/api/user/create', (req, res) => {
     console.log('/api/user/create');
     let user = req.body;
     // console.log(user);
@@ -777,7 +694,7 @@ app.post('/api/user/create', (req, res) => {
 });
 
 function createUser(username, password, email) {
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.insertOne(
         {
             "username": username,
@@ -804,19 +721,19 @@ function createUser(username, password, email) {
                 }
             ]
         }, (err, result) => {
-            assert.strictEqual(null, err);
+
         }
     );
 }
 
-app.post('/api/super/user/create', (req,res) => {
+router.post('/api/super/user/create', (req,res) => {
     createSuperUser();
 });
 
 // create the super user
 // not actively used, purpose is for use on fresh MongoDB installation
 function createSuperUser() {
-    const collection = db.collection(collectionName);
+    const collection = client.db('chatencio').collection(collectionName);
     collection.insertOne(
         {
             "username": "Super",
@@ -843,7 +760,9 @@ function createSuperUser() {
                 }
             ]
         }, (err, result) => {
-            assert.strictEqual(null, err);
         }
     );
 }
+
+
+module.exports = router
