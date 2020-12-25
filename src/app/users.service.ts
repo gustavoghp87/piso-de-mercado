@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import { FormGroupName } from '@angular/forms';
+// import {Observable, of} from 'rxjs';
+// import { FormGroupName } from '@angular/forms';
+import { server } from '../app/server'
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class UsersService {
 
   constructor(private http:HttpClient) { }
 
-  private server = 'http://localhost:3000'
+  private server = server
 
   // generate the headers for content-type as JSON in a POST request
   genHeadersJSON() {
@@ -150,8 +152,10 @@ export class UsersService {
 
   // update a user's data
   updateUser(username, userData) {
-    console.log('updating user data');
+    console.log('updating user data', username);
     let body = userData;
+    console.log("UserData a actualizar:", userData);
+    
     return this.http.post(this.server + '/api/user/update', JSON.stringify(body), this.genHeadersJSON());
   }
 
@@ -173,6 +177,5 @@ export class UsersService {
     }
     return this.http.post(this.server + '/api/user/create', JSON.stringify(body), this.genHeadersJSON());
   }
-
 
 }

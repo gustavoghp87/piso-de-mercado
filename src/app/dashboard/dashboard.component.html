@@ -1,11 +1,11 @@
 <section class="hero has-background-primary">
-    <div class="hero-body">
-      <div class="container">
-          <h1 class="title is-1">{{title}}</h1>
-          <button class="button is-light" (click)="logOut()">Log out</button>
-      </div>
+  <div class="hero-body">
+    <div class="container">
+        <h1 class="title is-1">{{title}}</h1>
+        <button class="button is-light" (click)="logOut()">Log out</button>
     </div>
-  </section>
+  </div>
+</section>
 
 <div class="container">
   <div class="notification">
@@ -20,7 +20,7 @@
       <div class="box">
         <!-- Profile image -->
         <div *ngIf=userData>
-            <img src="http://localhost:3000/{{userData.profileImage}}" width=100px>
+            <img src="{{server}}/images/{{userData.profileImage}}" width=100px>
             <!-- <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt=""> -->
         </div>
 
@@ -67,96 +67,49 @@
             </form>
           </div>
       </div>
-      
   
 
       <div class="box">
-          <h2 class="title is-3">Your groups:</h2>
-          <ul *ngIf="groups && (!isGroupAdmin && !isSuperAdmin)">
-              <li *ngFor="let group of groups">
-                  Group: {{group.name}} <button (click)="viewGroup(group)">View channels</button>
-              </li>
-          </ul>
+        <h2 class="title is-3">Your groups:</h2>
+        <ul *ngIf="groups && (!isGroupAdmin && !isSuperAdmin)">
+            <li *ngFor="let group of groups">
+                Group: {{group.name}} <button (click)="viewGroup(group)">View channels</button>
+            </li>
+        </ul>
           
-          <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3">Admin panel for groups:</h2> -->
-          <ul *ngIf="allGroups && (isGroupAdmin || isSuperAdmin)">
-              <li *ngFor="let group of allGroups">
-                  Group: {{group}} <button (click)="viewGroup(group)">View channels</button> <button (click)="removeGroup(group)">Remove group</button>
-              </li>
-          </ul>
-          
-          
+        <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3">Admin panel for groups:</h2> -->
+        <ul *ngIf="allGroups && (isGroupAdmin || isSuperAdmin)">
+          <li *ngFor="let group of allGroups">
+            Group: {{group}} <button (click)="viewGroup(group)">View channels</button> <button (click)="removeGroup(group)">Remove group</button>
+          </li>
+        </ul> 
       </div>
 
-      <div *ngIf="isSuperAdmin">
+      <div class="box">
+        <h2 class="title is-3">Users in chat system:</h2>
         <div class="box">
-            <h2 class="title is-3">Create new user:</h2>
-            <div class="field">
-                <label class="label">Username</label>
-                <div class="control">
-                  <div class="columns">
-                    <div class="column is-two-fifths">
-                        <input class="input" type="text" placeholder="username" [(ngModel)]="newUserUsername" name="newUserUsername">
-                    </div>
-                  </div>
-                </div>
-
-                <label class="label">Password</label>
-                <div class="control">
-                  <div class="columns">
-                    <div class="column is-two-fifths">
-                        <input class="input" type="text" placeholder="password" [(ngModel)]="newUserPassword" name="newUserPassword">
-                    </div>
-                  </div>
-                </div>
-
-                <label class="label">Email</label>
-                <div class="control">
-                  <div class="columns">
-                    <div class="column is-two-fifths">
-                        <input class="input" type="email" placeholder="email" [(ngModel)]="newUserEmail" name="newUserEmail">
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <div class="control">
-                    <button class="button" (click)="createUser()">Create user</button>
-                </div>
-            </div>
+            <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
+            <button (click)="userMakeAdminGroup()">Make user a group admin</button>
+            <button (click)="userMakeAdminSuper()">Make user a super admin</button>
         </div>
+        
+        <br>
 
-          <div class="box">
-            <h2 class="title is-3">Users in chat system:</h2>
+        <ul>
+          <li *ngFor="let user of listOfUsers">
             <div class="box">
-                <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
-                <button (click)="userMakeAdminGroup()">Make user a group admin</button>
-                <button (click)="userMakeAdminSuper()">Make user a super admin</button>
-            </div>
-            
-            <br>
-            <ul>
-                <li *ngFor="let user of listOfUsers">
-                  <div class="box">
-                    <div class="columns">
-                      <div class="column">
-                          User: {{user}} 
-                      </div>
-                      <div class="column">
-                          <button class="button is-danger is-small" (click)="removeUserFromSystem(user)">Remove user from system</button>
-                      </div>
-                    </div>
-                      
-                      
-                      
-                    </div>
-                      
-                      
-                    
-                </li>
-            </ul>
-          </div>
+              <div class="columns">
+                <div class="column">
+                    User: {{user}} 
+                </div>
+                <div class="column">
+                    <button class="button is-danger is-small" (click)="removeUserFromSystem(user)">Remove user from system</button>
+                </div>
+              </div>
+            </div>              
+          </li>
+        </ul>
       </div>
-      
       
   </div>
 </div>

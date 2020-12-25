@@ -1,27 +1,71 @@
 <section class="hero has-background-primary">
   <div class="hero-body">
     <div class="container">
-        <h1 class="title is-1">Edmond's Web Chat</h1>
+        <h1 class="title is-1"> CAJA DE PUNTAS </h1>
     </div>
   </div>
 </section>
+
 <br><br>
-<div class="container">
-  <div class="notification">
-    <!-- <h2 class="title is-2" style="text-align:center">Enter your name...</h2> -->
-    <form (submit)="login($event)">
-      <div class="field has-addons has-addons-centered">
-          <label class="label is-large">Name:</label>
-          <div class="control">
-              <input class="input" type="text" placeholder="Enter your name" [(ngModel)]='username' id='username' name='username'>
-          </div>
-          <div class="control">
-              <input class="input" type="password" placeholder="password" [(ngModel)]='password' id='password' name='password'>
-          </div>
-          <div class="control">
-            <button class="button is-primary">log in</button>
-          </div>
+
+<div class="container" style="padding-bottom:100px;">
+  <form (submit)="login($event)">
+    <div class="field has-addons has-addons-centered">
+      <label class="label is-large">Username: &nbsp; </label>
+      <div class="control">
+        <input class="input" type="text" placeholder="Nombre de usuario" [(ngModel)]='username' id='username' name='username'>
       </div>
-    </form>
+      <div class="control">
+        <input class="input" type="password" placeholder="Password" [(ngModel)]='password' id='password' name='password'>
+      </div>
+      <div class="control">
+        <button class="button is-primary"> Entrar </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+<!-- <div *ngIf="isSuperAdmin"> -->
+<div class="container" style="width:600px; display:block; margin:auto; border: 1px solid gray; border-radius:10px; padding:30px;">
+  <h2 class="title is-3">Create new user:</h2>
+  <div class="field">
+
+    <label class="label">Username</label>
+    <div class="control">
+      <div class="columns">
+        <div class="column is-five-fifths">
+          <input class="input" type="text" placeholder="Username" [(ngModel)]="newUserUsername" name="newUserUsername">
+        </div>
+      </div>
+    </div>
+
+    <label class="label">Password</label>
+    <div class="control">
+      <div class="columns">
+        <div class="column is-five-fifths">
+          <input class="input" type="password" placeholder="Password" [(ngModel)]="newUserPassword" name="newUserPassword">
+        </div>
+      </div>
+    </div>
+
+    <label class="label">Email</label>
+    <div class="control">
+      <div class="columns">
+        <div class="column is-five-fifths">
+          <input class="input" type="email" placeholder="Email" [(ngModel)]="newUserEmail" name="newUserEmail">
+        </div>
+      </div>
+    </div>
+    
+    <br>
+    
+    <button class="btn btn-dark" style="display:block; margin:auto;" (click)="createUser()">
+      Crear usuario
+    </button>
+
+    <br><br>
+
   </div>
 </div>
+

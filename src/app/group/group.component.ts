@@ -73,21 +73,17 @@ export class GroupComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
 
-  logOut() {
-    this.router.navigateByUrl('/');
-  }
+  logOut() { this.router.navigateByUrl('/') }
 
   // route to the channel to view
   viewChannel(channel) {
     console.log(`Viewing channel ${channel}`);
     
     // leave previous channel
-    if(localStorage.getItem("currentChannel") != null) {
-      this.socketService.leaveChannel();
+    if (localStorage.getItem("currentChannel") != null) {
+      this.socketService.leaveChannel()
     }
 
     localStorage.setItem('currentChannel', channel);
@@ -153,7 +149,7 @@ export class GroupComponent implements OnInit {
   // get all channels in the group
   getChannels() {
     // console.log(`Group admin: ${this.isGroupAdmin} Super admin: ${this.isSuperAdmin}`);
-    if(this.isGroupAdmin || this.isSuperAdmin) {
+    if (this.isGroupAdmin || this.isSuperAdmin) {
       console.log('Admin fetching all channels');
       this.usersService.getChannels(this.groupName).subscribe(
         data => {

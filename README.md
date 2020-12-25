@@ -1,8 +1,10 @@
 # PISO DE MERCADO
 
-Aplicación client web en ANGULAR. Chat de la caja de puntas del mercado de valores que muestra las cotizaciones en vivo desde la [Primary API].
+Aplicación client web en ANGULAR con socket.io.
 
-Consumida por la aplicación server [piso-restful] desarrollada en Node + Express + MongoDB.
+Chat de la caja de puntas del mercado de valores que muestra las cotizaciones en vivo desde la [Primary API].
+
+Consume la aplicación server [piso-restful] desarrollada en Node + Express + MongoDB + socketIO.
 
 
 [Primary API]:<https://www.primary.com.ar/>
