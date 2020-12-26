@@ -10,16 +10,51 @@
     </div>
 </section>
 
+
 <div class="container">
     <div class="notification">
 
-        <div class="box">
-            <div *ngIf="isGroupAdmin">
+        <div class="box" *ngIf="isGroupAdmin">
+            <div>
                 <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-                <button (click)="addUserToChannel()">Add new user</button>
+                <button (click)="addUserToChannel()"> Add new user </button>
             </div>
         </div>    
         
+        
+        
+        
+        <!-- HERO BODY -->
+        <div class="hero-body">
+            <!-- <div class="container"> -->
+                <div class="notification" *ngIf="messages">
+                <div *ngFor="let message of messages.slice().reverse()">
+                    <article class="message is-primary">
+                        
+                        <!-- display image as message -->
+                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===true">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">
+                            {{message.username}}:
+                            <img src="{{server}}/images/{{message.message}}" alt="">
+                        </div>
+                        
+                        <!-- display message as text -->
+                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===false">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">
+                            {{message.username}}: {{message.message}}
+                        </div>
+
+                        <div class="message-body" *ngIf="message.username==='SYSTEM'">
+                            {{message.username}}: {{message.message}}
+                        </div>
+
+                    </article>
+                </div>
+            </div>
+            <!-- </div> -->
+        </div>
+        
+
         <div class="box">
             <h2 class="title is-3">Users in channel:</h2>
             <ul *ngIf="listOfUsers && (!isSuperAdmin && !isGroupAdmin)">
@@ -34,37 +69,9 @@
             </ul>
         </div>
         
-        
-        
-        
-        <!-- HERO BODY -->
-        <div class="hero-body">
-            <!-- <div class="container"> -->
-            <div class="notification">
-                <div *ngFor="let message of messages">
-                    <article class="message is-primary">
 
-                        <!-- display image as message -->
-                        <div class="message-body" *ngIf="message.username !== 'SYSTEM' && message.isFile === true">
-                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">{{message.username}}: <img src="{{server}}/images/{{message.message}}" alt="">
-                        </div>
-        
-                        <!-- display message as text -->
-                        <div class="message-body" *ngIf="message.username !== 'SYSTEM' && message.isFile === false">
-                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">{{message.username}}: {{message.message}}
-                        </div>
-                        <div class="message-body" *ngIf="message.username === 'SYSTEM'">
-                            {{message.username}}: {{message.message}}
-                        </div>
-                    </article>
-                </div>
-            </div>
-            <!-- </div> -->
-        </div>
-        
-        
         <!-- HERO FOOTER -->
-        <div class="hero-foot">
+        <div class="hero-foot" style="display:block;">
             <div class="navbar is-fixed-bottom has-background-primary">
                 <div class="container">
                     <div class="navbar-brand">

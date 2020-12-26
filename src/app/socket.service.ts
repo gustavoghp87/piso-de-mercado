@@ -36,7 +36,10 @@ export class SocketService {
   }
 
   // send a new message (text or image)
-  public sendMessage(username:string, groupName:string, channelName:string, message:string, profileImage:string, isFile:boolean) {
+  public sendMessage(
+    username:string, groupName:string, channelName:string,
+    message:string, profileImage:string, isFile:boolean
+  ) {
     console.log("Sending: " + message)
     let content = {
       username,
@@ -50,7 +53,7 @@ export class SocketService {
   }
 
   public getMessages = () => {
-    return Observable.create((observer) => {
+    return new Observable((observer) => {
       this.socket.on('message', (content) => {
         console.log('Received message:')
         console.log(content)

@@ -67,7 +67,7 @@ export class ChannelComponent implements OnInit {
       console.log("TIME")
       this.socketService.joinChannel()
       this.socketService.getMessages().subscribe((message) => {
-        this.messages.push(message)
+        if (this.messages) this.messages.push(message)
       })
     }, 100)
     
@@ -90,24 +90,18 @@ export class ChannelComponent implements OnInit {
         console.log(`\tThis user is a super admin: ${this.isSuperAdmin}`)
         this.getDataAllUsers()
       },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('\tUser retrieved')
-      }
+      err => console.error,
+      () => console.log('\tUser retrieved')
     )
   }
 
   // update the list of users in this channel
   updateAllUsersList() {
     this.listOfUsers = []
-    for(let user of this.allUsers) {
-      for(let group of user.groups) {
-        if(group.name === this.groupName) {
-          if(group.channels.includes(this.channelName)) {
-            this.listOfUsers.push(user.username)
-          }
+    for (let user of this.allUsers) {
+      for (let group of user.groups) {
+        if (group.name === this.groupName) {
+          if (group.channels.includes(this.channelName)) this.listOfUsers.push(user.username)
         }
       }
     }
@@ -154,27 +148,23 @@ export class ChannelComponent implements OnInit {
         this.allUsers = data
         this.updateAllUsersList()
       },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('Completed adding user to channel')
-      }
+      err => console.error,
+      () => console.log('Completed adding user to channel')
     )
   }
 
   // remove the user from the channel
   removeUser(username:string) {
-    if(this.groupName === 'newbies' || this.groupName === 'general') {
+    if (this.groupName === 'newbies' || this.groupName === 'general') {
       alert('Cannot remove users in this default channel')
       return
     }
-    if(username === this.username) {
+    if (username === this.username) {
       alert('Cannot remove yourself')
       return
     }
     // check if they are an admin, if not, then proceed
-    for(let user of this.allUsers) {
+    for (let user of this.allUsers) {
       if(user.username === username) {
         if(user.groupAdmin) {
           alert(`Cannot remove admin user ${username}`)
@@ -205,7 +195,10 @@ export class ChannelComponent implements OnInit {
   // send a new message to the channel
   sendMessage() {
     console.log(`User typed: ${this.message}`)
-    this.socketService.sendMessage(this.username, this.groupName, this.channelName, this.message, this.userData.profileImage, this.isFile)
+    this.socketService.sendMessage(
+      this.username, this.groupName, this.channelName,
+      this.message, this.userData.profileImage, this.isFile
+    )
     this.message = ''
     this.isFile = false
   }
@@ -232,14 +225,9 @@ export class ChannelComponent implements OnInit {
         this.isFile = true
         this.sendMessage()
       },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('Completed image upload')
-      }
+      err => console.error,
+      () => console.log('Completed image upload')
     )
   }
-
 
 }
