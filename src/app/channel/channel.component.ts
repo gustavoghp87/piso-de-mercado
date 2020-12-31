@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from "@angular/router"
-import { UsersService } from '../users.service'
-import { SocketService } from '../socket.service'
-import { ImageService } from '../image.service'
+import { UsersService } from '../services/users.service'
+import { SocketService } from '../services/socket.service'
+import { ImageService } from '../services/image.service'
 import { server } from '../../app/server'
 
 
@@ -213,15 +213,17 @@ export class ChannelComponent implements OnInit {
   upload() {
     console.log('Uploading image!')
     const fd = new FormData()
+    const name = Date.now().toString()
+    this.selectedFile.name = name
     fd.append('image', this.selectedFile, this.selectedFile.name)
-    console.log(this.selectedFile.name)
+    console.log("File name:", name)
     this.imgService.upload(fd).subscribe(
       data => {
         console.log('Image upload received data')
         // console.log("path of image file: " + data.path)
         // once data comes back, set this.mesage to the data path and set isFile to true
         // send a socket message
-        this.message = data.path
+        this.message = name
         this.isFile = true
         this.sendMessage()
       },

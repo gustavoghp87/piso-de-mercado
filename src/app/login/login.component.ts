@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from "@angular/router"
-import { UsersService } from "../users.service"
+import { UsersService } from "../services/users.service"
+import { mobile } from '../app.component'
 
 
 @Component({
@@ -19,6 +20,11 @@ export class LoginComponent implements OnInit {
   newUserUsername = ""
   newUserPassword = ""
   newUserEmail = ""
+
+  FAOon:boolean = false
+  CONTACTon:boolean = false
+
+  mobile:boolean = mobile
 
   constructor(private router:Router, private userService:UsersService) { }
 
@@ -41,8 +47,8 @@ export class LoginComponent implements OnInit {
     this.userService.validateUser(this.username, this.password).subscribe(
       data => {
         console.log('Received data from validation')
-        console.log(data)
-        if(data['success'] === true) {
+        // console.log(data)
+        if (data['success'] === true) {
           localStorage.setItem("username", this.username)
           this.router.navigateByUrl('/dashboard')
         } else {
@@ -71,10 +77,28 @@ export class LoginComponent implements OnInit {
     }
 
     this.userService.createUser(this.newUserUsername, this.newUserPassword, this.newUserEmail).subscribe(
-      data => console.log(data),
+      data => {
+        alert("Usuario creado")
+        console.log(this.newUserUsername, this.newUserPassword, this.newUserEmail)
+        this.userService.validateUser(this.newUserUsername, this.newUserPassword).subscribe(data => {
+          if (data['success'] === true) {
+            localStorage.setItem("username", this.newUserUsername)
+            this.router.navigateByUrl('/dashboard')
+          } else {
+            alert('Se creó el usuario pero falló el ingreso')
+          }
+        })
+      },
       err => console.error
     )
   }
 
+  FAOclick() {
+    this.FAOon = !this.FAOon
+  }
+
+  CONTACTclick() {
+    this.CONTACTon = !this.CONTACTon
+  }
 
 }

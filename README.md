@@ -1,11 +1,10 @@
 # PISO DE MERCADO
 
-Aplicación client web en ANGULAR con socket.io.
+Aplicación client web en ANGULAR con socket.io corriendo en AWS Amplify.
 
-Chat de la caja de puntas del mercado de valores que muestra las cotizaciones en vivo desde la [Primary API].
+Chat de la caja de puntas del mercado de valores para ver las cotizaciones online mientras se comparten opiniones.
 
-Consume la aplicación server [piso-restful] desarrollada en Node + Express + MongoDB + socketIO.
+Consume la aplicación server [piso-de-mercado-restful] desarrollada en Node + Express + MongoDB + socketIO.
 
 
-[Primary API]:<https://www.primary.com.ar/>
-[piso-restful]:<https://github.com/Sfalzua2020/Chatencio2021>
+[piso-de-mercado-restful]:<https://github.com/gustavoghp87/piso-de-mercado-restful>

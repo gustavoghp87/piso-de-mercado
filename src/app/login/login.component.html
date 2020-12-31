@@ -1,71 +1,107 @@
 <section class="hero has-background-primary">
   <div class="hero-body">
     <div class="container">
-        <h1 class="title is-1"> CAJA DE PUNTAS </h1>
+      <h1 class="title is-1"> PISO DE MERCADO </h1>
+      <h2 *ngIf="mobile" style="color:red"> El lugar de encuentro para operadores e inversores </h2>
+      <h2 *ngIf="!mobile" style="color:green"> El lugar de encuentro para operadores e inversores </h2>
     </div>
   </div>
 </section>
 
 <br><br>
 
-<div class="container" style="padding-bottom:100px;">
-  <form (submit)="login($event)">
-    <div class="field has-addons has-addons-centered">
-      <label class="label is-large">Username: &nbsp; </label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Nombre de usuario" [(ngModel)]='username' id='username' name='username'>
-      </div>
-      <div class="control">
-        <input class="input" type="password" placeholder="Password" [(ngModel)]='password' id='password' name='password'>
-      </div>
-      <div class="control">
-        <button class="button is-primary"> Entrar </button>
-      </div>
-    </div>
-  </form>
-</div>
-
-
-<!-- <div *ngIf="isSuperAdmin"> -->
-<div class="container" style="width:600px; display:block; margin:auto; border: 1px solid gray; border-radius:10px; padding:30px;">
-  <h2 class="title is-3">Create new user:</h2>
-  <div class="field">
-
-    <label class="label">Username</label>
-    <div class="control">
-      <div class="columns">
-        <div class="column is-five-fifths">
-          <input class="input" type="text" placeholder="Username" [(ngModel)]="newUserUsername" name="newUserUsername">
+<div style="min-height:800px;">
+  <div class="container" style="padding-bottom:100px;">
+    <form (submit)="login($event)">
+      <div class="field has-addons has-addons-centered">
+        <h3 style="margin-right: 10px; color:white;"> UserName: &nbsp; </h3>
+        <div class="control">
+          <input class="input" type="text" placeholder="Nombre de usuario" [(ngModel)]='username' id='username' name='username'>
+        </div>
+        <div class="control">
+          <input class="input" type="password" placeholder="Password" [(ngModel)]='password' id='password' name='password'>
+        </div>
+        <div class="control">
+          <button class="button is-primary"> Entrar </button>
         </div>
       </div>
-    </div>
+    </form>
+  </div>
 
-    <label class="label">Password</label>
-    <div class="control">
-      <div class="columns">
-        <div class="column is-five-fifths">
-          <input class="input" type="password" placeholder="Password" [(ngModel)]="newUserPassword" name="newUserPassword">
+
+
+  <div class="container" style="width:600px; display:block; margin:auto; border: 1px solid gray; border-radius:10px; padding:30px;">
+    <h2 class="title is-3"> Crear nuevo usuario: </h2>
+    <div class="field">
+
+      <label class="label">Username</label>
+      <div class="control">
+        <div class="columns">
+          <div class="column is-five-fifths">
+            <input class="input" type="text" placeholder="Username" [(ngModel)]="newUserUsername" name="newUserUsername">
+          </div>
         </div>
+      </div>
+
+      <br/>
+
+      <label class="label">Password</label>
+      <div class="control">
+        <div class="columns">
+          <div class="column is-five-fifths">
+            <input class="input" type="password" placeholder="Password" [(ngModel)]="newUserPassword" name="newUserPassword">
+          </div>
+        </div>
+      </div>
+
+      <br/>
+
+      <label class="label">Email</label>
+      <div class="control">
+        <div class="columns">
+          <div class="column is-five-fifths">
+            <input class="input" type="email" placeholder="Email" [(ngModel)]="newUserEmail" name="newUserEmail">
+          </div>
+        </div>
+      </div>
+      
+      <br>
+      
+      <button class="btn btn-dark" style="display:block; margin:auto;" (click)="createUser()">
+        Crear usuario
+      </button>
+
+      <br>
+
+    </div>
+  </div>
+
+  <br/>
+  <br/>
+
+  <div class="footer" style="background-color:black; color:white; margin-top:20px;">
+
+    <div>
+      <h3 (click)="FAOclick()"> Preguntas frecuentes (click) </h3>
+      <div #FAO *ngIf="FAOon">
+        <h5> &nbsp; ¿Qué es este sitio? Un lugar de encuentro para inversores donde se puede chatear y seguir las cotizaciones del mercado de Buenos Aires. </h5>
+        <h5> &nbsp; ¿Quién lo hizo? Somos desarrolladores y traders anónimos. </h5>
+        <h5> &nbsp; ¿Se puede operar en este sitio? No </h5> 
       </div>
     </div>
 
-    <label class="label">Email</label>
-    <div class="control">
-      <div class="columns">
-        <div class="column is-five-fifths">
-          <input class="input" type="email" placeholder="Email" [(ngModel)]="newUserEmail" name="newUserEmail">
-        </div>
-      </div>
-    </div>
-    
-    <br>
-    
-    <button class="btn btn-dark" style="display:block; margin:auto;" (click)="createUser()">
-      Crear usuario
-    </button>
+    <br/>
+    <br/>
 
-    <br><br>
+    <div>
+      <h3 (click)="CONTACTclick()"> Contacto (click) </h3>
+      <h5 #FAO *ngIf="CONTACTon"> &nbsp; pisodemercado@gmail.com </h5>
+    </div>
+
+    <br/>
+
+    <h2 style="text-align:center;"> pisodemercado.com.ar </h2>
 
   </div>
-</div>
 
+</div>

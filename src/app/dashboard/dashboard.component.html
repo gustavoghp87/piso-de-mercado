@@ -1,3 +1,4 @@
+
 <section class="hero has-background-primary">
   <div class="hero-body">
     <div class="container">
@@ -7,110 +8,115 @@
   </div>
 </section>
 
-<div class="container">
-  <div class="notification">
-      <h2 class="subtitle is-3" *ngIf="isSuperAdmin && isGroupAdmin">Welcome {{username}}, you are a super admin</h2>
-      <h2 class="subtitle is-3" *ngIf="!isGroupAdmin">Welcome {{username}}</h2>
-      <h2 class="subtitle is-3" *ngIf="isGroupAdmin && !isSuperAdmin">Welcome {{username}}, you are a group admin</h2>
-      
+<br/>
 
-      
-      
-      <!-- upload -->
-      <div class="box">
-        <!-- Profile image -->
-        <div *ngIf=userData>
-            <img src="{{server}}/images/{{userData.profileImage}}" width=100px>
-            <!-- <img src="https://www.w3schools.com/w3css/img_lights.jpg" alt=""> -->
-        </div>
-
-        <p>Upload a new profile image</p>
-          <form>
-            <div class="file has-name">
-                <input class="file-input" type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-                <button class="button is-light" (click)="upload()">Upload</button>
-            </div>
-              
-              
-            </form>
-      </div>
-      
-      
-        
-      
-      <div class="content">
-        <div class="box">
-            <p>
-              Your email is registered as: {{email}}
-            </p>
-            <form (submit)="updateEmail($event)">
-              <input class="input" type="email" [(ngModel)]='emailField' name='emailField' placeholder="example@email.com">
-              <div class="control">
-                <button class="button is-primary">Update email</button>
-              </div>
-            </form>
-        </div>
-      </div>
-      
-      <div class="box">
-          <div *ngIf="isGroupAdmin || isSuperAdmin" class="container">
-            <form (submit)="createGroup($event)">
-              <div class="field has-addons has-addons-centered">
-                  <label class="label is-large">New group name:</label>
-                  <div class="control">
-                      <input class="input" type="text" placeholder="group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName'>
-                  </div>
-                  <div class="control">
-                    <button class="button is-primary">Create group</button>
-                  </div>
-              </div>
-            </form>
-          </div>
-      </div>
+<div class="container" style="min-height:800px;">
   
-
-      <div class="box">
-        <h2 class="title is-3">Your groups:</h2>
-        <ul *ngIf="groups && (!isGroupAdmin && !isSuperAdmin)">
-            <li *ngFor="let group of groups">
-                Group: {{group.name}} <button (click)="viewGroup(group)">View channels</button>
-            </li>
-        </ul>
-          
-        <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3">Admin panel for groups:</h2> -->
-        <ul *ngIf="allGroups && (isGroupAdmin || isSuperAdmin)">
-          <li *ngFor="let group of allGroups">
-            Group: {{group}} <button (click)="viewGroup(group)">View channels</button> <button (click)="removeGroup(group)">Remove group</button>
+  <div class="notification">
+  
+    <h2 class="subtitle is-3" *ngIf="isSuperAdmin && isGroupAdmin"> Dashboard de {{username}}, eres super admin </h2>
+    <h2 class="subtitle is-3" *ngIf="!isGroupAdmin"> Dashboard de {{username}} </h2>
+    <h2 class="subtitle is-3" *ngIf="isGroupAdmin && !isSuperAdmin"> Dashboard de {{username}}, eres group admin </h2>
+      
+      
+    <div class="box">
+      <h2 class="title is-3"> Grupos de temas: </h2>
+      <ul *ngIf="groups && (!isGroupAdmin && !isSuperAdmin)">
+          <li *ngFor="let group of groups">
+              Tema: {{group.name}}
+              <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
           </li>
-        </ul> 
+      </ul>
+        
+      <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3"> Admin panel for groups: </h2> -->
+      <ul *ngIf="allGroups && (isGroupAdmin || isSuperAdmin)">
+        <li *ngFor="let group of allGroups">
+          Tema: {{group}}
+          <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
+          &nbsp;
+          <button (click)="removeGroup(group)"> Eliminar tema </button>
+        </li>
+      </ul> 
+    </div>
+    
+    
+    <div class="box" *ngIf="isGroupAdmin || isSuperAdmin">
+        <div class="container">
+          <form (submit)="createGroup($event)">
+            <div class="field has-addons has-addons-centered">
+                <label class="label is-large"> Nombre de nuevo tema: </label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName'>
+                </div>
+                <div class="control">
+                  <button class="button is-primary"> Crear tema </button>
+                </div>
+            </div>
+          </form>
+        </div>
+    </div>
+
+
+
+    <!-- upload -->
+    <div class="box">
+      <!-- Profile image -->
+      <div *ngIf=userData>
+          <img src="{{server}}/images/{{userData.profileImage}}" width=100px>
       </div>
 
+      <p> Subir nueva imagen de perfil </p>
+        <form>
+          <div class="file has-name">
+              <input class="file-input" type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
+              <button class="button is-light" (click)="upload()">Upload</button>
+          </div>    
+        </form>
+    </div>
+    
+    
+      
+    
+    <div class="content">
       <div class="box">
-        <h2 class="title is-3">Users in chat system:</h2>
-        <div class="box">
-            <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
-            <button (click)="userMakeAdminGroup()">Make user a group admin</button>
-            <button (click)="userMakeAdminSuper()">Make user a super admin</button>
-        </div>
-        
-        <br>
+          <p> Tu correo registrado: {{email}} </p>
+          <form (submit)="updateEmail($event)">
+            <input class="input" type="email" [(ngModel)]='emailField' name='emailField' placeholder="example@email.com">
+            <div class="control">
+              <button class="button is-primary"> Cambiar email </button>
+            </div>
+          </form>
+      </div>
+    </div>
 
-        <ul>
-          <li *ngFor="let user of listOfUsers">
-            <div class="box">
-              <div class="columns">
-                <div class="column">
-                    User: {{user}} 
-                </div>
-                <div class="column">
-                    <button class="button is-danger is-small" (click)="removeUserFromSystem(user)">Remove user from system</button>
-                </div>
-              </div>
-            </div>              
-          </li>
-        </ul>
+
+    <div class="box" *ngIf="isSuperAdmin">
+      <h2 class="title is-3"> Usuarios: </h2>
+      <div class="box">
+          <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
+          <button (click)="userMakeAdminGroup()"> Hacer a un usuario administrador de tema </button>
+          <button (click)="userMakeAdminSuper()"> Hacer a un usuario administrador de todo el sitio </button>
       </div>
       
+      <br>
+
+      <ul>
+        <li *ngFor="let user of listOfUsers">
+          <div class="box">
+            <div class="columns">
+              <div class="column">
+                  Usuario: {{user}} 
+              </div>
+              <div class="column">
+                  <button class="button is-danger is-small" (click)="removeUserFromSystem(user)"> Eliminar usuario del sistema </button>
+              </div>
+            </div>
+          </div>              
+        </li>
+      </ul>
+
+    </div>
+
   </div>
 </div>
 

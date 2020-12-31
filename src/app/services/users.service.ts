@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 // import {Observable, of} from 'rxjs';
 // import { FormGroupName } from '@angular/forms';
-import { server } from '../app/server'
+import { server } from '../server'
 
 
 @Injectable({

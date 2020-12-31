@@ -1,17 +1,19 @@
 <section class="hero has-background-primary">
-    <div>
-        <div class="container">
-            <h1 class="title is-1"> Channel: {{channelName}} </h1>
-            <h2 class="subtitle is-5"> User: {{username}} </h2>
-            <button class="btn btn-dark" style="display:block; margin:auto;" (click)="logOut()">
+    <div class="container">
+        <h1 class="title is-1"> CANAL: {{channelName}} </h1>
+        <div style="display:block; margin-right:0;">
+            <h2 class="subtitle is-5" style="display:inline;"> User: {{username}} </h2>
+            <button class="btn btn-dark" style="display:inline;" (click)="logOut()">
                 Log out
             </button>
         </div>
+        <br/>
     </div>
 </section>
 
+<br/>
 
-<div class="container">
+<div class="container" style="min-height:1200px;">
     <div class="notification">
 
         <div class="box" *ngIf="isGroupAdmin">
@@ -68,28 +70,41 @@
                 </li>
             </ul>
         </div>
-        
 
-        <!-- HERO FOOTER -->
-        <div class="hero-foot" style="display:block;">
-            <div class="navbar is-fixed-bottom has-background-primary">
-                <div class="container">
-                    <div class="navbar-brand">
-                        <div class="navbar-item">
-                            <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                            <button (click)="sendMessage()">Send</button>
-                        </div>
-                        <div class="navbar-item">
-                            <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                            <button (click)="sendMessage()">Upload image</button> -->
-                            <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-                            <button (click)="upload()"> Upload! </button>
-                        </div>
+        <br/>
+        <br/>
+        
+    </div>
+    
+</div>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+    <!-- HERO FOOTER -->
+    <div class="hero-foot" style="display:block;">
+        <div class="navbar is-fixed-bottom has-background-primary">
+            <div class="container">
+                <div class="navbar-brand">
+                    <div class="navbar-item">
+                        <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                        <button (click)="sendMessage()">Send</button>
+                    </div>
+                    <div class="navbar-item">
+                        <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                        <button (click)="sendMessage()">Upload image</button> -->
+                        <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
+                        <button (click)="upload()"> Upload! </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-        
-</div>
+    
   

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core'
-import { UsersService } from '../users.service'
+import { UsersService } from '../services/users.service'
 import { Router } from '@angular/router'
 import { ChangeDetectorRef } from '@angular/core'
-import { ImageService } from '../image.service'
+import { ImageService } from '../services/image.service'
 import { server } from '../server'
 
 @Component({

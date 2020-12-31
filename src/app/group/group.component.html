@@ -8,7 +8,9 @@
     </div>
 </section>
 
-<div class="container">
+<br/>
+
+<div class="container" style="min-height:800px;">
     <div class="notification">
         <div *ngIf="isGroupAdmin || isSuperAdmin" class="container">
                 <div class="notification">
@@ -26,22 +28,29 @@
                 </div>
             </div>
                 
+
             <div class="box">
-                <h2 class="title">Channels:</h2>
+                <h2 class="title">CANALES:</h2>
+
                 <ul *ngIf="channels && (!isSuperAdmin && !isGroupAdmin)">
                     <li *ngFor="let channel of channels">
-                        Channel: {{channel}} <button (click)="viewChannel(channel)">View channel</button>
+                        Canal: {{channel}} <button (click)="viewChannel(channel)"> ENTRAR </button>
                     </li>
                 </ul>
+
                 <ul *ngIf="allChannels && (isSuperAdmin || isGroupAdmin)">
                     <li *ngFor="let channel of allChannels">
-                        Channel: {{channel}} <button (click)="viewChannel(channel)">View channel</button> <button (click)="removeChannel(channel)">Remove channel</button>
+                        Canal: {{channel}}
+                        <button (click)="viewChannel(channel)"> ENTRAR </button>
+                        <button (click)="removeChannel(channel)"> Remove channel </button>
                     </li>
                 </ul>
+
             </div>
             
+
             <div class="box">
-                <h2 class="title">Users in group:</h2>
+                <h2 class="title"> Users in group: </h2>
                 <div *ngIf="isGroupAdmin">
                 <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
                 <button (click)="addUserToGroup()">Add new user</button>

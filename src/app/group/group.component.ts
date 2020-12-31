@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
-import { UsersService } from '../users.service';
-import { SocketService } from '../socket.service';
+import { UsersService } from '../services/users.service';
+import { SocketService } from '../services/socket.service';
 
 @Component({
   selector: 'app-group',
@@ -82,8 +82,8 @@ export class GroupComponent implements OnInit {
     console.log(`Viewing channel ${channel}`);
     
     // leave previous channel
-    if (localStorage.getItem("currentChannel") != null) {
-      this.socketService.leaveChannel()
+    if (localStorage.getItem("currentChannel")) {
+      //this.socketService.leaveChannel()
     }
 
     localStorage.setItem('currentChannel', channel);
