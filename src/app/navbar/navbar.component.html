@@ -1,0 +1,25 @@
+
+<div class="footer" style="background-color:black; color:white; margin-top:20px; padding-bottom:30px;">
+
+    <div>
+      <h3 (click)="FAOclick()"> Preguntas frecuentes (click) </h3>
+      <div #FAO *ngIf="FAOon">
+        <h5> &nbsp; ¿Qué es este sitio? Un lugar de encuentro para inversores donde se puede chatear y seguir las cotizaciones del mercado de Buenos Aires. </h5>
+        <h5> &nbsp; ¿Quién lo hizo? Somos desarrolladores y traders anónimos. </h5>
+        <h5> &nbsp; ¿Se puede operar en este sitio? No </h5> 
+      </div>
+    </div>
+
+    <br/>
+
+    <div>
+      <h3 (click)="CONTACTclick()"> Contacto (click) </h3>
+      <h5 #FAO *ngIf="CONTACTon"> &nbsp; pisodemercado@gmail.com </h5>
+    </div>
+
+    <br/>
+
+    <h2 *ngIf="!mobile" style="text-align:center; color:#39a6ff"> pisodemercado.com.ar </h2>
+    <h6 *ngIf="mobile" style="text-align:center; color:#39a6ff"> pisodemercado.com.ar </h6>
+
+</div>

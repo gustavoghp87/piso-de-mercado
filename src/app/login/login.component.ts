@@ -21,15 +21,12 @@ export class LoginComponent implements OnInit {
   newUserPassword = ""
   newUserEmail = ""
 
-  FAOon:boolean = false
-  CONTACTon:boolean = false
-
   mobile:boolean = mobile
 
   constructor(private router:Router, private userService:UsersService) { }
 
   ngOnInit() {
-    localStorage.clear()
+    // localStorage.clear()
   }
 
   // log the user in
@@ -91,14 +88,6 @@ export class LoginComponent implements OnInit {
       },
       err => console.error
     )
-  }
-
-  FAOclick() {
-    this.FAOon = !this.FAOon
-  }
-
-  CONTACTclick() {
-    this.CONTACTon = !this.CONTACTon
   }
 
 }

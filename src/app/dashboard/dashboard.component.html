@@ -1,4 +1,3 @@
-
 <section class="hero has-background-primary">
   <div class="hero-body">
     <div class="container">
@@ -12,7 +11,7 @@
 
 <div class="container" style="min-height:800px;">
   
-  <div class="notification">
+  <div class="notification" style="background-color: #1e1e1e; color:#39a6ff;">
   
     <h2 class="subtitle is-3" *ngIf="isSuperAdmin && isGroupAdmin"> Dashboard de {{username}}, eres super admin </h2>
     <h2 class="subtitle is-3" *ngIf="!isGroupAdmin"> Dashboard de {{username}} </h2>
@@ -67,10 +66,14 @@
 
       <p> Subir nueva imagen de perfil </p>
         <form>
-          <div class="file has-name">
-              <input class="file-input" type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-              <button class="button is-light" (click)="upload()">Upload</button>
-          </div>    
+          
+          <div>
+            <input class="file-input" type="file" class="form-control"
+              (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
+          </div>
+          
+          <button class="button is-light" (click)="upload()"> Subir </button>
+        
         </form>
     </div>
     

@@ -10,6 +10,8 @@ import { DashboardComponent } from './dashboard/dashboard.component'
 import { GroupComponent } from './group/group.component'
 import { ChannelComponent } from './channel/channel.component'
 import { SocketService } from './services/socket.service'
+import { NavbarComponent } from './navbar/navbar.component'
+
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import { SocketService } from './services/socket.service'
     LoginComponent,
     DashboardComponent,
     GroupComponent,
-    ChannelComponent
+    ChannelComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -28,4 +31,5 @@ import { SocketService } from './services/socket.service'
   providers: [SocketService],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }
