@@ -22,8 +22,8 @@
       <h2 class="title is-3"> Grupos de temas: </h2>
       <ul *ngIf="groups && (!isGroupAdmin && !isSuperAdmin)">
           <li *ngFor="let group of groups">
-              Tema: {{group.name}}
-              <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
+            Tema: {{group.name}}
+            <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
           </li>
       </ul>
         
