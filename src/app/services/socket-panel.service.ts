@@ -15,10 +15,11 @@ export class SocketPanelService {
     //this.MELI = response.lp
   }
   
-  retrieveData() {
+  retrieveData(tickets:string[]) {
     //const response = this.http.get(this.server + '/tv', {params: {tiket: 'MELI'}})
-    //console.log(response)
-    return this.http.get(this.server + '/tv', {params: {ticket: 'MELI'}})
+    console.log(tickets)
+    return this.http.post(`${this.server}/tv`, tickets)
+    // return this.http.get(this.server + '/tv', {params: {ticket: 'MELI'}})
   }
 
 }

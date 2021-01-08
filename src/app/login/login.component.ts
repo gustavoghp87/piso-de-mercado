@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core'
-import { Router } from "@angular/router"
-import { UsersService } from "../services/users.service"
 import { SocketPanelService } from '../services/socket-panel.service'
 import { mobile } from '../app.component'
 import { typeProduct } from '../models/types'
@@ -15,102 +13,52 @@ import { typeProduct } from '../models/types'
 // This component handles all the functionality of the login page
 export class LoginComponent implements OnInit {
   
-  username:string = ""
-  password:string = ""
-
-  // create new user fields
-  newUserUsername = ""
-  newUserPassword = ""
-  newUserEmail = ""
-
   mobile:boolean = mobile
 
-  MELI:typeProduct
+  tickets: string[] = [
+  'BCBA:AGRO', 'BCBA:AUSO', 'BCBA:BHIP', 'BCBA:BOLT', 'BCBA:BPAT', 'CBA:BRIO',
+  'BCBA:BRIO6', 'BCBA:CADO', 'BCBA:CAPX', 'BCBA:CARC', 'BCBA:CECO2',
+  'BCBA:CELU', 'BCBA:CEPU', 'BCBA:CGPA2', 'BCBA:CTIO', 'BCBA:DGCU2', 'BCBA:DOME',
+  'BCBA:DYCA', 'BCBA:EDLH', 'BCBA:EMDE', 'BCBA:FERR', 'BCBA:FIPL',
+  'BCBA:GAMI', 'BCBA:GARO', 'BCBA:GBAN', 'BCBA:GCLA', 'BCBA:GRIM', 'BCBA:HAVA',
+  'BCBA:INAG', 'BCBA:INTR', 'BCBA:INVJ', 'BCBA:IRCP', 'BCBA:IRSA', 'BCBA:LEDE',
+  'BCBA:LONG', 'BCBA:MERA', 'BCBA:METR', 'BCBA:MOLA', 'BCBA:MOLI', 'BCBA:MORI',
+  'BCBA:MTR', 'BCBA:OEST', 'BCBA:PATA', 'BCBA:PGR', 'BCBA:POLL', 'BCBA:RICH',
+  'BCBA:RIGO', 'BCBA:ROSE']
+
+  ticketsObj: typeProduct[]
+
+  closeResult: string;
 
   constructor(
-    private router:Router,
-    private userService:UsersService,
     private socketPanelService:SocketPanelService
   ) { }
 
   ngOnInit() {
-    // localStorage.clear()
     this.getPanel()
   }
   
   getPanel() {
     console.log("TIME")
-    this.socketPanelService.retrieveData().subscribe((data:typeProduct) => {
+    this.socketPanelService.retrieveData(this.tickets).subscribe((data:any) => {
       console.log(data)
-      this.MELI = data
-      this.MELI.last_update = this.MELI.last_update.replace('T', ' ').split('.')[0] + ' GT'
+      this.ticketsObj = data
+      this.ticketsObj.forEach((ticket:typeProduct) => {
+        ticket.last_update = ticket.last_update.replace('T', ' ').split('.')[0] + ' GT'
+      })
+      // this.MELI.last_update = this.MELI.last_update.replace('T', ' ').split('.')[0] + ' GT'
 
       setTimeout(() => {
         this.getPanel()
-      }, 50000)
+      }, 120000)
     
     })
   }
 
-  viewDetails() {
-    this.MELI.details = !this.MELI.details
-  }
-
-  // log the user in
-  login() {
-    if(this.username === "") {
-      alert("Username field cannot be empty")
-      return
-    }
-    if(this.password === "") {
-      alert("Passworld field cannot be empty")
-      return
-    }
-    
-    // check password via POST request
-    this.userService.validateUser(this.username, this.password).subscribe(
-      data => {
-        console.log('Received data from validation')
-        // console.log(data)
-        if (data['success'] === true) {
-          localStorage.setItem("username", this.username)
-          this.router.navigateByUrl('/dashboard')
-        } else {
-          alert('Invalid username or password')
-        }
-      },
-      err => console.error,
-      () => console.log('completed validation')
-    )
-  }
-
-
-  // create a new user
-  createUser() {
-    if(this.newUserUsername === "") {
-      alert('Username field cannot be blank')
-      return
-    }
-    if(this.newUserPassword === "") {
-      alert('Password field cannot be blank')
-      return
-    }
-
-    this.userService.createUser(this.newUserUsername, this.newUserPassword, this.newUserEmail).subscribe(
-      data => {
-        alert("Usuario creado")
-        console.log(this.newUserUsername, this.newUserPassword, this.newUserEmail)
-        this.userService.validateUser(this.newUserUsername, this.newUserPassword).subscribe(data => {
-          if (data['success'] === true) {
-            localStorage.setItem("username", this.newUserUsername)
-            this.router.navigateByUrl('/dashboard')
-          } else {
-            alert('Se creó el usuario pero falló el ingreso')
-          }
-        })
-      },
-      err => console.error
-    )
+  viewDetails(ticketName:string) {
+    this.ticketsObj.forEach((ticket:typeProduct, index:number) => {
+      if (ticket.pro_name===ticketName) this.ticketsObj[index].details = !this.ticketsObj[index].details
+    })
   }
 
 }
