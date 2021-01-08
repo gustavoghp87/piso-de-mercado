@@ -1,7 +1,7 @@
 export let server:string
 
 
-const local = true
+const local = false
 
 
 if (local) server = 'http://localhost:3000'
