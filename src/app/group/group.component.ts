@@ -59,18 +59,16 @@ export class GroupComponent implements OnInit {
           if(group.name === this.groupName) {
             this.channels = group.channels;
           }
-        });
+        })
         this.getChannels();
         this.getDataAllUsers();
       },
-      err => {
-        console.error
-      },
+      err => console.error,
       () => {
         console.log('\tUser retrieved')
-        console.log(this.userData);
+        console.log(this.userData)
       }
-    );
+    )
   }
 
   ngOnInit() { }
@@ -104,20 +102,16 @@ export class GroupComponent implements OnInit {
       }
     }
 
-    console.log(`Creating new channel ${this.createChannelName}`);
+    console.log(`Creating new channel ${this.createChannelName}`)
     this.usersService.createChannel(this.username, this.groupName, this.createChannelName).subscribe(
       data => {
-        console.log('New list of channels received');
-        console.log(data);
-        this.allChannels = data;
+        console.log('New list of channels received')
+        console.log(data)
+        this.allChannels = data
       },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log(`Creating new channel ${this.createChannelName} completed`);
-      }
-    );
+      err => console.error(err),
+      () => console.log(`Creating new channel ${this.createChannelName} completed`)
+    )
   }
 
   // remove a channel

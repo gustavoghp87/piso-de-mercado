@@ -18,56 +18,34 @@ export class UsersService {
 
   // generate the headers for content-type as JSON in a POST request
   genHeadersJSON() {
-    return {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
+    return { headers: new HttpHeaders({ 'Content-Type': 'application/json' }) }
   }
 
-  // get the user data
   getUser(username:string) {
-    return this.http.get(this.server + '/api/user', {
-      params: {
-        username: username
-      }
-    });
+    return this.http.get(this.server + '/api/user', {params: {username}})
   }
 
-  // update the email
   updateEmail(username:string, email:string) {
-    let body = {
-      'username': username,
-      'email': email
-    };
-    return this.http.post(`api/email`, JSON.stringify(body), this.genHeadersJSON());
+    const body = {username, email}
+    return this.http.post(`api/email`, JSON.stringify(body), this.genHeadersJSON())
   }
 
-  // get the groups
   getGroups() {
-    return this.http.get(this.server + '/api/groups');
+    return this.http.get(this.server + '/api/groups')
   }
 
-  // create a group
   createGroup(username:string, groupName:string) {
-    let body = {
-      'username': username,
-      'groupName': groupName
-    };
+    const body = {username, groupName}
     return this.http.post(this.server + '/api/createGroup', JSON.stringify(body), this.genHeadersJSON());
   }
 
-  // remove a group
   removeGroup(groupName:string) {
     return this.http.delete(this.server + '/api/removeGroup/' + groupName);
   }
 
-  // create a channel
   createChannel(username:string, groupName:string, channelName:string) {
-    let body = {
-      'username': username,
-      'groupName': groupName,
-      'channelName': channelName
-    };
-    return this.http.post(this.server + '/api/channel/create', JSON.stringify(body), this.genHeadersJSON());
+    let body = {username, groupName, channelName}
+    return this.http.post(this.server + '/api/channel/create', JSON.stringify(body), this.genHeadersJSON())
   }
 
   // remove a channel

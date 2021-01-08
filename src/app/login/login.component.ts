@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from "@angular/router"
 import { UsersService } from "../services/users.service"
+import { SocketPanelService } from '../services/socket-panel.service'
 import { mobile } from '../app.component'
+import { typeProduct } from '../models/types'
 
 
 @Component({
@@ -23,10 +25,35 @@ export class LoginComponent implements OnInit {
 
   mobile:boolean = mobile
 
-  constructor(private router:Router, private userService:UsersService) { }
+  MELI:typeProduct
+
+  constructor(
+    private router:Router,
+    private userService:UsersService,
+    private socketPanelService:SocketPanelService
+  ) { }
 
   ngOnInit() {
     // localStorage.clear()
+    this.getPanel()
+  }
+  
+  getPanel() {
+    console.log("TIME")
+    this.socketPanelService.retrieveData().subscribe((data:typeProduct) => {
+      console.log(data)
+      this.MELI = data
+      this.MELI.last_update = this.MELI.last_update.replace('T', ' ').split('.')[0] + ' GT'
+
+      setTimeout(() => {
+        this.getPanel()
+      }, 50000)
+    
+    })
+  }
+
+  viewDetails() {
+    this.MELI.details = !this.MELI.details
   }
 
   // log the user in
@@ -52,12 +79,8 @@ export class LoginComponent implements OnInit {
           alert('Invalid username or password')
         }
       },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('completed validation')
-      }
+      err => console.error,
+      () => console.log('completed validation')
     )
   }
 

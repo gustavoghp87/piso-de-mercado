@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component'
 import { GroupComponent } from './group/group.component'
 import { ChannelComponent } from './channel/channel.component'
 import { SocketService } from './services/socket.service'
+import { FooterComponent } from './footer/footer.component';
 import { NavbarComponent } from './navbar/navbar.component'
 
 
@@ -20,6 +21,7 @@ import { NavbarComponent } from './navbar/navbar.component'
     DashboardComponent,
     GroupComponent,
     ChannelComponent,
+    FooterComponent,
     NavbarComponent
   ],
   imports: [
