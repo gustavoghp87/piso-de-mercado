@@ -130,11 +130,11 @@ export class UsersService {
 
   // update a user's data
   updateUser(username, userData) {
-    console.log('updating user data', username);
-    let body = userData;
-    console.log("UserData a actualizar:", userData);
+    console.log('updating user data', username)
+    let body = userData
+    console.log("UserData a actualizar:", userData)
     
-    return this.http.post(this.server + '/api/user/update', JSON.stringify(body), this.genHeadersJSON());
+    return this.http.post(this.server + '/api/user/update', JSON.stringify(body), this.genHeadersJSON())
   }
 
   // validate a user's credentials

@@ -8,9 +8,10 @@
         <h2 *ngIf="!mobile" style="text-align:center; color:green; padding-bottom:12px;"> El lugar de encuentro para operadores e inversores </h2>
         
         <div style="position:absolute; right:0; background-color:black;">
-            <a (click)="openWindowCustomClass(content)"> Loguear </a> |
+            <a *ngIf="!(logged$ | async)" (click)="openWindowCustomClass(content)"> Loguear </a> |
             <a href="#mercados"> Mercados </a> |
-            <a href="#footer"> FAO y Contacto </a>
+            <a href="#footer"> FAO y Contacto {{ logged$ | async }} </a>
+            <button *ngIf="(logged$ | async)" class="button is-light" (click)="changeLoggedLocal()"> Log out </button>
         </div>
 
     </div>

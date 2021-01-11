@@ -2,7 +2,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core'
 import { mobile } from '../app.component'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { UsersService } from '../services/users.service'
-import { Router } from '@angular/router'
+// import { Router } from '@angular/router'
+import { Observable } from 'rxjs'
+import { select, Store } from '@ngrx/store'
+import { changeLogged } from '../reducers/log-actions'
 
 
 @Component({
@@ -21,21 +24,30 @@ export class NavbarComponent implements OnInit {
   username:string = ""
   password:string = ""
 
+  logged$:Observable<boolean>
+
   // create new user fields
   newUserUsername = ""
   newUserPassword = ""
   newUserEmail = ""
-
+  
   
   constructor(
     private modalService:NgbModal,
     private userService:UsersService,
-    private router:Router
+    //private router:Router,
+    private store:Store<{logged:boolean}>
   ) { }
 
   ngOnInit(): void {
+    this.logged$ = this.store.pipe(select('logged'))
     // localStorage.clear()
   }
+
+  async changeLoggedLocal() {
+    this.store.dispatch(changeLogged())
+  }
+
 
   doSomethingOnWindowScroll(event) {
     this.sc = event.target.scrollingElement.scrollTop
@@ -72,7 +84,8 @@ export class NavbarComponent implements OnInit {
         if (data['success'] === true) {
           localStorage.setItem("username", this.username)
           this.modalService.dismissAll()
-          this.router.navigateByUrl('/dashboard')
+          this.changeLoggedLocal()
+          // this.router.navigateByUrl('/dashboard')
         } else {alert('Invalid username or password')}
       },
       err => console.error(err),
@@ -86,11 +99,13 @@ export class NavbarComponent implements OnInit {
 
     this.userService.createUser(this.newUserUsername, this.newUserPassword, this.newUserEmail).subscribe(
       data => {
+        console.log("Usuario creado,", data)
         alert("Usuario creado")
         this.userService.validateUser(this.newUserUsername, this.newUserPassword).subscribe(data => {
           if (data['success'] === true) {
             localStorage.setItem("username", this.newUserUsername)
-            this.router.navigateByUrl('/dashboard')
+            this.changeLoggedLocal()
+            // this.router.navigateByUrl('/dashboard')
           } else {alert('Se creó el usuario pero falló el ingreso')}
         })
       },

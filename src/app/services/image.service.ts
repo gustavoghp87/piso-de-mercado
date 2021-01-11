@@ -15,4 +15,5 @@ export class ImageService {
     console.log('uploading service', fd)
     return this.http.post<any>(`${server}/api/image/upload`, fd)
   }
+  
 }

@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
-
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { LoginComponent } from './login/login.component'
@@ -10,9 +9,11 @@ import { DashboardComponent } from './dashboard/dashboard.component'
 import { GroupComponent } from './group/group.component'
 import { ChannelComponent } from './channel/channel.component'
 import { SocketService } from './services/socket.service'
-import { FooterComponent } from './footer/footer.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component'
+import { NavbarComponent } from './navbar/navbar.component'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
+import { StoreModule } from '@ngrx/store'
+import { loggedReducer } from './reducers/log-reducer'
 
 
 @NgModule({
@@ -30,7 +31,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    StoreModule.forRoot({}, {}),
+    StoreModule.forRoot({ logged: loggedReducer })
   ],
   providers: [SocketService],
   bootstrap: [AppComponent]

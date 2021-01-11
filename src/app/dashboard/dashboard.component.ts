@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core'
 import { UsersService } from '../services/users.service'
 import { Router } from '@angular/router'
-import { ChangeDetectorRef } from '@angular/core'
+// import { ChangeDetectorRef } from '@angular/core'
 import { ImageService } from '../services/image.service'
 import { server } from '../server'
+import { Observable } from 'rxjs'
+import { select, Store } from '@ngrx/store'
+
 
 @Component({
   selector: 'app-dashboard',
@@ -11,51 +14,36 @@ import { server } from '../server'
   styleUrls: ['./dashboard.component.css']
 })
 
-// This component handles all the functionality in the dashboard view
 export class DashboardComponent implements OnInit {
-  // The user's details
+
   username:string = localStorage.getItem('username')
   email:string = ''
   emailField:string = ''
   isGroupAdmin:boolean = false
   isSuperAdmin:boolean = false
   server:string = server
-
-  // list of groups and channels
   groups = []
   channels = []
-
-  // booleans to show groups or not
-  // showGroupsBool = true
-  // showChannelsBool = false
   title:string = 'Dashboard'
-
-  // all of the user's data
   userData
-
-  // retrieve data on other users
   allGroups
   allUsers
   listOfUsers = []
-
-  // bind for new user to be admin
   usernameMakeAdmin:string = ''
-
-  // the selected file for image upload
   selectedFile = null
+  logged$:Observable<boolean>
 
-
-  constructor(private usersService:UsersService, private router:Router, private ref: ChangeDetectorRef, private imgService:ImageService) {
-    
-  }
+  constructor(
+    private usersService:UsersService,
+    private router:Router,
+    // private ref: ChangeDetectorRef,
+    private imgService:ImageService,
+    private store:Store<{logged:boolean}>
+  ) { }
 
   ngOnInit() {
-    console.log("Logged in as " + this.username)
-    console.log(this.username)
-    if (this.username === null) {
-      alert('You are not logged in')
-      this.router.navigateByUrl('/')
-    } else this.getUser()
+    this.logged$ = this.store.pipe(select('logged'))
+    this.getUser()
   }
 
   // get the file to be uploaded
@@ -78,15 +66,12 @@ export class DashboardComponent implements OnInit {
     console.log('Uploading image!')
     const fd = new FormData()
     console.log("IMAGEN:", this.selectedFile)
-    if(this.selectedFile === null) {
-      alert('No image selected')
-      return
-    }
+    if (!this.selectedFile) {alert('No image selected'); return}
     fd.append('image', this.selectedFile, this.selectedFile.name)
     this.imgService.upload(fd).subscribe(
       data => {
         console.log('Image upload received data')
-        this.userData.profileImage = data.path.split('/')[1]
+        this.userData.profileImage = data.path
         this.updateUser()
       },
       err => console.error,
@@ -97,25 +82,18 @@ export class DashboardComponent implements OnInit {
   // get the user's data
   getUser() {
     this.usersService.getUser(this.username).subscribe(
-      data => {
-        this.userData = data
-        
-      },
-      err => {
-        console.error
-      },
+      data => this.userData = data,
+      err => console.error(err),
       () => {
-        console.log('\tUser retrieved')
         console.log(this.userData)
-
         // update data (email, groups, channels, admin privileges)
         this.email = this.userData.email
         this.groups = this.userData.groups
         this.isGroupAdmin = this.userData.groupAdmin
         this.isSuperAdmin = this.userData.superAdmin
-
         this.getGroups() // get the groups if this user is admin
         this.getDataAllUsers()
+        console.log('\tUser retrieved', this.userData)
       }
     )
   }
@@ -138,9 +116,6 @@ export class DashboardComponent implements OnInit {
       }
     )
   }
-
-  // log out
-  logOut() { this.router.navigateByUrl('/') }
 
   /**
    * Route to the group page

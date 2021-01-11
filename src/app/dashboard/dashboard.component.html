@@ -1,15 +1,7 @@
-<section class="hero has-background-primary">
-  <div class="hero-body">
-    <div class="container">
-        <h1 class="title is-1">{{title}}</h1>
-        <button class="button is-light" (click)="logOut()">Log out</button>
-    </div>
-  </div>
-</section>
 
-<br/>
+<div *ngIf="(logged$ | async)" class="container" style="min-height:800px;">
 
-<div class="container" style="min-height:800px;">
+  <br/> <br/> <br/>
   
   <div class="notification" style="background-color: #1e1e1e; color:#39a6ff;">
   
