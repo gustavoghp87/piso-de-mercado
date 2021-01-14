@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { UsersService } from '../services/users.service';
-import { SocketService } from '../services/socket.service';
+import { Observable } from 'rxjs'
+import { select, Store } from '@ngrx/store'
+import { typeUser } from '../models/types'
+import { setUser } from '../reducers/actions'
+import { mobile } from '../app.component'
+
 
 @Component({
   selector: 'app-group',
@@ -12,56 +17,60 @@ import { SocketService } from '../services/socket.service';
 // This component handles all the functionalities of a group
 export class GroupComponent implements OnInit {
   // the user's data
-  groupName:string = '';
-  username:string = '';
+  groupName:string = ''
+  username:string = ''
   channels; // list of channels for users with no admin roles
-  isGroupAdmin = false;
-  isSuperAdmin = false;
+  groupAdmin = false
+  superAdmin = false
 
-  // bind for new channel name
-  createChannelName:string = '';
-
-  // the user's other data
-  userData;
-
-  allChannels; // list of channels for users with admin roles
-
+  createChannelName:string = ''
+  userData
+  allChannels // list of channels for users with admin roles
   testSuperAdmin = false; // used in a test
-
   allUsers; // all users that exist in this group
-
   allUserData; // the data of all users
+  newUsername:string = ''
 
-  newUsername:string = '';
+  user$:Observable<typeUser>
 
-  constructor(private router:Router, private usersService:UsersService, private socketService:SocketService) { 
-    this.groupName = localStorage.getItem('currentGroup');
-    this.username = localStorage.getItem('username');
-    this.getUser();
-    this.getGroupUsers();
-    
+  constructor(
+    private router:Router,
+    private usersService:UsersService,
+    private store:Store<{user:typeUser}>
+  ) {}
+  
+  ngOnInit() {
+    this.user$ = this.store.pipe(select('user'))
+    this.getUser()
+    this.getGroupUsers()
   }
 
-  // get the user's data
+
   getUser() {
-    this.usersService.getUser(this.username).subscribe(
+    this.username = localStorage.getItem('username')
+    this.groupName = localStorage.getItem('currentGroup')
+    if (!this.username || !this.groupName) return
+    console.log("GETUSER GROUP", this.username, this.groupName)
+    
+    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
       data => {
-        this.userData = data;
-        console.log('Setting user data');
-        this.isGroupAdmin = this.userData.groupAdmin;
-        this.isSuperAdmin = this.userData.superAdmin;
-        this.testSuperAdmin = this.userData.superAdmin;
-        console.log(data);
-        console.log(`\tThis user is a group admin: ${this.isGroupAdmin}`);
-        console.log(`\tThis user is a super admin: ${this.isSuperAdmin}`);
+        this.userData = data['userData']
+        console.log('Setting user data GROUP', data)
+        this.groupAdmin = this.userData.groupAdmin
+        this.superAdmin = this.userData.superAdmin
+        this.testSuperAdmin = this.userData.superAdmin
+        console.log(data)
+        console.log(`\tThis user is a group admin: ${this.groupAdmin}`)
+        console.log(`\tThis user is a super admin: ${this.superAdmin}`)
+
          // update channels list
         this.userData.groups.forEach(group => {
-          if(group.name === this.groupName) {
-            this.channels = group.channels;
+          if (group.name === this.groupName) {
+            this.channels = group.channels
           }
         })
-        this.getChannels();
-        this.getDataAllUsers();
+        this.getChannels()
+        this.getDataAllUsers()
       },
       err => console.error,
       () => {
@@ -71,33 +80,47 @@ export class GroupComponent implements OnInit {
     )
   }
 
-  ngOnInit() { }
+  getGroupUsers() {
+    this.username = localStorage.getItem('username')
+    this.groupName = localStorage.getItem('currentGroup')
+    if (!this.username || !this.groupName) return
+    console.log(`Function: Getting users for group ${this.groupName}`)
+    this.usersService.getGroupUsers(this.groupName).subscribe(
+      data => {
+        console.log(`\tReceived response data from GET: `)
+        console.log(data)
+        this.allUsers = data
+      },
+      err => console.error(err),
+      () => console.log('\tCompleted GET request of group users')
+    )
+  }
 
-  logOut() { this.router.navigateByUrl('/') }
+
 
   // route to the channel to view
   viewChannel(channel) {
-    console.log(`Viewing channel ${channel}`);
+    console.log(`Viewing channel ${channel}`)
     
     // leave previous channel
     if (localStorage.getItem("currentChannel")) {
       //this.socketService.leaveChannel()
     }
 
-    localStorage.setItem('currentChannel', channel);
-    this.router.navigateByUrl('/channel');
+    localStorage.setItem('currentChannel', channel)
+    this.router.navigateByUrl('/channel')
   }
 
   // create a new channel
   createChannel() {
     if(this.createChannelName === '') {
-      alert('New channel name cannot be empty');
-      return;
+      alert('New channel name cannot be empty')
+      return
     }
 
-    for(let channel of this.allChannels) {
+    for (let channel of this.allChannels) {
       if(this.createChannelName === channel) {
-        alert('This channel already exists');
+        alert('This channel already exists')
         return;
       }
     }
@@ -142,8 +165,9 @@ export class GroupComponent implements OnInit {
 
   // get all channels in the group
   getChannels() {
-    // console.log(`Group admin: ${this.isGroupAdmin} Super admin: ${this.isSuperAdmin}`);
-    if (this.isGroupAdmin || this.isSuperAdmin) {
+    if (!this.username || !this.groupName) return
+    // console.log(`Group admin: ${this.groupAdmin} Super admin: ${this.superAdmin}`);
+    if (this.groupAdmin || this.superAdmin) {
       console.log('Admin fetching all channels');
       this.usersService.getChannels(this.groupName).subscribe(
         data => {
@@ -161,27 +185,10 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  // get all users in the group
-  getGroupUsers() {
-    console.log(`Function: Getting users for group ${this.groupName}`);
-    this.usersService.getGroupUsers(this.groupName).subscribe(
-      data => {
-        console.log(`\tReceived response data from GET: `);
-        console.log(data);
-        this.allUsers = data;
-      },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log('\tCompleted GET request of group users');
-      }
-    );
-  }
 
   // get all the data on users in the group
   getDataAllUsers() {
-    if(!this.isGroupAdmin) return;
+    if(!this.groupAdmin) return;
     console.log('Getting all user data from server');
     this.usersService.getDataAllUsers().subscribe(
       data => {

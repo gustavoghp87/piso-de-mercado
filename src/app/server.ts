@@ -1,6 +1,6 @@
 export let server:string
 
-const local = false
+const local = true
 
 if (local) server = 'http://localhost:3000'
 else server = 'https://piso-de-mercado-restful.herokuapp.com'

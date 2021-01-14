@@ -80,7 +80,7 @@ export class ChannelComponent implements OnInit {
 
   // get this user's data
   getUser() {
-    this.usersService.getUser(this.username).subscribe(
+    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
       data => {
         this.userData = data
         console.log('Setting user data')
@@ -217,7 +217,7 @@ export class ChannelComponent implements OnInit {
     this.selectedFile.name = name
     fd.append('image', this.selectedFile, this.selectedFile.name)
     console.log("File name:", name)
-    this.imgService.upload(fd).subscribe(
+    this.imgService.upload(fd, localStorage.getItem('username'), localStorage.getItem('token')).subscribe(
       data => {
         console.log('Image upload received data')
         // console.log("path of image file: " + data.path)

@@ -7,11 +7,16 @@
         <h2 *ngIf="mobile" style="text-align:center; font-size:1.2rem; color:green;"> El lugar de encuentro para operadores e inversores </h2>
         <h2 *ngIf="!mobile" style="text-align:center; color:green; padding-bottom:12px;"> El lugar de encuentro para operadores e inversores </h2>
         
-        <div style="position:absolute; right:0; background-color:black;">
-            <a *ngIf="!(logged$ | async)" (click)="openWindowCustomClass(content)"> Loguear </a> |
-            <a href="#mercados"> Mercados </a> |
-            <a href="#footer"> FAO y Contacto {{ logged$ | async }} </a>
-            <button *ngIf="(logged$ | async)" class="button is-light" (click)="changeLoggedLocal()"> Log out </button>
+        
+        <h4 *ngIf="(user$ | async)" style="display:inline;"> Usuario {{(user$ | async)?.username | json}} - </h4>
+        <h4 *ngIf="(user$ | async)" style="display:inline;"> Email {{(user$ | async).email | json}} </h4>
+        
+        <div style="position:absolute; right:0;">
+            <button class="button is-light" *ngIf="!(user$ | async)" (click)="openWindowCustomClass(content)"> Loguear </button>
+            <button class="button is-light" (click)="subir()"> Inicio </button>
+            <button class="button is-light" href="#mercados"> Mercados </button>
+            <button class="button is-light" href="#footer"> FAQ y Contacto </button>
+            <button class="button is-light" *ngIf="(user$ | async)" (click)="logOut()"> Log out </button>
         </div>
 
     </div>
@@ -22,8 +27,8 @@
 
 <br/><br/><br/>
 
-<section *ngIf="mobile&&showBottomNavbar" data-aos="fade-up"
- style="position:fixed; z-index:2; width:100%; height:100px; padding-top:5px; padding-bottom:5px; bottom:0; background-color: aqua;">
+<section *ngIf="mobile&&showBottomNavbar" 
+ style="position:fixed; z-index:2; width:100%; height:60px; padding-top:5px; padding-bottom:5px; bottom:0; background-color: aqua;">
     <div class="container">
         <div class="row" style="display:flex; text-align:center;">
             <div class="col-4" style="align-items: center; justify-content: center; text-align: center; align-self: center;">
@@ -86,8 +91,6 @@
             <br><br>
         
           </div>
-
-
 
         <a (click)="modal.dismiss('Cross click'); openWindowCustomClass(content2)"> Crear usuario&hellip;</a>
     </div>

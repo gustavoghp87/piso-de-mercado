@@ -1,4 +1,22 @@
 
+export type typeUser = {
+    username: string
+    email: string
+    password?: string
+    superAdmin: boolean
+    groupAdmin: boolean
+    profileImage: string
+    groups: typeGroup[]
+    token: string
+    showGroup?: boolean
+}
+
+export type typeGroup = {
+    name: string
+    channels: string[]
+}
+
+
 export type typeProduct = {
     last_retrieved: string
     rtc: number

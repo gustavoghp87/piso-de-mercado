@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { server } from '../server'
 
 @Injectable({
@@ -11,9 +11,13 @@ export class ImageService {
 
   constructor(private http:HttpClient) { }
 
-  upload(fd) {
-    console.log('uploading service', fd)
-    return this.http.post<any>(`${server}/api/image/upload`, fd)
+  genHeadersJSON() {
+    return {headers: new HttpHeaders({'Content-Type': 'image/png'})}
+  }
+
+  upload(fd:any, username:string, token:string) {
+    console.log('uploading service\n', fd)
+    return this.http.post<any>(`${server}/api/user/upload-image`, fd)
   }
   
 }

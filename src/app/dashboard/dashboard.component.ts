@@ -6,6 +6,9 @@ import { ImageService } from '../services/image.service'
 import { server } from '../server'
 import { Observable } from 'rxjs'
 import { select, Store } from '@ngrx/store'
+import { typeUser } from '../models/types'
+import { setUser } from '../reducers/actions'
+import { mobile } from '../app.component'
 
 
 @Component({
@@ -17,10 +20,12 @@ import { select, Store } from '@ngrx/store'
 export class DashboardComponent implements OnInit {
 
   username:string = localStorage.getItem('username')
+  token:string = localStorage.getItem('token')
   email:string = ''
   emailField:string = ''
-  isGroupAdmin:boolean = false
-  isSuperAdmin:boolean = false
+  groupAdmin:boolean = false
+  superAdmin:boolean = false
+  profileImage:string
   server:string = server
   groups = []
   channels = []
@@ -31,76 +36,95 @@ export class DashboardComponent implements OnInit {
   listOfUsers = []
   usernameMakeAdmin:string = ''
   selectedFile = null
-  logged$:Observable<boolean>
+  user$:Observable<typeUser>
+  mobile=mobile
 
   constructor(
     private usersService:UsersService,
     private router:Router,
     // private ref: ChangeDetectorRef,
     private imgService:ImageService,
-    private store:Store<{logged:boolean}>
+    private store:Store<{user:typeUser}>
   ) { }
 
   ngOnInit() {
-    this.logged$ = this.store.pipe(select('logged'))
-    this.getUser()
+    window.scrollTo(0, 0)
+    this.user$ = this.store.pipe(select('user'))
+    // console.log("Desde dashboard:",
+    if (localStorage.getItem('username')) {
+      this.groups = JSON.parse(localStorage.getItem('groups')).groups
+      this.groupAdmin = localStorage.getItem('groupAdmin') === 'true' ? true : false
+      this.superAdmin = localStorage.getItem('superAdmin') === 'true' ? true : false
+      this.email = localStorage.getItem('email')
+      this.profileImage = localStorage.getItem('profileImage')
+    }
   }
-
-  // get the file to be uploaded
-  uploadSelected(event) {
+  
+  
+  updateUser() {
+    this.usersService.updateUser(this.username, this.token, this.profileImage).subscribe(
+      data => {
+        if (data['success']) {
+          console.log("Datos actualizados")
+          const userData:typeUser = {
+            username: this.username,
+            email: this.email,
+            superAdmin: this.superAdmin,
+            groupAdmin: this.groupAdmin,
+            profileImage: this.profileImage,
+            groups: this.groups,
+            token: this.token
+          }
+          this.store.dispatch(setUser({userData}))
+        }
+        else alert("Falló actualización de datos de usuario")
+      },
+      err => console.error(err)
+    )
+  }
+  
+  uploadSelected(event:any) {
     console.log('Selected image!', event.target.files[0])
     this.selectedFile = event.target.files[0]
   }
-  
-  // update the user with new data
-  updateUser() {
-    this.usersService.updateUser(this.username, this.userData).subscribe(
-      data => { },
-      err => console.error,
-      () => { }
-    )
-  }
 
-  // upload the image
-  upload() {
-    console.log('Uploading image!')
-    const fd = new FormData()
-    console.log("IMAGEN:", this.selectedFile)
+  uploadImageToServer() {
+    console.log('Uploading image!', this.selectedFile)
     if (!this.selectedFile) {alert('No image selected'); return}
+    const fd = new FormData()
     fd.append('image', this.selectedFile, this.selectedFile.name)
-    this.imgService.upload(fd).subscribe(
+    this.imgService.upload(fd, this.username, this.token).subscribe(
       data => {
-        console.log('Image upload received data')
-        this.userData.profileImage = data.path
+        console.log('Image upload received data', data)
+        this.profileImage = data.data['filename']
         this.updateUser()
       },
-      err => console.error,
+      err => console.error(err),
       () => console.log('Completed image upload')
     )
   }
 
-  // get the user's data
+
   getUser() {
-    this.usersService.getUser(this.username).subscribe(
-      data => this.userData = data,
-      err => console.error(err),
-      () => {
-        console.log(this.userData)
+    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
+      data => {
+        this.userData = data
         // update data (email, groups, channels, admin privileges)
         this.email = this.userData.email
         this.groups = this.userData.groups
-        this.isGroupAdmin = this.userData.groupAdmin
-        this.isSuperAdmin = this.userData.superAdmin
+        this.groupAdmin = this.userData.groupAdmin
+        this.superAdmin = this.userData.superAdmin
         this.getGroups() // get the groups if this user is admin
         this.getDataAllUsers()
         console.log('\tUser retrieved', this.userData)
-      }
+      },
+      err => console.error(err)
     )
   }
 
-  // update the user's email
+
   updateEmail() {
-    this.usersService.updateEmail(this.username, this.emailField)
+    this.usersService.updateEmail(this.username, this.emailField, localStorage.getItem('token'))
     .subscribe(
       (data) => {
         data = JSON.stringify(data)
@@ -117,23 +141,32 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  /**
-   * Route to the group page
-   * @param group The group object
-   */
+
   viewGroup(group) {
-    if(this.isGroupAdmin || this.isSuperAdmin) {
-      console.log(`Viewing group ${group}`)
+    this.userData = {
+      username: this.username,
+      email: this.email,
+      superAdmin: this.superAdmin,
+      groupAdmin: this.groupAdmin,
+      profileImage: this.profileImage,
+      groups: this.groups,
+      token: this.token,
+      showGroup: true
+    }
+    console.log("Actualizando userData para que muestre,", this.userData)
+    this.store.dispatch(setUser({userData:this.userData}))
+
+    console.log("Grupo pasado:", "\n", group)
+    if (this.groupAdmin || this.superAdmin) {
+      console.log(`ADMIN Viewing group ${group}`)
       localStorage.setItem('currentGroup', group)
-      this.router.navigateByUrl('/group')
     }
     else {
-      console.log(`Viewing group ${group.name}`)
+      console.log(`No admin, Viewing group ${group.name}`)
       localStorage.setItem('currentGroup', group.name)
-      this.router.navigateByUrl('/group')
     }
-    
   }
+
 
   // the bind for the new group name
   createGroupName:string = ''
@@ -165,7 +198,7 @@ export class DashboardComponent implements OnInit {
 
   // get all groups and their data
   getGroups() {
-    if(this.isSuperAdmin || this.isGroupAdmin) {
+    if(this.superAdmin || this.groupAdmin) {
       console.log('Admin fetching all groups')
       this.usersService.getGroups().subscribe(
         data => {
@@ -216,7 +249,7 @@ export class DashboardComponent implements OnInit {
 
   // get all the data of the users
   getDataAllUsers() {
-    if(this.isSuperAdmin) {
+    if(this.superAdmin) {
       this.usersService.getDataAllUsers().subscribe(
         data => {
           console.log('Received all user data from server')
@@ -258,7 +291,7 @@ export class DashboardComponent implements OnInit {
 
   // make a user a group admin
   userMakeAdminGroup() {
-    if(this.usernameMakeAdmin === '') {
+    if (!this.usernameMakeAdmin) {
       alert('Username cannot be blank')
       return
     }
@@ -266,9 +299,9 @@ export class DashboardComponent implements OnInit {
       alert(`User ${this.usernameMakeAdmin} does not exist`)
       return
     }
-    for(let user of this.allUsers) {
-      if(user.username === this.usernameMakeAdmin) {
-        if(user.groupAdmin) {
+    for (let user of this.allUsers) {
+      if (user.username===this.usernameMakeAdmin) {
+        if (user.groupAdmin) {
           alert('This user is already a group admin')
           return
         }
@@ -290,16 +323,16 @@ export class DashboardComponent implements OnInit {
 
   // make a user a super admin
   userMakeAdminSuper() {
-    if(this.usernameMakeAdmin === '') {
+    if (!this.usernameMakeAdmin) {
       alert('Username cannot be blank')
       return
     }
-    if(!this.listOfUsers.includes(this.usernameMakeAdmin)) {
+    if (!this.listOfUsers.includes(this.usernameMakeAdmin)) {
       alert(`User ${this.usernameMakeAdmin} does not exist`)
       return
     }
-    for(let user of this.allUsers) {
-      if(user.username === this.usernameMakeAdmin) {
+    for (let user of this.allUsers) {
+      if (user.username === this.usernameMakeAdmin) {
         if(user.superAdmin) {
           alert('This user is already a super admin')
           return
@@ -308,15 +341,9 @@ export class DashboardComponent implements OnInit {
     }
     console.log(`Making user ${this.usernameMakeAdmin} super admin`)
     this.usersService.makeUserSuperAdmin(this.usernameMakeAdmin).subscribe(
-      data => {
-        console.log('Received new data for making user an admin')
-      },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('Completed making user request')
-      }
+      data => {console.log('Received new data for making user an admin')},
+      err => {console.error},
+      () => {console.log('Completed making user request')}
     )
   }
 

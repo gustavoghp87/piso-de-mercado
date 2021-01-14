@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { LoginComponent } from './login/login.component'
+import { HomeComponent } from './home/home.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { GroupComponent } from './group/group.component'
 import { ChannelComponent } from './channel/channel.component'
@@ -13,13 +13,13 @@ import { FooterComponent } from './footer/footer.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { StoreModule } from '@ngrx/store'
-import { loggedReducer } from './reducers/log-reducer'
+import { setUserReducer } from './reducers/user.reducer'
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
+    HomeComponent,
     DashboardComponent,
     GroupComponent,
     ChannelComponent,
@@ -33,7 +33,9 @@ import { loggedReducer } from './reducers/log-reducer'
     HttpClientModule,
     NgbModule,
     StoreModule.forRoot({}, {}),
-    StoreModule.forRoot({ logged: loggedReducer })
+    StoreModule.forRoot({
+      user: setUserReducer
+    })
   ],
   providers: [SocketService],
   bootstrap: [AppComponent]

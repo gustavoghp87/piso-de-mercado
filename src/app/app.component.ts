@@ -11,4 +11,3 @@ export class AppComponent {
 }
 
 export const mobile = screen.width < 990 ? true : false
-// export const logged = false

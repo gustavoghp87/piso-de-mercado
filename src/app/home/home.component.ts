@@ -5,13 +5,13 @@ import { typeProduct } from '../models/types'
 
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 
-// This component handles all the functionality of the login page
-export class LoginComponent implements OnInit {
+// This component handles all the functionality of the home page
+export class HomeComponent implements OnInit {
   
   mobile:boolean = mobile
 
