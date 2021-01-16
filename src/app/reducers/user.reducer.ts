@@ -15,6 +15,7 @@ const _setUserReducer = createReducer(
         localStorage.setItem('superAdmin', action.userData.superAdmin.toString())
         localStorage.setItem('groupAdmin', action.userData.groupAdmin.toString())
         localStorage.setItem('profileImage', action.userData.profileImage)
+        localStorage.setItem('showGroup', action.userData.showGroup)
         return action.userData
     })
 )

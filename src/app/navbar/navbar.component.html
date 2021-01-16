@@ -12,11 +12,11 @@
         <h4 *ngIf="(user$ | async)" style="display:inline;"> Email {{(user$ | async).email | json}} </h4>
         
         <div style="position:absolute; right:0;">
-            <button class="button is-light" *ngIf="!(user$ | async)" (click)="openWindowCustomClass(content)"> Loguear </button>
+            <button class="btn btn-danger" *ngIf="!(user$ | async)" (click)="openWindowCustomClass(content)"> Loguear </button>
             <button class="button is-light" (click)="subir()"> Inicio </button>
-            <button class="button is-light" href="#mercados"> Mercados </button>
-            <button class="button is-light" href="#footer"> FAQ y Contacto </button>
-            <button class="button is-light" *ngIf="(user$ | async)" (click)="logOut()"> Log out </button>
+            <a class="button is-light" href="#mercados"> Mercados </a>
+            <a class="button is-light" href="#footer"> FAQ y Contacto </a>
+            <button class="btn btn-danger" *ngIf="(user$ | async)" (click)="logOut()"> Log out </button>
         </div>
 
     </div>

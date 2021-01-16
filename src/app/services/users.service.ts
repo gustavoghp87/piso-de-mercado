@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-// import {Observable, of} from 'rxjs'
-// import { FormGroupName } from '@angular/forms'
 import { server } from '../server'
-import { typeUser } from '../models/types'
 
 
-@Injectable({providedIn: 'root'})
+@Injectable({providedIn:'root'})
 
 export class UsersService {
 
@@ -14,110 +11,173 @@ export class UsersService {
 
   private server = server
 
-  genHeadersJSON() {
-    return {headers: new HttpHeaders({'Content-Type':'application/json'})}
+  genHeadersJSON() {return {headers: new HttpHeaders({'Content-Type':'application/json'})}}
+
+  getUsername() {return localStorage.getItem('username')}
+
+  getToken() {return localStorage.getItem('token')}
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getUser() {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/get-one`, JSON.stringify({username, token}), this.genHeadersJSON())
   }
 
-  getUser(username:string, token:string) {
-    return this.http.post(`${this.server}/api/user`, JSON.stringify({username, token}), this.genHeadersJSON())
+  updateUserImage(profileImage:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/update-image`, JSON.stringify({username, token, profileImage}), this.genHeadersJSON())
   }
 
-  updateEmail(username:string, email:string, token:string) { 
-    return this.http.post(`${this.server}/api/email`, JSON.stringify({username, email, token}), this.genHeadersJSON())
+  login(usernameToLogin:string, password:string) {
+    return this.http.post(`${this.server}/api/users/login`, JSON.stringify({usernameToLogin, password}), this.genHeadersJSON()
+    )
   }
 
-  getGroups() {
-    return this.http.get(`${this.server}/api/groups`)
+  verifyToken() {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/verify-token`, JSON.stringify({username, token}), this.genHeadersJSON())
   }
 
-  createGroup(username:string, groupName:string) {
-    return this.http.post(`${this.server}/api/createGroup`, JSON.stringify({username, groupName}), this.genHeadersJSON())
+  createUser(usernameToCreate:string, password:string, email:string) {
+    return this.http.post(`${this.server}/api/users/create`, JSON.stringify({usernameToCreate, password, email}), this.genHeadersJSON())
   }
 
-  removeGroup(groupName:string) {
-    return this.http.delete(`${this.server}/api/removeGroup/${groupName}`)
+  logout() {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/logout`, JSON.stringify({username, token}), this.genHeadersJSON())
   }
 
-  createChannel(username:string, groupName:string, channelName:string) {
-    return this.http.post(`${this.server}/api/channel/create`, JSON.stringify({username, groupName, channelName}), this.genHeadersJSON())
-  }
-
-  // remove a channel
-  removeChannel(username:string, groupName:string, channelName:string) {
-    return this.http.delete(`${this.server}/api/channel/remove/${username}.${groupName}.${channelName}`)
-  }
-
-  getChannels(groupName:string) {
-    return this.http.get(`${this.server}/api/${groupName}/channels`)
-  }
-
-  getGroupUsers(groupName:string) {
-    return this.http.get(`${this.server}/api/${groupName}/users`)
+  updateEmail(email:string) { 
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/update-email`, JSON.stringify({username, email, token}), this.genHeadersJSON())
   }
 
   getDataAllUsers() {
-    return this.http.get(`${this.server}/api/users/all`)
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/get-all`, JSON.stringify({username, token}), this.genHeadersJSON())
   }
 
-  removeUserInGroup(username:string, groupName:string) {
-    return this.http.delete(`${this.server}/api/remove/${groupName}.${username}`)
+  removeUserFromSystem(usernameToRemove:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/remove-user-from-system`, JSON.stringify({username, token, usernameToRemove}), this.genHeadersJSON())
   }
 
-  addUserToGroup(username:string, groupName:string) {
-    return this.http.post(`${this.server}/api/groups/add`, JSON.stringify({username, groupName}), this.genHeadersJSON())
+  makeUserSuperAdmin(usernameToAdmin:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/users/make-user-super-admin`, JSON.stringify({username, token, usernameToAdmin}), this.genHeadersJSON())
   }
 
-  addUserToChannel(username:string, groupName:string, channelName:string) {
-    return this.http.post(`${this.server}/api/group/channel/add`, JSON.stringify({username, groupName, channelName}), this.genHeadersJSON())
-  } 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  removeUserFromChannel(username:string, groupName:string, channelName:string) {
-    return this.http.delete(`${this.server}/api/removeUserFromChannel/${groupName}.${channelName}.${username}`)
+  getGroups() {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups`, JSON.stringify({username, token}), this.genHeadersJSON())
   }
 
-  removeUserFromSystem(username:string) {
-    return this.http.delete(`${this.server}/api/removeUserFromSystem/${username}`)
+  createGroup(groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/create`, JSON.stringify({username, token, groupName}), this.genHeadersJSON())
+  }
+  
+  removeGroup(groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/remove-group`, JSON.stringify({username, token, groupName}), this.genHeadersJSON())
   }
 
-  makeUserGroupAdmin(username:string) {
-    return this.http.post(`${this.server}/api/makeUserGroupAdmin`, JSON.stringify(username), this.genHeadersJSON())
+  getChannelsForAdmins(groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/channels`, JSON.stringify({username, token, groupName}), this.genHeadersJSON())
   }
 
-  makeUserSuperAdmin(username:string) {
-    return this.http.post(`${this.server}/api/makeUserSuperAdmin`, JSON.stringify(username), this.genHeadersJSON())
+  getGroupUsers(groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/users`, JSON.stringify({username, token, groupName}), this.genHeadersJSON())
   }
 
+  removeUserInGroup(usernameToRemove:string, groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/remove-user`, JSON.stringify({username, token, usernameToRemove, groupName}), this.genHeadersJSON())
+  }
+
+  addUserToGroup(usernameToAdd:string, groupName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/add-user`, JSON.stringify({username, token, usernameToAdd, groupName}), this.genHeadersJSON())
+  }
+
+  makeUserGroupAdmin(usernameToAdmin:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/groups/make-user-group-admin`, JSON.stringify({username, token, usernameToAdmin}), this.genHeadersJSON())
+  }
+
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
   getChannelMessages(groupName:string, channelName:string) {
-    return this.http.get(`${this.server}/api/channel/messages`, {params: {groupName, channelName}})
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channel/messages`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
+  }
+  
+  addUserToChannel(usernameToAdd:string, groupName:string, channelName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channels/add-user`, JSON.stringify({username, token, usernameToAdd, groupName, channelName}), this.genHeadersJSON())
   }
 
-  updateUser(username:string, token:string, profileImage:string) {
-    return this.http.post(`${this.server}/api/user/update`, JSON.stringify({username, token, profileImage}), this.genHeadersJSON())
+  createChannel(groupName:string, channelName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channel/create`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
 
-  validateUserByPassword(username:string, password:string) {
-    return this.http.post(`${this.server}/api/user/login`,
-      JSON.stringify({username, password}),
-      this.genHeadersJSON()
-    )
+  removeChannel(groupName:string, channelName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channels/remove-channel`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
 
-  validateUserByToken(username:string, token:string) {
-    return this.http.post(`${this.server}/api/user/validateByToken`, JSON.stringify({username, token}), this.genHeadersJSON())
-  }
-
-  createUser(username:string, password:string, email:string) {
-    return this.http.post(`${this.server}/api/user/create`,
-      JSON.stringify({username, password, email}),
-      this.genHeadersJSON()
-    )
-  }
-
-  logout(username:string, token:string) {
-    return this.http.post(`${this.server}/api/user/logout`,
-      JSON.stringify({username, token}),
-      this.genHeadersJSON()
-    )
+  removeUserFromChannel(usernameToRemove:string, groupName:string, channelName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channels/remove-user`, JSON.stringify({username, token, usernameToRemove, groupName, channelName}), this.genHeadersJSON())
   }
 
 }

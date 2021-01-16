@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { UsersService } from '../services/users.service'
-import { Router } from '@angular/router'
+// import { Router } from '@angular/router'
 // import { ChangeDetectorRef } from '@angular/core'
 import { ImageService } from '../services/image.service'
 import { server } from '../server'
@@ -27,21 +27,21 @@ export class DashboardComponent implements OnInit {
   superAdmin:boolean = false
   profileImage:string
   server:string = server
-  groups = []
-  channels = []
+  groups
+  channels:string[]
   title:string = 'Dashboard'
   userData
   allGroups
-  allUsers
-  listOfUsers = []
-  usernameMakeAdmin:string = ''
+  allUsers:typeUser[]              // for admins
+  listOfUsers:string[]            // for admins
+  createGroupName:string = ''
   selectedFile = null
   user$:Observable<typeUser>
   mobile=mobile
 
   constructor(
     private usersService:UsersService,
-    private router:Router,
+    //private router:Router,
     // private ref: ChangeDetectorRef,
     private imgService:ImageService,
     private store:Store<{user:typeUser}>
@@ -50,19 +50,22 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     window.scrollTo(0, 0)
     this.user$ = this.store.pipe(select('user'))
-    // console.log("Desde dashboard:",
-    if (localStorage.getItem('username')) {
-      this.groups = JSON.parse(localStorage.getItem('groups')).groups
-      this.groupAdmin = localStorage.getItem('groupAdmin') === 'true' ? true : false
-      this.superAdmin = localStorage.getItem('superAdmin') === 'true' ? true : false
-      this.email = localStorage.getItem('email')
-      this.profileImage = localStorage.getItem('profileImage')
-    }
+    this.user$.subscribe((user:typeUser) => {
+      if (user) {
+        this.groupAdmin = user.groupAdmin
+        this.superAdmin = user.superAdmin
+        this.groups = user.groups
+        this.email = user.email
+        this.profileImage = user.profileImage
+        this.getGroups()
+        this.getDataAllUsers()
+      }
+    })
   }
   
   
-  updateUser() {
-    this.usersService.updateUser(this.username, this.token, this.profileImage).subscribe(
+  updateUserImage() {
+    this.usersService.updateUserImage(this.profileImage).subscribe(
       data => {
         if (data['success']) {
           console.log("Datos actualizados")
@@ -93,67 +96,62 @@ export class DashboardComponent implements OnInit {
     if (!this.selectedFile) {alert('No image selected'); return}
     const fd = new FormData()
     fd.append('image', this.selectedFile, this.selectedFile.name)
-    this.imgService.upload(fd, this.username, this.token).subscribe(
+    this.imgService.upload(fd).subscribe(
       data => {
         console.log('Image upload received data', data)
         this.profileImage = data.data['filename']
-        this.updateUser()
-      },
-      err => console.error(err),
-      () => console.log('Completed image upload')
-    )
-  }
-
-
-  getUser() {
-    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
-      data => {
-        this.userData = data
-        // update data (email, groups, channels, admin privileges)
-        this.email = this.userData.email
-        this.groups = this.userData.groups
-        this.groupAdmin = this.userData.groupAdmin
-        this.superAdmin = this.userData.superAdmin
-        this.getGroups() // get the groups if this user is admin
-        this.getDataAllUsers()
-        console.log('\tUser retrieved', this.userData)
+        this.updateUserImage()
       },
       err => console.error(err)
     )
   }
 
+  // getUser() {
+  //   this.usersService.getUser().subscribe(
+  //     data => {
+  //       console.log("llegó getuser()");
+        
+  //       if (data['success']) {
+  //         this.userData = data['userData']
+  //         // update data (email, groups, channels, admin privileges)
+  //         this.email = this.userData.email
+  //         this.groups = this.userData.groups
+  //         this.groupAdmin = this.userData.groupAdmin
+  //         this.superAdmin = this.userData.superAdmin
+  //         this.getGroups()
+  //         this.getDataAllUsers()
+  //         console.log('User retrieved', this.userData)
+
+  //       } else console.log("Error en getUser()")
+  //     },
+  //     err => console.error(err)
+  //   )
+  // }
 
   updateEmail() {
-    this.usersService.updateEmail(this.username, this.emailField, localStorage.getItem('token'))
-    .subscribe(
-      (data) => {
+    this.usersService.updateEmail(this.emailField).subscribe(
+      data => {
         data = JSON.stringify(data)
         console.log('POST call successful. Sent ' + data)
         this.email = this.emailField
         this.emailField = ''
       },
-      (err) => {
-        console.log('Error in POST call. Error: ' + err)
-      },
-      () => {
-        console.log('POST call completed.')
-      }
+      err => console.log('Error in POST call. Error: ' + err)
     )
   }
-
 
   viewGroup(group) {
     this.userData = {
       username: this.username,
-      email: this.email,
+      email: localStorage.getItem('email'),
       superAdmin: this.superAdmin,
       groupAdmin: this.groupAdmin,
-      profileImage: this.profileImage,
+      profileImage: localStorage.getItem('profileImage'),
       groups: this.groups,
       token: this.token,
-      showGroup: true
+      showGroup: group,
     }
-    console.log("Actualizando userData para que muestre,", this.userData)
+    // console.log("Actualizando userData para que muestre,", this.userData)
     this.store.dispatch(setUser({userData:this.userData}))
 
     console.log("Grupo pasado:", "\n", group)
@@ -162,188 +160,129 @@ export class DashboardComponent implements OnInit {
       localStorage.setItem('currentGroup', group)
     }
     else {
-      console.log(`No admin, Viewing group ${group.name}`)
-      localStorage.setItem('currentGroup', group.name)
+      console.log(`No admin, Viewing group ${group}`)
+      localStorage.setItem('currentGroup', group)
     }
+    window.scrollTo(0, 0)
   }
 
-
-  // the bind for the new group name
-  createGroupName:string = ''
-
-  // create a new group
-  createGroup() {
-    if(this.allGroups.includes(this.createGroupName)) {
-      alert(`Group ${this.createGroupName} already exists`)
-      return
-    }
-    console.log(`Creating group ${this.createGroupName}`)
-
-    this.usersService.createGroup(this.username, this.createGroupName)
-    .subscribe(
-      (data) => {
-        console.log(JSON.stringify(data)) //TODO: It is printing array of Objects and not the actual data.
-        console.log('POST call successful. Sent ' + data)
-        this.allGroups = data
-        console.log(this.allGroups)
-      },
-      (err) => {
-        console.log('Error in POST call. Error: ' + err)
-      },
-      () => {
-        console.log('POST call completed.')
-      }
-    )
-  }
-
-  // get all groups and their data
   getGroups() {
-    if(this.superAdmin || this.groupAdmin) {
-      console.log('Admin fetching all groups')
+    if (this.superAdmin || this.groupAdmin) {
       this.usersService.getGroups().subscribe(
         data => {
-          this.allGroups = data
           console.log(data)
-        },
-        err => {
-          console.error
-        },
-        () => {
-          console.log('Finished retrieving groups for admin user')
-        }
-      )
-    }
-  }
-
-  removeGroup(group) {
-    if(group === 'newbies' || group === 'general') {
-      alert('Cannot remove these default groups from the system')
-    }
-    else {
-      console.log(`Removing group ${group} from the system.`)
-      this.usersService.removeGroup(group).subscribe(
-        data => {
-          console.log("Received data: " + data)
           this.allGroups = data
         },
-        err => {
-          console.error
-        },
-        () => {
-          console.log("Finished removing group " + group)
-        }
+        err => console.error(err)
       )
     }
   }
 
-  // update the user's list 
-  updateAllUsersList() {
-    this.listOfUsers = []
-    // for(let user in this.allUsers) {
-    //   this.listOfUsers.push(user)
-    // }
-    for(let i = 0; i < this.allUsers.length; i++) {
-      this.listOfUsers.push(this.allUsers[i].username)
-    }
+  createGroup() {
+    if (!this.createGroupName) {return}
+    if (this.allGroups.includes(this.createGroupName)) {alert(`Group ${this.createGroupName} already exists`); return}
+    console.log(`Creating group ${this.createGroupName}`)
+
+    this.usersService.createGroup(this.createGroupName).subscribe(
+      data => {
+        console.log('POST call successful. Sent ' + data['groups'])
+        this.allGroups = data['groups']
+        this.updateUserGroupsRender()
+      },
+      err => console.log('Error in POST call. Error: ' + err),
+      () => this.createGroupName = ''
+    )
   }
 
-  // get all the data of the users
+  removeGroup(groupToRemove:string) {
+    if (groupToRemove==='newbies' || groupToRemove==='general') {alert('Cannot remove these default groups from the system'); return}
+    console.log(`Removing group ${groupToRemove} from the system.`)
+    this.usersService.removeGroup(groupToRemove).subscribe(
+      async data => {
+        console.log("Received data: " + data['allGroups'])
+        this.allGroups = data['allGroups']
+        this.updateUserGroupsRender()
+      },
+      err => console.error(err)
+    )
+  }
+
+  updateUserGroupsRender() {
+    this.usersService.getUser().subscribe(
+      data => {
+        this.userData = data['userData']
+        this.groups = this.userData.groups
+        console.log("Nuevo grupos,", this.groups)
+        
+        this.store.dispatch(setUser({userData: {
+          email: localStorage.getItem('email'),
+          groupAdmin: localStorage.getItem('groupAdmin')==='true' ? true : false,
+          groups: this.userData.groups,
+          profileImage: localStorage.getItem('profileImage'),
+          superAdmin: localStorage.getItem('profileImage') ? true : false,
+          token: localStorage.getItem('profileImage'),
+          username: localStorage.getItem('profileImage')
+        }}))
+      },
+      err => console.error(err)
+    )
+  }
+
   getDataAllUsers() {
-    if(this.superAdmin) {
+    if (this.superAdmin) {
       this.usersService.getDataAllUsers().subscribe(
         data => {
-          console.log('Received all user data from server')
-          console.log(data)
-          this.allUsers = data
-          this.updateAllUsersList()
+          console.log('Received all user data from server', data['users'])
+          this.allUsers = data['users']
+          this.listOfUsers = []
+          this.allUsers.forEach(user => {this.listOfUsers.push(user.username)})
+          console.log("LIST OF USERS:", this.listOfUsers)
         },
-        err => {
-          console.error
-        },
-        () => {
-          console.log('Completed getting all user data from server')
-        }
+        err => console.error(err)
       )
     }
   }
 
-  // remove a user from system
-  removeUserFromSystem(username:string) {
-    if(username === 'Super') {
-      alert('Cannot remove user Super')
-      return
-    }
-    console.log(`Removing user from system ${username}`)
-    this.usersService.removeUserFromSystem(username).subscribe(
+  removeUserFromSystem(usernameToRemove:string) {
+    if (usernameToRemove==='Super') {alert('Cannot remove user Super'); return}
+    console.log(`Removing user from system ${usernameToRemove}`)
+    this.usersService.removeUserFromSystem(usernameToRemove).subscribe(
       data => {
-        console.log('Received data from removing user from system')
-        this.allUsers = data
-        this.updateAllUsersList()
+        if (data['isAdmin']) {alert("No se puede eliminar Admin"); return}
+        this.allUsers = data['users']
+        this.listOfUsers = []
+        this.allUsers.forEach(user => {this.listOfUsers.push(user.username)})
       },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('Completed removing user from system')
-      }
+      err => console.error(err)
     )
   }
 
-  // make a user a group admin
-  userMakeAdminGroup() {
-    if (!this.usernameMakeAdmin) {
-      alert('Username cannot be blank')
-      return
-    }
-    if(!this.listOfUsers.includes(this.usernameMakeAdmin)) {
-      alert(`User ${this.usernameMakeAdmin} does not exist`)
-      return
-    }
+  makeUserGroupAdmin(usernameMakeAdmin:string) {
+    if (!usernameMakeAdmin) {alert('Username cannot be blank'); return}
+    //if (!this.listOfUsers.includes(usernameMakeAdmin)) {alert(`User ${usernameMakeAdmin} does not exist`); return}
+    if (!this.allUsers) return
     for (let user of this.allUsers) {
-      if (user.username===this.usernameMakeAdmin) {
-        if (user.groupAdmin) {
-          alert('This user is already a group admin')
-          return
-        }
-      }
+      if (user.username===usernameMakeAdmin)
+        if (user.groupAdmin) {alert('This user is already a group admin'); return}
     }
-    console.log(`Making user ${this.usernameMakeAdmin} group admin`)
-    this.usersService.makeUserGroupAdmin(this.usernameMakeAdmin).subscribe(
-      data => {
-        console.log('Received new data for making user an admin')
-      },
-      err => {
-        console.error
-      },
-      () => {
-        console.log('Completed making user request')
-      }
+    this.usersService.makeUserGroupAdmin(usernameMakeAdmin).subscribe(
+      data => {if (data['success']) alert(`Usuario ${usernameMakeAdmin} ahora es ADMIN y GroupAdmin`)},
+      err => console.error(err)
     )
   }
 
-  // make a user a super admin
-  userMakeAdminSuper() {
-    if (!this.usernameMakeAdmin) {
-      alert('Username cannot be blank')
-      return
-    }
-    if (!this.listOfUsers.includes(this.usernameMakeAdmin)) {
-      alert(`User ${this.usernameMakeAdmin} does not exist`)
-      return
-    }
+  makeUserSuperAdmin(usernameMakeAdmin:string) {
+    if (!usernameMakeAdmin) {alert('Username cannot be blank'); return}
+    //if (!this.listOfUsers.includes(usernameMakeAdmin)) {alert(`User ${usernameMakeAdmin} does not exist`); return}
     for (let user of this.allUsers) {
-      if (user.username === this.usernameMakeAdmin) {
-        if(user.superAdmin) {
-          alert('This user is already a super admin')
-          return
-        }
+      if (user.username===usernameMakeAdmin) {
+        if (user.superAdmin) {alert('This user is already a super admin'); return}
       }
     }
-    console.log(`Making user ${this.usernameMakeAdmin} super admin`)
-    this.usersService.makeUserSuperAdmin(this.usernameMakeAdmin).subscribe(
-      data => {console.log('Received new data for making user an admin')},
-      err => {console.error},
-      () => {console.log('Completed making user request')}
+    console.log(`Making user ${usernameMakeAdmin} super admin`)
+    this.usersService.makeUserSuperAdmin(usernameMakeAdmin).subscribe(
+      data => {console.log('Received new data for making user an admin', data)},
+      err => console.error(err)
     )
   }
 

@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
     if (localStorage.getItem('username') && localStorage.getItem('token')) {
       console.log("Procediendo a loguear en autom")
       this.username = localStorage.getItem('username')
-      this.userService.getUser(localStorage.getItem('username'), localStorage.getItem('token')).subscribe(
+      this.userService.getUser().subscribe(
         data => {
           console.log("Data de getUser", data)
           if (data['success']) {
@@ -60,14 +60,13 @@ export class NavbarComponent implements OnInit {
 
 
   setUserLocal(userData:typeUser|null) {
-    if (userData) userData.showGroup = false
+    if (userData) userData.showGroup = ''
     console.log("Estableciendo user,", userData)
     this.store.dispatch(setUser({userData}))
   }
 
   logOut() {
-    console.log("Cerrando", this.username, localStorage.getItem('token'))
-    this.userService.logout(this.username, localStorage.getItem('token')).subscribe(
+    this.userService.logout().subscribe(
       data => {
         if (data['success']) console.log("Cerrado en base de datos")
         else alert("Algo falló")
@@ -103,7 +102,7 @@ export class NavbarComponent implements OnInit {
     if (!this.username) {alert("Falta el username"); return}
     if (!this.password) {alert("Falta el password"); return}
     
-    this.userService.validateUserByPassword(this.username, this.password).subscribe(data => {
+    this.userService.login(this.username, this.password).subscribe(data => {
       if (data['success']) {
         localStorage.setItem("username", this.username)
         localStorage.setItem("token", data['newToken'])

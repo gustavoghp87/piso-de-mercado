@@ -5,68 +5,77 @@
 
     <div class="container">
         <div class="notification">
-            <div *ngIf="isGroupAdmin || isSuperAdmin" class="container">
-                    <div class="notification">
-                        <form (submit)="createChannel($event)">
+
+            <div *ngIf="(user$ | async).groupAdmin || (user$ | async).superAdmin" class="container">
+                <div class="notification">
+                    <!-- <form (submit)=""> -->
                         <div class="field has-addons has-addons-centered">
-                            <label class="label is-large">New channel name:</label>
+                            <label class="label is-large"> Nuevo Canal: </label>
                             <div class="control">
-                                <input class="input" type="text" placeholder="channel name" [(ngModel)]='createChannelName' id='createChannelName' name='createChannelName'>
+                                <input class="input" type="text" placeholder="channel name" [(ngModel)]='createChannelName'
+                                 id='createChannelName' name='createChannelName'>
                             </div>
                             <div class="control">
-                                <button class="button is-primary"> Create channel </button>
+                                <button class="button is-primary" (click)="createChannel()"> Crear Canal </button>
                             </div>
                         </div>
-                        </form>
-                    </div>
+                    <!-- </form> -->
                 </div>
+            </div>
 
-                <div class="box">
-                    <h1 class="title is-1">Group: {{groupName}}</h1>
-                    <h2 class="subtitle is-5">User: {{username}}</h2>
-                </div>
+            <div class="box">
+                <h1 class="title is-1"> Grupo: {{(user$ | async).showGroup}} </h1>
+                <h2 class="subtitle is-5"> Usuario: {{(user$ | async).username}} </h2>
+            </div>
                     
 
-                <div class="box">
-                    <h2 class="title">CANALES:</h2>
+            <div class="box">
+                <h2 class="title"> Canales del Grupo: </h2>
 
-                    <ul *ngIf="channels && channels.length && (!isSuperAdmin && !isGroupAdmin)">
-                        <li *ngFor="let channel of channels">
-                            Canal: {{channel}} <button (click)="viewChannel(channel)"> ENTRAR </button>
-                        </li>
-                    </ul>
+                <ul *ngIf="channels && channels.length && (!(user$ | async).superAdmin && !(user$ | async).groupAdmin)">
+                    <h4> No es admin </h4>
+                    <li *ngFor="let channel of channels">
+                        Canal: {{channel}} <button (click)="viewChannel(channel)"> ENTRAR </button>
+                    </li>
+                </ul>
 
-                    <ul *ngIf="allChannels && (isSuperAdmin || isGroupAdmin)">
-                        <li *ngFor="let channel of allChannels">
-                            Canal: {{channel}}
-                            <button (click)="viewChannel(channel)"> ENTRAR </button>
-                            <button (click)="removeChannel(channel)"> Remove channel </button>
-                        </li>
-                    </ul>
+                <ul *ngIf="allChannels && allChannels.length && ((user$ | async).superAdmin || (user$ | async).groupAdmin)">
+                    <h4> ADMIN </h4>
+                    <li *ngFor="let channel of allChannels">
+                        Canal: {{channel}}
+                        <button (click)="viewChannel(channel)"> ENTRAR </button>
+                        <button (click)="removeChannel(channel)"> Eliminar Canal </button>
+                    </li>
+                </ul>
 
-                </div>
+            </div>
                 
 
-                <div class="box">
-                    <h2 class="title"> Users in group: </h2>
-                    <div *ngIf="isGroupAdmin">
+            <div class="box">
+
+                <h2 class="title"> Usuarios en el grupo: </h2>
+
+                <ul *ngIf="allUsers && allUsers.length">
+                    <!-- && !(user$ | async).superAdmin && !(user$ | async).groupAdmin -->
+                    <li *ngFor="let user of allUsers">
+                        Usuario: {{user}}
+                    </li>
+                </ul>
+
+                <div *ngIf="(user$ | async).groupAdmin">
                     <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-                    <button (click)="addUserToGroup()">Add new user</button>
-                    </div>
-                    
-                    <ul *ngIf="allUsers && (!isSuperAdmin && !isGroupAdmin)">
-                        <li *ngFor="let user of allUsers">
-                            User: {{user}}
-                        </li>
-                    </ul>
-                    <ul *ngIf="allUsers && (isGroupAdmin)">
-                        <li *ngFor="let user of allUsers">
-                            User: {{user}} <button (click)="removeUser(user)">Remove user</button>
-                        </li>
-                    </ul>
+                    <button (click)="addUserToGroup()"> Agregar usuario </button>
                 </div>
+
+                <ul *ngIf="allUsers && (user$ | async).groupAdmin">
+                    <li *ngFor="let user of allUsers">
+                        Usuario: {{user}} <button (click)="removeUser(user)"> Echar usuario </button>
+                    </li>
+                </ul>
+
+            </div>
+
         </div>
-        
         
     </div>
 

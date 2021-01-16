@@ -80,7 +80,7 @@ export class ChannelComponent implements OnInit {
 
   // get this user's data
   getUser() {
-    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
+    this.usersService.getUser().subscribe(
       data => {
         this.userData = data
         console.log('Setting user data')
@@ -154,30 +154,30 @@ export class ChannelComponent implements OnInit {
   }
 
   // remove the user from the channel
-  removeUser(username:string) {
+  removeUser(usernameToRemove:string) {
     if (this.groupName === 'newbies' || this.groupName === 'general') {
       alert('Cannot remove users in this default channel')
       return
     }
-    if (username === this.username) {
+    if (usernameToRemove===this.username) {
       alert('Cannot remove yourself')
       return
     }
     // check if they are an admin, if not, then proceed
     for (let user of this.allUsers) {
-      if(user.username === username) {
+      if(user.username===usernameToRemove) {
         if(user.groupAdmin) {
-          alert(`Cannot remove admin user ${username}`)
+          alert(`Cannot remove admin user ${usernameToRemove}`)
           return
         }
       }
     }
-    if(this.channelName === 'general') {
+    if (this.channelName==='general') {
       alert('Cannot remove users from the default channel: general')
       return
     }
-    console.log(`Removing user ${username}`)
-    this.usersService.removeUserFromChannel(username, this.groupName, this.channelName).subscribe(
+    console.log(`Removing user ${usernameToRemove}`)
+    this.usersService.removeUserFromChannel(usernameToRemove, this.groupName, this.channelName).subscribe(
       data => {
         console.log('Received data from removing user from channel')
         this.allUsers = data
@@ -217,7 +217,7 @@ export class ChannelComponent implements OnInit {
     this.selectedFile.name = name
     fd.append('image', this.selectedFile, this.selectedFile.name)
     console.log("File name:", name)
-    this.imgService.upload(fd, localStorage.getItem('username'), localStorage.getItem('token')).subscribe(
+    this.imgService.upload(fd).subscribe(
       data => {
         console.log('Image upload received data')
         // console.log("path of image file: " + data.path)
@@ -227,7 +227,7 @@ export class ChannelComponent implements OnInit {
         this.isFile = true
         this.sendMessage()
       },
-      err => console.error,
+      err => console.error(err),
       () => console.log('Completed image upload')
     )
   }

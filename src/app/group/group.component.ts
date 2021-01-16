@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { UsersService } from '../services/users.service';
 import { Observable } from 'rxjs'
 import { select, Store } from '@ngrx/store'
-import { typeUser } from '../models/types'
+import { typeUser, typeGroup } from '../models/types'
 import { setUser } from '../reducers/actions'
 import { mobile } from '../app.component'
 
@@ -14,23 +14,18 @@ import { mobile } from '../app.component'
   styleUrls: ['./group.component.css']
 })
 
-// This component handles all the functionalities of a group
 export class GroupComponent implements OnInit {
-  // the user's data
   groupName:string = ''
   username:string = ''
-  channels; // list of channels for users with no admin roles
+  channels:string[]
+  allChannels:string[]         // para admins
   groupAdmin = false
   superAdmin = false
-
   createChannelName:string = ''
   userData
-  allChannels // list of channels for users with admin roles
-  testSuperAdmin = false; // used in a test
-  allUsers; // all users that exist in this group
-  allUserData; // the data of all users
+  allUsers:string[]
+  allUserData:typeUser[]       // para admins
   newUsername:string = ''
-
   user$:Observable<typeUser>
 
   constructor(
@@ -41,249 +36,158 @@ export class GroupComponent implements OnInit {
   
   ngOnInit() {
     this.user$ = this.store.pipe(select('user'))
-    this.getUser()
-    this.getGroupUsers()
-  }
-
-
-  getUser() {
-    this.username = localStorage.getItem('username')
-    this.groupName = localStorage.getItem('currentGroup')
-    if (!this.username || !this.groupName) return
-    console.log("GETUSER GROUP", this.username, this.groupName)
-    
-    this.usersService.getUser(this.username, localStorage.getItem('token')).subscribe(
-      data => {
-        this.userData = data['userData']
-        console.log('Setting user data GROUP', data)
-        this.groupAdmin = this.userData.groupAdmin
-        this.superAdmin = this.userData.superAdmin
-        this.testSuperAdmin = this.userData.superAdmin
-        console.log(data)
-        console.log(`\tThis user is a group admin: ${this.groupAdmin}`)
-        console.log(`\tThis user is a super admin: ${this.superAdmin}`)
-
-         // update channels list
-        this.userData.groups.forEach(group => {
-          if (group.name === this.groupName) {
-            this.channels = group.channels
-          }
+    this.user$.subscribe((user:typeUser) => {
+      if (user) {
+        this.groupName = user.showGroup
+        this.groupAdmin = user.groupAdmin
+        this.superAdmin = user.superAdmin
+        if (user && user.groups) user.groups.forEach((group:typeGroup) => {
+          if (group.name === localStorage.getItem('showGroup')) this.channels = group.channels
         })
-        this.getChannels()
+        console.log("LISTO", this.groupName, this.groupAdmin, this.superAdmin, this.channels)
+        this.getGroupUsers()
+        this.getChannelsForAdmins()
         this.getDataAllUsers()
-      },
-      err => console.error,
-      () => {
-        console.log('\tUser retrieved')
-        console.log(this.userData)
       }
-    )
+    })
   }
 
+
+  
   getGroupUsers() {
-    this.username = localStorage.getItem('username')
-    this.groupName = localStorage.getItem('currentGroup')
-    if (!this.username || !this.groupName) return
-    console.log(`Function: Getting users for group ${this.groupName}`)
+    console.log(`Function: Getting users for group... ${this.groupName}`)
     this.usersService.getGroupUsers(this.groupName).subscribe(
+      data => this.allUsers = data['allUsers'],
+      err => console.error(err)
+    )
+  }
+  
+  getChannelsForAdmins() {
+    if (this.groupAdmin || this.superAdmin) {
+      console.log('Admin fetching all channels', this.groupName)
+      this.usersService.getChannelsForAdmins(this.groupName).subscribe(
+        data => {
+          console.log('Received data for all channels', data)
+          this.allChannels = data['channels']
+        },
+        err => console.error(err),
+        () => console.log('Admin has finished fetching all channels')
+      )
+    }
+  }
+    
+  getDataAllUsers() {
+    if (!this.groupAdmin) return
+    console.log('Getting all user data from server')
+    this.usersService.getDataAllUsers().subscribe(
       data => {
-        console.log(`\tReceived response data from GET: `)
-        console.log(data)
-        this.allUsers = data
+        this.allUserData = data['users']
+        console.log('Received all user data from server', this.allUserData)
       },
-      err => console.error(err),
-      () => console.log('\tCompleted GET request of group users')
+      err => console.error(err)
     )
   }
 
 
 
-  // route to the channel to view
-  viewChannel(channel) {
+  viewChannel(channel:string) {
     console.log(`Viewing channel ${channel}`)
-    
-    // leave previous channel
+
     if (localStorage.getItem("currentChannel")) {
       //this.socketService.leaveChannel()
     }
 
     localStorage.setItem('currentChannel', channel)
-    this.router.navigateByUrl('/channel')
+    // this.router.navigateByUrl('/channel')
   }
 
-  // create a new channel
+
   createChannel() {
-    if(this.createChannelName === '') {
-      alert('New channel name cannot be empty')
-      return
-    }
+    if (!this.createChannelName) {alert('New channel name cannot be empty'); return}
 
     for (let channel of this.allChannels) {
-      if(this.createChannelName === channel) {
-        alert('This channel already exists')
-        return;
-      }
+      if (this.createChannelName === channel) {alert('This channel already exists'); return}
     }
 
     console.log(`Creating new channel ${this.createChannelName}`)
-    this.usersService.createChannel(this.username, this.groupName, this.createChannelName).subscribe(
+    this.usersService.createChannel(this.groupName, this.createChannelName).subscribe(
       data => {
-        console.log('New list of channels received')
-        console.log(data)
-        this.allChannels = data
+        console.log('New list of channels received', data)
+        this.allChannels = data['allChannels']
       },
       err => console.error(err),
       () => console.log(`Creating new channel ${this.createChannelName} completed`)
     )
   }
 
-  // remove a channel
-  removeChannel(channel) {
-    if(channel === 'general') {
-      alert(`Cannot remove default channel ${channel}`);
-      return;
-    }
-    if(this.groupName === 'general' || this.groupName === 'newbies') {
-      alert('Cannot remove default channels in default groups');
-      return;
-    }
-    console.log(`Removing channel ${channel}`);
-    this.usersService.removeChannel(this.username, this.groupName, channel).subscribe(
+
+  removeChannel(channel:string) {
+    if(channel === 'general') {alert(`Cannot remove default channel ${channel}`); return}
+    if (this.groupName==='general' || this.groupName==='newbies') {alert('Cannot remove default channels in default groups'); return}
+    console.log(`Removing channel ${channel}`)
+    this.usersService.removeChannel(this.groupName, channel).subscribe(
       data => {
-        console.log(`New list of channels received`);
-        console.log(data);
-        this.allChannels = data;
+        console.log(`New list of channels received`, data)
+        this.allChannels = data['allChannels']
       },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log(`Removing channel ${channel} completed`);
+      err => console.error(err),
+      () => console.log(`Removing channel ${channel} completed`)
+    )
+  }
+
+
+
+
+
+
+
+
+  removeUser(userToRemove:string) {
+    if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot remove users in this default channel'); return}
+    if (userToRemove === this.username) {alert('Cannot remove yourself'); return}
+    
+    this.allUserData.forEach((user) => {
+      if (user.username===userToRemove) {
+        if (user.groupAdmin) {alert(`Cannot remove admin user ${userToRemove}`); return}
       }
-    );
-  }
+    })
 
-  // get all channels in the group
-  getChannels() {
-    if (!this.username || !this.groupName) return
-    // console.log(`Group admin: ${this.groupAdmin} Super admin: ${this.superAdmin}`);
-    if (this.groupAdmin || this.superAdmin) {
-      console.log('Admin fetching all channels');
-      this.usersService.getChannels(this.groupName).subscribe(
-        data => {
-          console.log('Received data for all channels');
-          console.log(data);
-          this.allChannels = data;
-        },
-        err => {
-          console.error;
-        },
-        () => {
-          console.log('Admin has finished fetching all channels');
-        }
-      );
-    }
-  }
-
-
-  // get all the data on users in the group
-  getDataAllUsers() {
-    if(!this.groupAdmin) return;
-    console.log('Getting all user data from server');
-    this.usersService.getDataAllUsers().subscribe(
+    console.log(`Removing user ${userToRemove}`)
+    this.usersService.removeUserInGroup(userToRemove, this.groupName).subscribe(
       data => {
-        console.log('Received all user data from server');
-        // console.log(data);
-        this.allUserData = data;
+        console.log('Received new list of users', data['allUsers'])
+        this.allUsers = data['allUsers']
       },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log('Completed getting all user data from server');
-      }
-    );
+      err => console.error(err)
+    )
+
   }
 
-  // remove user from group
-  removeUser(user:string) {
-    if(this.groupName === 'newbies' || this.groupName === 'general') {
-      alert('Cannot remove users in this default channel');
-      return;
-    }
-    if(user === this.username) {
-      alert('Cannot remove yourself');
-      return;
-    }
-    // check if they are an admin, if not, then proceed
-    for(let i = 0; i < this.allUserData.length; i++) {
-      if(this.allUserData[i].username === user) {
-        if(this.allUserData[i].groupAdmin === true) {
-          alert(`Cannot remove admin user ${user}`);
-          console.log(this.allUserData[i]);
-          return;
-        }
-      }
-    }
-    console.log(`Removing user ${user}`);
-    this.usersService.removeUserInGroup(user, this.groupName).subscribe(
-      data => {
-        console.log('Received new list of users');
-        // console.log(data);
-        this.allUsers = data;
-      },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log(`\tFinished removing user ${user}`);
-      }
-    );
-  }
 
-  // update the users list
   updateAllUsersList() {
-    this.allUsers = [];
-    for(let i = 0; i < this.allUserData.length; i++) {
-      // console.log(this.allUserData[i].username);
-      for(let j = 0; j < this.allUserData[i].groups.length; j++) {
-        // console.log(this.allUserData[i].groups[j].name);
-        if(this.allUserData[i].groups[j].name === this.groupName) {
-          this.allUsers.push(this.allUserData[i].username);
-        }
-      }
-    }
-    console.log(this.allUserData);
+    this.allUserData.forEach((user:typeUser) => {
+      user.groups.forEach((group:typeGroup) => {
+        if (group.name===this.groupName) this.allUsers.push(user.username)
+      })
+    })
+    console.log(this.allUserData)
   }
 
-  // add a new user to a group
+
   addUserToGroup() {
-    if(this.newUsername === '') {
-      alert('New user\'s username cannot be empty');
-      return;
-    }
-    if(this.groupName === 'newbies' || this.groupName === 'general') {
-      alert('Cannot add users in the default channels: newbies and general')
-      return;
-    }
-    if(this.allUsers.includes(this.newUsername)) {
-      alert(`User ${this.newUsername} is already in the group`);
-      return;
-    }
-    console.log(`Adding new user ${this.newUsername} to group`);
+    if (this.newUsername) {alert('New user\'s username cannot be empty'); return}
+    if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot add users in the default channels: newbies and general'); return}
+    if(this.allUsers.includes(this.newUsername)) {alert(`User ${this.newUsername} is already in the group`); return}
+    console.log(`Adding new user ${this.newUsername} to group`)
     this.usersService.addUserToGroup(this.newUsername, this.groupName).subscribe(
       data => {
-        console.log('Received data from adding user to group');
-        console.log(data);
-        this.allUserData = data;
-        this.updateAllUsersList();
+        console.log('Received data from adding user to group', data)
+        this.allUserData = data['users']
+        this.updateAllUsersList()
       },
-      err => {
-        console.error;
-      },
-      () => {
-        console.log(`Completed adding user ${this.newUsername} to group`);
-      }
-    );
+      err => console.error,
+      () => console.log(`Completed adding user ${this.newUsername} to group`)
+    )
   }
+
 }

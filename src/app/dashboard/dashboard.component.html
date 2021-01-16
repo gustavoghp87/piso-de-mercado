@@ -5,27 +5,30 @@
   
   <div class="notification" style="background-color: #1e1e1e; color:#39a6ff;">
   
-    <h2 class="subtitle is-3" *ngIf="(user$ | async).superAdmin && (user$ | async).groupAdmin"> Dashboard de {{(user$ | async).username}}, eres super admin </h2>
+    <h2 class="subtitle is-3" *ngIf="(user$ | async).superAdmin && (user$ | async).groupAdmin"> Dashboard de {{(user$ | async).username}}, eres SUPER ADMIN </h2>
     <h2 class="subtitle is-3" *ngIf="!(user$ | async).groupAdmin"> Dashboard de {{(user$ | async).username}} </h2>
-    <h2 class="subtitle is-3" *ngIf="(user$ | async).groupAdmin && !(user$ | async).superAdmin"> Dashboard de {{(user$ | async).username}}, eres group admin </h2>
-      
-      
+    <h2 class="subtitle is-3" *ngIf="(user$ | async).groupAdmin && !(user$ | async).superAdmin"> Dashboard de {{(user$ | async).username}}, eres GROUP ADMIN </h2>
+
+
     <div class="box">
-      <h2 class="title is-3"> Grupos de temas: </h2>
+      <h2 class="title is-3"> GRUPOS: </h2>
+
       <ul *ngIf="(user$ | async).groups && (!(user$ | async).isGroupAdmin && !(user$ | async).isSuperAdmin)">
+          <h3> Grupos en los que estás: </h3>
           <li *ngFor="let group of (user$ | async).groups">
-            Tema: {{group.name}}
-            <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
+            Grupo: {{group.name}}
+            <button (click)="viewGroup(group.name)" style="margin-bottom:12px;"> Entrar al Grupo </button>
           </li>
       </ul>
         
       <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3"> Admin panel for groups: </h2> -->
       <ul *ngIf="allGroups && ((user$ | async).groupAdmin || (user$ | async).superAdmin)">
+        <h3> Todos los grupos: </h3>
         <li *ngFor="let group of allGroups">
-          Tema: {{group}}
-          <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al tema </button>
+          Grupo: {{group}}
+          <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al Grupo </button>
           &nbsp;
-          <button (click)="removeGroup(group)"> Eliminar tema </button>
+          <button (click)="removeGroup(group)"> Eliminar Grupo </button>
         </li>
       </ul> 
     </div>
@@ -35,12 +38,12 @@
         <div class="container">
           <form (submit)="createGroup($event)">
             <div class="field has-addons has-addons-centered">
-                <label class="label is-large"> Nombre de nuevo tema: &nbsp; </label>
+                <label class="label is-large"> Nombre de nuevo Grupo: &nbsp; </label>
                 <div class="control">
-                    <input class="input" type="text" placeholder="group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName'>
+                    <input class="input" type="text" placeholder="Group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName'>
                 </div>
                 <div class="control">
-                  <button class="button is-primary"> Crear tema </button>
+                  <button class="button is-primary"> Crear Grupo </button>
                 </div>
             </div>
           </form>
@@ -86,24 +89,37 @@
 
 
     <div class="box" *ngIf="(user$ | async).superAdmin">
+
       <h2 class="title is-3"> Usuarios: </h2>
-      <div class="box">
+      <!-- <div class="box">
           <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
           <button (click)="userMakeAdminGroup()"> Hacer a un usuario administrador de tema </button>
           <button (click)="userMakeAdminSuper()"> Hacer a un usuario administrador de todo el sitio </button>
-      </div>
+      </div> -->
       
-      <br>
+      <br/>
 
-      <ul>
-        <li *ngFor="let user of listOfUsers">
+      <ul *ngIf="allUsers">
+        <li *ngFor="let user of allUsers">
           <div class="box">
             <div class="columns">
               <div class="column">
-                  Usuario: {{user}} 
+                  Usuario: {{user.username}} 
               </div>
               <div class="column">
-                  <button class="button is-danger is-small" (click)="removeUserFromSystem(user)"> Eliminar usuario del sistema </button>
+                <button class="button is-success is-small" (click)="makeUserSuperAdmin(user)" *ngIf="!user.superAdmin">
+                  Hacer SUPER ADMIN
+                </button>
+              </div>
+              <div class="column">
+                <button class="button is-primary is-small" (click)="makeUserGroupAdmin(user)" *ngIf="!user.groupAdmin">
+                  Hacer Admin de grupo
+                </button>
+              </div>
+              <div class="column">
+                <button class="button is-danger is-small" (click)="removeUserFromSystem(user)">
+                  Eliminar usuario del sistema
+                </button>
               </div>
             </div>
           </div>              
