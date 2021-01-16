@@ -8,7 +8,7 @@
         <h2 *ngIf="!mobile" style="text-align:center; color:green; padding-bottom:12px;"> El lugar de encuentro para operadores e inversores </h2>
         
         
-        <h4 *ngIf="(user$ | async)" style="display:inline;"> Usuario {{(user$ | async)?.username | json}} - </h4>
+        <h4 *ngIf="(user$ | async)" style="display:inline;"> Usuario {{(user$ | async).username | json}} - </h4>
         <h4 *ngIf="(user$ | async)" style="display:inline;"> Email {{(user$ | async).email | json}} </h4>
         
         <div style="position:absolute; right:0;">

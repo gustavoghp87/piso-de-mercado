@@ -6,23 +6,6 @@
     <div class="container">
         <div class="notification">
 
-            <div *ngIf="(user$ | async).groupAdmin || (user$ | async).superAdmin" class="container">
-                <div class="notification">
-                    <!-- <form (submit)=""> -->
-                        <div class="field has-addons has-addons-centered">
-                            <label class="label is-large"> Nuevo Canal: </label>
-                            <div class="control">
-                                <input class="input" type="text" placeholder="channel name" [(ngModel)]='createChannelName'
-                                 id='createChannelName' name='createChannelName'>
-                            </div>
-                            <div class="control">
-                                <button class="button is-primary" (click)="createChannel()"> Crear Canal </button>
-                            </div>
-                        </div>
-                    <!-- </form> -->
-                </div>
-            </div>
-
             <div class="box">
                 <h1 class="title is-1"> Grupo: {{(user$ | async).showGroup}} </h1>
                 <h2 class="subtitle is-5"> Usuario: {{(user$ | async).username}} </h2>
@@ -30,17 +13,18 @@
                     
 
             <div class="box">
+                
                 <h2 class="title"> Canales del Grupo: </h2>
 
-                <ul *ngIf="channels && channels.length && (!(user$ | async).superAdmin && !(user$ | async).groupAdmin)">
-                    <h4> No es admin </h4>
-                    <li *ngFor="let channel of channels">
+                <ul *ngIf="userChannels && userChannels.length">
+                    <h4> Canales en los que estás: </h4>
+                    <li *ngFor="let channel of userChannels">
                         Canal: {{channel}} <button (click)="viewChannel(channel)"> ENTRAR </button>
                     </li>
                 </ul>
 
                 <ul *ngIf="allChannels && allChannels.length && ((user$ | async).superAdmin || (user$ | async).groupAdmin)">
-                    <h4> ADMIN </h4>
+                    <h4> ADMIN: todos los canales </h4>
                     <li *ngFor="let channel of allChannels">
                         Canal: {{channel}}
                         <button (click)="viewChannel(channel)"> ENTRAR </button>
@@ -48,6 +32,22 @@
                     </li>
                 </ul>
 
+            </div>
+
+
+            <div *ngIf="(user$ | async).groupAdmin || (user$ | async).superAdmin" class="container">
+                <div class="notification">
+                    <div class="field has-addons has-addons-centered">
+                        <label class="label is-large"> Nuevo Canal: &nbsp; </label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="channel name" [(ngModel)]='createChannelName'
+                                id='createChannelName' name='createChannelName'>
+                        </div>
+                        <div class="control">
+                            <button class="button is-primary" (click)="createChannel()"> Crear Canal </button>
+                        </div>
+                    </div>
+                </div>
             </div>
                 
 

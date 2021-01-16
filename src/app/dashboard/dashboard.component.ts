@@ -151,7 +151,6 @@ export class DashboardComponent implements OnInit {
       token: this.token,
       showGroup: group,
     }
-    // console.log("Actualizando userData para que muestre,", this.userData)
     this.store.dispatch(setUser({userData:this.userData}))
 
     console.log("Grupo pasado:", "\n", group)

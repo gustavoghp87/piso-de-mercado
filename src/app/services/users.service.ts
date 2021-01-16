@@ -149,7 +149,7 @@ export class UsersService {
     const username = this.getUsername()
     const token = this.getToken()
     if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
-    return this.http.post(`${this.server}/api/channel/messages`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
+    return this.http.post(`${this.server}/api/channels/messages`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
   
   addUserToChannel(usernameToAdd:string, groupName:string, channelName:string) {
@@ -163,7 +163,7 @@ export class UsersService {
     const username = this.getUsername()
     const token = this.getToken()
     if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
-    return this.http.post(`${this.server}/api/channel/create`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
+    return this.http.post(`${this.server}/api/channels/create`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
 
   removeChannel(groupName:string, channelName:string) {
