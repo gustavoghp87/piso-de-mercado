@@ -25,6 +25,7 @@ export type typeMessage = {
     profileImage: string
     isFile: boolean
     timestamp: number
+    timeArg: string
 }
 
 export type typeProduct = {

@@ -25,4 +25,15 @@ export class ImageService {
     return this.http.post<any>(`${server}/api/users/upload-image`, fd)
   }
   
+  uploadChannels(fd:any) {
+    console.log('uploading service\n', fd)
+    this.usersService.verifyToken().subscribe(data => {
+      if (!data['success']){
+        console.log("Falló verificación de usuario para cargar imagen en servidor")  
+        return
+      }
+    })
+    return this.http.post<any>(`${server}/api/channels/upload-image`, fd)
+  }
+
 }

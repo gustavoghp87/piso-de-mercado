@@ -65,17 +65,6 @@ export class NavbarComponent implements OnInit {
     this.store.dispatch(setUser({userData}))
   }
 
-  logOut() {
-    this.userService.logout().subscribe(
-      data => {
-        if (data['success']) console.log("Cerrado en base de datos")
-        else alert("Algo falló")
-      }
-    )
-    localStorage.clear()
-    this.setUserLocal(null)
-  }
-
   doSomethingOnWindowScroll(event) {
     this.sc = event.target.scrollingElement.scrollTop
     if (this.sc>this.scOld) {
@@ -91,12 +80,9 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-
-  // MODAL
   openWindowCustomClass(content) {
     this.modalService.open(content, { windowClass: 'dark-modal' })
   }
-
 
   login() {
     if (!this.username) {alert("Falta el username"); return}
@@ -111,7 +97,18 @@ export class NavbarComponent implements OnInit {
       } else alert('Datos inválidos')
     })
   }
-  
+
+  logOut() {
+    this.userService.logout().subscribe(
+      data => {
+        if (data['success']) console.log("Cerrado en base de datos")
+        else alert("Algo falló")
+      }
+    )
+    window.scrollTo(0, 0)
+    localStorage.clear()
+    this.setUserLocal(null)
+  }
   
   createUser() {
     if(!this.newUserUsername) {alert('Falta el username'); return}

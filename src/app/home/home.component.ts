@@ -15,16 +15,16 @@ export class HomeComponent implements OnInit {
   
   mobile:boolean = mobile
 
-  tickets: string[] = [
-  'BCBA:AGRO', 'BCBA:AUSO', 'BCBA:BHIP', 'BCBA:BOLT', 'BCBA:BPAT', 'CBA:BRIO',
-  'BCBA:BRIO6', 'BCBA:CADO', 'BCBA:CAPX', 'BCBA:CARC', 'BCBA:CECO2',
-  'BCBA:CELU', 'BCBA:CEPU', 'BCBA:CGPA2', 'BCBA:CTIO', 'BCBA:DGCU2', 'BCBA:DOME',
-  'BCBA:DYCA', 'BCBA:EDLH', 'BCBA:EMDE', 'BCBA:FERR', 'BCBA:FIPL',
-  'BCBA:GAMI', 'BCBA:GARO', 'BCBA:GBAN', 'BCBA:GCLA', 'BCBA:GRIM', 'BCBA:HAVA',
-  'BCBA:INAG', 'BCBA:INTR', 'BCBA:INVJ', 'BCBA:IRCP', 'BCBA:IRSA', 'BCBA:LEDE',
-  'BCBA:LONG', 'BCBA:MERA', 'BCBA:METR', 'BCBA:MOLA', 'BCBA:MOLI', 'BCBA:MORI',
-  'BCBA:MTR', 'BCBA:OEST', 'BCBA:PATA', 'BCBA:PGR', 'BCBA:POLL', 'BCBA:RICH',
-  'BCBA:RIGO', 'BCBA:ROSE']
+  // tickets: string[] = [
+  // 'BCBA:AGRO', 'BCBA:AUSO', 'BCBA:BHIP', 'BCBA:BOLT', 'BCBA:BPAT', 'CBA:BRIO',
+  // 'BCBA:BRIO6', 'BCBA:CADO', 'BCBA:CAPX', 'BCBA:CARC', 'BCBA:CECO2',
+  // 'BCBA:CELU', 'BCBA:CEPU', 'BCBA:CGPA2', 'BCBA:CTIO', 'BCBA:DGCU2', 'BCBA:DOME',
+  // 'BCBA:DYCA', 'BCBA:EDLH', 'BCBA:EMDE', 'BCBA:FERR', 'BCBA:FIPL',
+  // 'BCBA:GAMI', 'BCBA:GARO', 'BCBA:GBAN', 'BCBA:GCLA', 'BCBA:GRIM', 'BCBA:HAVA',
+  // 'BCBA:INAG', 'BCBA:INTR', 'BCBA:INVJ', 'BCBA:IRCP', 'BCBA:IRSA', 'BCBA:LEDE',
+  // 'BCBA:LONG', 'BCBA:MERA', 'BCBA:METR', 'BCBA:MOLA', 'BCBA:MOLI', 'BCBA:MORI',
+  // 'BCBA:MTR', 'BCBA:OEST', 'BCBA:PATA', 'BCBA:PGR', 'BCBA:POLL', 'BCBA:RICH',
+  // 'BCBA:RIGO', 'BCBA:ROSE']
 
   ticketsObj: typeProduct[]
 
@@ -36,22 +36,38 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.getPanel()
+    this.checkActive()
+  }
+
+  checkActive = () => {
+    console.log("Check active")
+    setTimeout(() => {
+        console.log("Check active 2")
+        const timestampNow = Date.now()
+        //const dateNow = new Date(timestampNow).toLocaleString("es-AR", {timeZone: "America/Buenos_Aires"})
+        const timestampToLocale = timestampNow - 1000 * 60 * 60 *3
+        const dateNowString = new Date(timestampToLocale).toLocaleString("es-AR", {timeZone: "UTC"})
+        const activeDay = (new Date(timestampToLocale)).getDay()>0 && (new Date(timestampToLocale)).getDay()<6 ? true : false
+        const localeHour = parseInt(dateNowString.split(' ')[1])
+        const activeHour = localeHour>10 && localeHour<17 ? true : false
+        const nowActive = activeDay && activeHour ? true : false
+        console.log(`\nHoy es ${dateNowString}`)
+        console.log("Hoy es activo:", activeDay, ", hora activa:", activeHour)
+        console.log("Conclusión", nowActive)
+        if (nowActive) this.getPanel()
+        this.checkActive()
+    }, 1000*60)
   }
   
   getPanel() {
-    console.log("TIME")
-    this.socketPanelService.retrieveData(this.tickets).subscribe((data:any) => {
-      console.log(data)
-      this.ticketsObj = data
-      this.ticketsObj.forEach((ticket:typeProduct) => {
-        ticket.last_update = ticket.last_update.replace('T', ' ').split('.')[0] + ' GT'
-      })
-      // this.MELI.last_update = this.MELI.last_update.replace('T', ' ').split('.')[0] + ' GT'
-
-      // setTimeout(() => {
-      //   this.getPanel()
-      // }, 120000)
-    
+    this.socketPanelService.retrieveData().subscribe((data:any) => {
+      if (data['success']) {
+        // console.log(data)
+        this.ticketsObj = data['ticketsObj']
+        this.ticketsObj.forEach((ticket:typeProduct) => {
+          ticket.last_update = ticket.last_update.replace('T', ' ').split('.')[0] + ' GT'
+        })
+      }
     })
   }
 

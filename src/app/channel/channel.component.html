@@ -9,15 +9,7 @@
 
         <h1 class="title is-1"> Canal: {{channelName}} </h1>
 
-        <button (click)="closeChat()"> Cerrar Canal </button>
-
-        <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-            <div>
-                <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-                <button (click)="addUserToChannel()"> Agregar usuario </button>
-            </div>
-        </div>    
-        
+        <button (click)="closeChat()"> Cerrar Canal </button>        
         
         <div class="hero-body">
             <div class="notification" *ngIf="messages">
@@ -29,7 +21,7 @@
                             <img src="{{server}}/images/{{message.profileImage}}"
                              width="20px" style="margin-right:10px;" alt="">
 
-                            {{message.timestamp}} {{message.username}}:
+                            {{message.timeArg}} {{message.username}}:
                             
                             <img src="{{server}}/images/{{message.message}}" alt="">
                         </div>
@@ -38,11 +30,11 @@
                          *ngIf="message.username!=='SYSTEM' && message.isFile===false">
                             <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">
 
-                            {{message.timestamp}} - {{message.username}}: {{message.message}}
+                            {{message.timeArg}} hs - <span style="font-weight:bolder;">{{message.username}}:</span> {{message.message}}
                         </div>
 
                         <!-- <div class="message-body" *ngIf="message.username==='SYSTEM'">
-                            {{message.username}}: {{message.message}}
+                            {{message.timeArg}} {{message.username}}: {{message.message}}
                         </div> -->
 
                     </article>
@@ -57,11 +49,18 @@
                 <li *ngFor="let user of listOfUsers">
                     User: {{user}}
                     <button (click)="removeUser(user)"
-                     *nfIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                     *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
                         Echar usuario
                     </button>
                 </li>
             </ul>
+        </div>
+
+        <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+            <div>
+                <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
+                <button (click)="addUserToChannel()"> Agregar usuario </button>
+            </div>
         </div>
 
         <br/>

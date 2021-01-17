@@ -49,7 +49,8 @@ export class SocketService {
       message,
       profileImage,
       isFile,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      timeArg: new Date(Date.now()-1000*60*60*3).toLocaleString("es-AR", {timeZone: "UTC"})
     }
     this.socket.emit('new-message', content)
   }

@@ -14,11 +14,18 @@ export class SocketPanelService {
   constructor(private http:HttpClient) {
     //this.MELI = response.lp
   }
+
+  genHeadersJSON() {return {headers: new HttpHeaders({'Content-Type':'application/json'})}}
+
+  getUsername() {return localStorage.getItem('username')}
+
+  getToken() {return localStorage.getItem('token')}
   
-  retrieveData(tickets:string[]) {
-    //const response = this.http.get(this.server + '/tv', {params: {tiket: 'MELI'}})
-    console.log(tickets)
-    return this.http.post(`${this.server}/tv`, tickets)
+  retrieveData() {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/panel`, JSON.stringify({username, token}), this.genHeadersJSON())
     // return this.http.get(this.server + '/tv', {params: {ticket: 'MELI'}})
   }
 

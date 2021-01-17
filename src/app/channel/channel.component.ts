@@ -63,32 +63,35 @@ export class ChannelComponent implements OnInit {
         this.profileImage = user.profileImage
         this.showGroup = user.showGroup
         this.channelName = user.currentChannel
+        this.getDataAllUsers()
         if (this.channelName)
          this.usersService.getChannelMessages(this.groupName, this.channelName).subscribe(
           data => {
             this.messages = data['q']
+            this.socketService.joinChannel()
+            this.getMessages()
           },
           err => console.error(err)
         )
       }
     })
-    this.socketService.joinChannel()
-    this.getMessages()
   }
 
   getMessages() {
     this.socketService.getMessages().subscribe((message:typeMessage) => {
       this.messages.push(message)
-      console.log("MESSSSS", message)
+      //console.log("MESSSSS", message)
     })
   }
 
   updateAllUsersList() {
     this.listOfUsers = []
+    if (!this.allUsersData) return
     for (let user of this.allUsersData) {
       for (let group of user.groups) {
         if (group.name===this.groupName && group.channels.includes(this.channelName)) {
           this.listOfUsers.push(user.username)
+          //console.log("LISTA DE USUARIOSNAME", this.listOfUsers)
         }
       }
     }
@@ -115,11 +118,11 @@ export class ChannelComponent implements OnInit {
     if (this.listOfUsers.includes(this.newUsername)) {
       alert(`User ${this.newUsername} is already in the channel`); return
     }
-    console.log(`Adding ${this.newUsername} to channel ${this.channelName}`)
+    //console.log(`Adding ${this.newUsername} to channel ${this.channelName}`)
     this.usersService.addUserToChannel(this.newUsername, this.groupName, this.channelName).subscribe(
       data => {
         if (data['success']) {
-          console.log('Received data from adding user to channel')
+          //console.log('Received data from adding user to channel')
           this.allUsersData = data['users']
           this.updateAllUsersList()
         }
@@ -141,7 +144,7 @@ export class ChannelComponent implements OnInit {
     if (this.channelName==='general') {
       alert('Cannot remove users from the default channel: general'); return
     }
-    console.log(`Removing user ${usernameToRemove}`)
+    //console.log(`Removing user ${usernameToRemove}`)
     this.usersService.removeUserFromChannel(usernameToRemove, this.groupName, this.channelName).subscribe(
       data => {
         if (data['success']) {
@@ -154,7 +157,7 @@ export class ChannelComponent implements OnInit {
   }
 
   sendMessage() {
-    console.log(`User typed: ${this.message}`)
+    //console.log(`User typed: ${this.message}`)
     this.socketService.sendMessage(
       this.username, this.groupName, this.channelName,
       this.message, this.profileImage, this.isFile
@@ -164,21 +167,22 @@ export class ChannelComponent implements OnInit {
   }
 
   uploadSelected(event) {
-    console.log('Selected image!')
+    //console.log('Selected image!', event)
     this.selectedFile = event.target.files[0]
   }
 
   uploadImageToServer() {
+    if (!this.selectedFile) {alert('No image selected'); return}
     const fd = new FormData()
-    const name = Date.now().toString()
-    this.selectedFile.name = name
     fd.append('image', this.selectedFile, this.selectedFile.name)
-    console.log("File name:", name)
-    this.imgService.upload(fd).subscribe(
+    this.imgService.uploadChannels(fd).subscribe(
       data => {
-        this.message = name
-        this.isFile = true
-        this.sendMessage()
+        if (data['success']) {
+          //console.log(data)
+          this.message = data['data'].filename
+          this.isFile = true
+          this.sendMessage()
+        } else alert("Algo falló. Imágenes .jpg, .png o .jpeg de hasta 5 MB.")
       },
       err => console.error(err)
     )

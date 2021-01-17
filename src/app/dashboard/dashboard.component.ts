@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   channels:string[]
   title:string = 'Dashboard'
   userData:typeUser
-  allGroups
+  allGroups:string[]
   allUsers:typeUser[]              // for admins
   listOfUsers:string[]            // for admins
   createGroupName:string = ''
@@ -79,20 +79,19 @@ export class DashboardComponent implements OnInit {
             token: this.token
           }
           this.store.dispatch(setUser({userData:this.userData}))
-        }
-        else alert("Falló actualización de datos de usuario")
+        } else alert("Falló actualización de datos de usuario")
       },
       err => console.error(err)
     )
   }
   
   uploadSelected(event:any) {
-    console.log('Selected image!', event.target.files[0])
+    //console.log('Selected image!', event.target.files[0])
     this.selectedFile = event.target.files[0]
   }
 
   uploadImageToServer() {
-    console.log('Uploading image!', this.selectedFile)
+    //console.log('Uploading image!', this.selectedFile)
     if (!this.selectedFile) {alert('No image selected'); return}
     const fd = new FormData()
     fd.append('image', this.selectedFile, this.selectedFile.name)
@@ -140,7 +139,7 @@ export class DashboardComponent implements OnInit {
     }
     this.store.dispatch(setUser({userData:this.userData}))
 
-    console.log("Grupo pasado:", "\n", group)
+    //console.log("Grupo pasado:", "\n", group)
     if (this.groupAdmin || this.superAdmin) {
       console.log(`ADMIN Viewing group ${group}`)
       localStorage.setItem('currentGroup', group)
@@ -156,8 +155,8 @@ export class DashboardComponent implements OnInit {
     if (this.superAdmin || this.groupAdmin) {
       this.usersService.getGroups().subscribe(
         data => {
-          console.log(data)
-          this.allGroups = data
+          // console.log("Llegó getGroups()")
+          this.allGroups = data['groups']
         },
         err => console.error(err)
       )
@@ -171,9 +170,10 @@ export class DashboardComponent implements OnInit {
 
     this.usersService.createGroup(this.createGroupName).subscribe(
       data => {
-        console.log('POST call successful. Sent ' + data['groups'])
-        this.allGroups = data['groups']
-        this.updateUserGroupsRender()
+        if (data['success']) {
+          this.allGroups = data['allGroups']
+          this.updateUserGroupsRender()
+        }
       },
       err => console.log('Error in POST call. Error: ' + err),
       () => this.createGroupName = ''
@@ -184,10 +184,11 @@ export class DashboardComponent implements OnInit {
     if (groupToRemove==='newbies' || groupToRemove==='general') {alert('Cannot remove these default groups from the system'); return}
     console.log(`Removing group ${groupToRemove} from the system.`)
     this.usersService.removeGroup(groupToRemove).subscribe(
-      async data => {
-        console.log("Received data: " + data['allGroups'])
-        this.allGroups = data['allGroups']
-        this.updateUserGroupsRender()
+      data => {
+        if (data['success']) {
+          this.allGroups = data['allGroups']
+          this.updateUserGroupsRender()
+        }
       },
       err => console.error(err)
     )
@@ -218,11 +219,11 @@ export class DashboardComponent implements OnInit {
     if (this.superAdmin) {
       this.usersService.getDataAllUsers().subscribe(
         data => {
-          console.log('Received all user data from server', data['users'])
+          // console.log('Received all user data from server', data['users'])
           this.allUsers = data['users']
           this.listOfUsers = []
           this.allUsers.forEach(user => {this.listOfUsers.push(user.username)})
-          console.log("LIST OF USERS:", this.listOfUsers)
+          // console.log("LIST OF USERS:", this.listOfUsers)
         },
         err => console.error(err)
       )
@@ -267,7 +268,7 @@ export class DashboardComponent implements OnInit {
     }
     console.log(`Making user ${usernameMakeAdmin} super admin`)
     this.usersService.makeUserSuperAdmin(usernameMakeAdmin).subscribe(
-      data => {console.log('Received new data for making user an admin', data)},
+      data => {if (data['success']) alert(`Usuario ${usernameMakeAdmin} ahora es ADMIN y GroupAdmin`)},
       err => console.error(err)
     )
   }

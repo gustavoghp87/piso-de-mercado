@@ -22,10 +22,10 @@
                     <li *ngFor="let channel of userChannels">
                         Canal: {{channel}}
                         <button (click)="viewChannel(channel)"> ENTRAR </button>
-                        <button (click)="removeChannel(channel)"
+                        <!-- <button (click)="removeChannel(channel)"
                          *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
                             Eliminar Canal
-                        </button>
+                        </button> -->
                     </li>
                 </ul>
 

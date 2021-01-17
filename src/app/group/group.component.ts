@@ -80,8 +80,7 @@ export class GroupComponent implements OnInit {
           console.log('Received data for all channels', data)
           this.allChannels = data['channels']
         },
-        err => console.error(err),
-        () => console.log('Admin has finished fetching all channels')
+        err => console.error(err)
       )
     }
   }
