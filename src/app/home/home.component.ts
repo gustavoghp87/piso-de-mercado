@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
       // this.MELI.last_update = this.MELI.last_update.replace('T', ' ').split('.')[0] + ' GT'
 
       // setTimeout(() => {
-        this.getPanel()
+      //   this.getPanel()
       // }, 120000)
     
     })

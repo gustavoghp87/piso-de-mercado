@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
   groups
   channels:string[]
   title:string = 'Dashboard'
-  userData
+  userData:typeUser
   allGroups
   allUsers:typeUser[]              // for admins
   listOfUsers:string[]            // for admins
@@ -69,7 +69,7 @@ export class DashboardComponent implements OnInit {
       data => {
         if (data['success']) {
           console.log("Datos actualizados")
-          const userData:typeUser = {
+          this.userData = {
             username: this.username,
             email: this.email,
             superAdmin: this.superAdmin,
@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
             groups: this.groups,
             token: this.token
           }
-          this.store.dispatch(setUser({userData}))
+          this.store.dispatch(setUser({userData:this.userData}))
         }
         else alert("Falló actualización de datos de usuario")
       },
@@ -106,35 +106,22 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  // getUser() {
-  //   this.usersService.getUser().subscribe(
-  //     data => {
-  //       console.log("llegó getuser()");
-        
-  //       if (data['success']) {
-  //         this.userData = data['userData']
-  //         // update data (email, groups, channels, admin privileges)
-  //         this.email = this.userData.email
-  //         this.groups = this.userData.groups
-  //         this.groupAdmin = this.userData.groupAdmin
-  //         this.superAdmin = this.userData.superAdmin
-  //         this.getGroups()
-  //         this.getDataAllUsers()
-  //         console.log('User retrieved', this.userData)
-
-  //       } else console.log("Error en getUser()")
-  //     },
-  //     err => console.error(err)
-  //   )
-  // }
-
   updateEmail() {
     this.usersService.updateEmail(this.emailField).subscribe(
       data => {
         data = JSON.stringify(data)
-        console.log('POST call successful. Sent ' + data)
         this.email = this.emailField
         this.emailField = ''
+        this.userData = {
+          username: this.username,
+          email: this.email,
+          superAdmin: this.superAdmin,
+          groupAdmin: this.groupAdmin,
+          profileImage: this.profileImage,
+          groups: this.groups,
+          token: this.token
+        }
+        this.store.dispatch(setUser({userData:this.userData}))
       },
       err => console.log('Error in POST call. Error: ' + err)
     )

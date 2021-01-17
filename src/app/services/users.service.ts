@@ -152,27 +152,27 @@ export class UsersService {
     return this.http.post(`${this.server}/api/channels/messages`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
   
-  addUserToChannel(usernameToAdd:string, groupName:string, channelName:string) {
-    const username = this.getUsername()
-    const token = this.getToken()
-    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
-    return this.http.post(`${this.server}/api/channels/add-user`, JSON.stringify({username, token, usernameToAdd, groupName, channelName}), this.genHeadersJSON())
-  }
-
   createChannel(groupName:string, channelName:string) {
     const username = this.getUsername()
     const token = this.getToken()
     if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
     return this.http.post(`${this.server}/api/channels/create`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
-
+  
   removeChannel(groupName:string, channelName:string) {
     const username = this.getUsername()
     const token = this.getToken()
     if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
     return this.http.post(`${this.server}/api/channels/remove-channel`, JSON.stringify({username, token, groupName, channelName}), this.genHeadersJSON())
   }
-
+  
+  addUserToChannel(usernameToAdd:string, groupName:string, channelName:string) {
+    const username = this.getUsername()
+    const token = this.getToken()
+    if (!username || !token) {console.log(`Falta ${username} ${token}`); return}
+    return this.http.post(`${this.server}/api/channels/add-user`, JSON.stringify({username, token, usernameToAdd, groupName, channelName}), this.genHeadersJSON())
+  }
+  
   removeUserFromChannel(usernameToRemove:string, groupName:string, channelName:string) {
     const username = this.getUsername()
     const token = this.getToken()

@@ -9,6 +9,7 @@
             <div class="box">
                 <h1 class="title is-1"> Grupo: {{(user$ | async).showGroup}} </h1>
                 <h2 class="subtitle is-5"> Usuario: {{(user$ | async).username}} </h2>
+                <button class="btn btn-danger" (click)="closeGroup()"> Cerrar Grupo </button>
             </div>
                     
 
@@ -19,7 +20,12 @@
                 <ul *ngIf="userChannels && userChannels.length">
                     <h4> Canales en los que estás: </h4>
                     <li *ngFor="let channel of userChannels">
-                        Canal: {{channel}} <button (click)="viewChannel(channel)"> ENTRAR </button>
+                        Canal: {{channel}}
+                        <button (click)="viewChannel(channel)"> ENTRAR </button>
+                        <button (click)="removeChannel(channel)"
+                         *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                            Eliminar Canal
+                        </button>
                     </li>
                 </ul>
 
@@ -27,7 +33,6 @@
                     <h4> ADMIN: todos los canales </h4>
                     <li *ngFor="let channel of allChannels">
                         Canal: {{channel}}
-                        <button (click)="viewChannel(channel)"> ENTRAR </button>
                         <button (click)="removeChannel(channel)"> Eliminar Canal </button>
                     </li>
                 </ul>

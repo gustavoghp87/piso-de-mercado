@@ -9,6 +9,7 @@ export type typeUser = {
     groups: typeGroup[]
     token: string
     showGroup?: string
+    currentChannel?:string
 }
 
 export type typeGroup = {
@@ -16,6 +17,15 @@ export type typeGroup = {
     channels: string[]
 }
 
+export type typeMessage = {
+    username: string
+    groupName: string
+    channelName: string
+    message: string
+    profileImage: string
+    isFile: boolean
+    timestamp: number
+}
 
 export type typeProduct = {
     last_retrieved: string

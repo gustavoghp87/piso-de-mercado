@@ -30,6 +30,7 @@ export class GroupComponent implements OnInit {
   allUsers:string[]
   allUserData:typeUser[]       // para admins
   newUsername:string = ''
+  mobile=mobile
   user$:Observable<typeUser>
 
   constructor(
@@ -52,10 +53,9 @@ export class GroupComponent implements OnInit {
         this.profileImage = user.profileImage
         this.showGroup = user.showGroup
         if (user && user.groups) user.groups.forEach((group:typeGroup) => {
-          console.log(`Estamos en ${this.groupName} vs. ${group.name}`)
           if (group.name===this.groupName) this.userChannels = group.channels
         })
-        console.log("LISTO inicio group.component", this.groupName, this.groupAdmin, this.superAdmin, this.userChannels, this.email)
+        //console.log("LISTO inicio group.component", this.groupName, this.groupAdmin, this.superAdmin, this.userChannels, this.email)
         this.getGroupUsers()
         this.getChannelsForAdmins()
         this.getDataAllUsers()
@@ -99,13 +99,22 @@ export class GroupComponent implements OnInit {
   }
 
   viewChannel(channel:string) {
-    console.log(`Viewing channel ${channel}`)
-
     if (localStorage.getItem("currentChannel")) {
       //this.socketService.leaveChannel()
     }
-
-    localStorage.setItem('currentChannel', channel)
+    console.log("Abriendo canal", channel)
+    this.store.dispatch(setUser({userData: {
+      username: this.username,
+      email: this.email,
+      superAdmin: this.superAdmin,
+      groupAdmin: this.groupAdmin,
+      profileImage: this.profileImage,
+      groups: this.groups,
+      token: this.token,
+      showGroup: this.showGroup,
+      currentChannel: channel
+    }}))
+    window.scrollTo(0,0)
     // this.router.navigateByUrl('/channel')
   }
 
@@ -195,6 +204,20 @@ export class GroupComponent implements OnInit {
       err => console.error,
       () => console.log(`Completed adding user ${this.newUsername} to group`)
     )
+  }
+
+  closeGroup() {
+    this.store.dispatch(setUser({userData: {
+      username: this.username,
+      email: this.email,
+      superAdmin: this.superAdmin,
+      groupAdmin: this.groupAdmin,
+      profileImage: this.profileImage,
+      groups: this.groups,
+      token: this.token,
+      showGroup: '',
+      currentChannel: ''
+    }}))
   }
 
 }
