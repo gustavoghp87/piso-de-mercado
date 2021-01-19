@@ -52,6 +52,8 @@ export class DashboardComponent implements OnInit {
     this.user$ = this.store.pipe(select('user'))
     this.user$.subscribe((user:typeUser) => {
       if (user) {
+        this.username = user.username
+        this.token = user.token
         this.groupAdmin = user.groupAdmin
         this.superAdmin = user.superAdmin
         this.groups = user.groups
@@ -136,7 +138,7 @@ export class DashboardComponent implements OnInit {
       groups: this.groups,
       token: this.token,
       showGroup: group,
-    }
+    }    
     this.store.dispatch(setUser({userData:this.userData}))
 
     //console.log("Grupo pasado:", "\n", group)
@@ -201,15 +203,7 @@ export class DashboardComponent implements OnInit {
         this.groups = this.userData.groups
         console.log("Nuevo grupos,", this.groups)
         
-        this.store.dispatch(setUser({userData: {
-          email: localStorage.getItem('email'),
-          groupAdmin: localStorage.getItem('groupAdmin')==='true' ? true : false,
-          groups: this.userData.groups,
-          profileImage: localStorage.getItem('profileImage'),
-          superAdmin: localStorage.getItem('profileImage') ? true : false,
-          token: localStorage.getItem('profileImage'),
-          username: localStorage.getItem('profileImage')
-        }}))
+        this.store.dispatch(setUser({userData:this.userData}))
       },
       err => console.error(err)
     )

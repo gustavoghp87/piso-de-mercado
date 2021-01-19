@@ -148,6 +148,23 @@ export class GroupComponent implements OnInit {
     )
   }
 
+  addUserToGroup() {
+    if (this.newUsername) {alert('New user\'s username cannot be empty'); return}
+    if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot add users in the default channels: newbies and general'); return}
+    if(this.allUsers.includes(this.newUsername)) {alert(`User ${this.newUsername} is already in the group`); return}
+    console.log(`Adding new user ${this.newUsername} to group`)
+    this.usersService.addUserToGroup(this.newUsername, this.groupName).subscribe(
+      data => {
+        if (data['success']) {
+          this.allUsers = data['allUsers']
+          console.log('Received new list of users', this.allUsers)
+          this.updateAllUsersList()
+        }
+      },
+      err => console.error(err)
+    )
+  }
+
   removeUser(userToRemove:string) {
     if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot remove users in this default channel'); return}
     if (userToRemove===this.username) {alert('Cannot remove yourself'); return}
@@ -156,6 +173,7 @@ export class GroupComponent implements OnInit {
         if (data['success']) {
           this.allUsers = data['allUsers']
           console.log('Received new list of users', this.allUsers)
+          this.updateAllUsersList()
         } else if (data['isAdmin']) alert("No se puede eliminar a los Admins")
       },
       err => console.error(err)
@@ -187,22 +205,6 @@ export class GroupComponent implements OnInit {
         }}))
       } else console.log("Falló actualización de datos x-22")
     })
-  }
-
-  addUserToGroup() {
-    if (this.newUsername) {alert('New user\'s username cannot be empty'); return}
-    if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot add users in the default channels: newbies and general'); return}
-    if(this.allUsers.includes(this.newUsername)) {alert(`User ${this.newUsername} is already in the group`); return}
-    console.log(`Adding new user ${this.newUsername} to group`)
-    this.usersService.addUserToGroup(this.newUsername, this.groupName).subscribe(
-      data => {
-        console.log('Received data from adding user to group', data)
-        this.allUserData = data['users']
-        this.updateAllUsersList()
-      },
-      err => console.error,
-      () => console.log(`Completed adding user ${this.newUsername} to group`)
-    )
   }
 
   closeGroup() {

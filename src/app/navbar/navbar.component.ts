@@ -22,17 +22,13 @@ export class NavbarComponent implements OnInit {
   showBottomNavbar = true
   sc = 0
   scOld = 0
-
   username:string = ""
   password:string = ""
   token:string = ""
-
   user$:Observable<typeUser>
-
   newUserUsername = ""
   newUserPassword = ""
   newUserEmail = ""
-  
   
   constructor(
     private modalService:NgbModal,
@@ -44,26 +40,23 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.user$ = this.store.pipe(select('user'))
     if (localStorage.getItem('username') && localStorage.getItem('token')) {
-      console.log("Procediendo a loguear en autom")
+      // console.log("Procediendo a loguear en autom")
       this.username = localStorage.getItem('username')
+      this.token = localStorage.getItem('token')
       this.userService.getUser().subscribe(
         data => {
           console.log("Data de getUser", data)
           if (data['success']) {
-            console.log("Éxito en getUser automático")
+            // console.log("Éxito en getUser automático")
             this.setUserLocal(data['userData'])
-          } else console.log("No hubo éxito en getUser automático")
+          } else {
+            //console.log("No hubo éxito en getUser automático"); localStorage.clear()
+          }
         }
       )
     }
   }
 
-
-  setUserLocal(userData:typeUser|null) {
-    if (userData) userData.showGroup = ''
-    console.log("Estableciendo user,", userData)
-    this.store.dispatch(setUser({userData}))
-  }
 
   doSomethingOnWindowScroll(event) {
     this.sc = event.target.scrollingElement.scrollTop
@@ -73,7 +66,7 @@ export class NavbarComponent implements OnInit {
     } else if (this.sc==0) {
       this.showBottomNavbar = true
       this.scOld = this.sc
-      console.log("mostrando", this.showBottomNavbar, this.mobile)
+      // console.log("mostrando", this.showBottomNavbar, this.mobile)
     } else {
       this.showBottomNavbar = true
       this.scOld = this.sc
@@ -87,15 +80,19 @@ export class NavbarComponent implements OnInit {
   login() {
     if (!this.username) {alert("Falta el username"); return}
     if (!this.password) {alert("Falta el password"); return}
-    
     this.userService.login(this.username, this.password).subscribe(data => {
       if (data['success']) {
-        localStorage.setItem("username", this.username)
-        localStorage.setItem("token", data['newToken'])
         this.modalService.dismissAll()
+        this.token = data['newToken']
         this.setUserLocal(data['user'])
       } else alert('Datos inválidos')
     })
+  }
+
+  setUserLocal(userData:typeUser|null) {
+    if (userData) userData.showGroup = ''
+    // console.log("Estableciendo user,", userData, "y", this.token)
+    this.store.dispatch(setUser({userData}))
   }
 
   logOut() {
@@ -114,6 +111,8 @@ export class NavbarComponent implements OnInit {
     if(!this.newUserUsername) {alert('Falta el username'); return}
     if(!this.newUserPassword) {alert('Falta el password'); return}
     if(this.newUserPassword.length<10) {alert('Mínimo 10 caracteres para que no molesten los navegadores con que el sitio no es seguro'); return}
+    this.newUserUsername = this.newUserUsername.toLowerCase()
+    if (this.newUserUsername.includes(' ')) this.newUserUsername = this.newUserUsername.replace(' ', '')
     this.userService.createUser(
       this.newUserUsername,
       this.newUserPassword,
@@ -121,9 +120,9 @@ export class NavbarComponent implements OnInit {
     ).subscribe(
       data => {
         if (data['success']) {
-          console.log("Usuario creado,", data)
+          // console.log("Usuario creado,", data)
           alert("Usuario creado")
-          this.username = this.newUserEmail
+          this.username = this.newUserUsername
           this.password = this.newUserPassword
           this.login()
         } else if (data['exists']) alert("Ya existe usuario con ese username")

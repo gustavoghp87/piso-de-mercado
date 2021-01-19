@@ -40,9 +40,7 @@ export class HomeComponent implements OnInit {
   }
 
   checkActive = () => {
-    console.log("Check active")
     setTimeout(() => {
-        console.log("Check active 2")
         const timestampNow = Date.now()
         //const dateNow = new Date(timestampNow).toLocaleString("es-AR", {timeZone: "America/Buenos_Aires"})
         const timestampToLocale = timestampNow - 1000 * 60 * 60 *3
@@ -51,9 +49,7 @@ export class HomeComponent implements OnInit {
         const localeHour = parseInt(dateNowString.split(' ')[1])
         const activeHour = localeHour>10 && localeHour<17 ? true : false
         const nowActive = activeDay && activeHour ? true : false
-        console.log(`\nHoy es ${dateNowString}`)
         console.log("Hoy es activo:", activeDay, ", hora activa:", activeHour)
-        console.log("Conclusión", nowActive)
         if (nowActive) this.getPanel()
         this.checkActive()
     }, 1000*60)

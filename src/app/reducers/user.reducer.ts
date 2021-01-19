@@ -8,8 +8,22 @@ export let user:typeUser
 const _setUserReducer = createReducer(
     user,
     on(setUser, (state:typeUser, action) => {
-        if (!action.userData) return null
-        console.log("ESTABLECIENDO EL USUARIO", action.userData)
+        if (!action.userData) {
+            // console.log("BORRANDO EL USUARIO", action.userData)
+            localStorage.setItem('username', '')
+            localStorage.setItem('token', '')
+            localStorage.setItem('groups', '')
+            localStorage.setItem('email', '')
+            localStorage.setItem('superAdmin', '')
+            localStorage.setItem('groupAdmin', '')
+            localStorage.setItem('profileImage', '')
+            localStorage.setItem('showGroup', '')
+            localStorage.setItem('currentChannel', '')
+            return null
+        }
+        // console.log("ESTABLECIENDO EL USUARIO", action.userData)
+        localStorage.setItem('username', action.userData.username)
+        localStorage.setItem('token', action.userData.token)
         localStorage.setItem('groups', JSON.stringify({groups:action.userData.groups}))
         localStorage.setItem('email', action.userData.email)
         localStorage.setItem('superAdmin', action.userData.superAdmin.toString())
@@ -17,6 +31,7 @@ const _setUserReducer = createReducer(
         localStorage.setItem('profileImage', action.userData.profileImage)
         if (action.userData.showGroup) localStorage.setItem('showGroup', action.userData.showGroup)
         if (action.userData.currentChannel) localStorage.setItem('currentChannel', action.userData.currentChannel)
+        //console.log("Storage:", localStorage.getItem("username"))
         return action.userData
     })
 )
