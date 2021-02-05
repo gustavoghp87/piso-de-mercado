@@ -15,10 +15,15 @@
 
       <ul *ngIf="(user$ | async).groups && (!(user$ | async).isGroupAdmin && !(user$ | async).isSuperAdmin)">
           <h3> Grupos en los que estás: </h3>
-          <li *ngFor="let group of (user$ | async).groups">
-            Grupo: {{group.name}}
-            <button (click)="viewGroup(group.name)" style="margin-bottom:12px;"> Entrar al Grupo </button>
-          </li>
+          
+          <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;">
+            <div *ngFor="let group of (user$ | async).groups">
+              <button class="btn m-1" (click)="viewGroup(group.name)" style="margin-bottom:12px; background-color:#00d1b2; color:white;">
+                Entrar al Grupo {{group.name}}
+              </button>
+            </div>
+          </div>
+
       </ul>
         
       <!-- <h2 *ngIf="isGroupAdmin || isSuperAdmin" class="title is-3"> Admin panel for groups: </h2> -->
@@ -26,9 +31,8 @@
         <h3> Todos los grupos: </h3>
         <li *ngFor="let group of allGroups">
           Grupo: {{group}}
-          <button (click)="viewGroup(group)" style="margin-bottom:12px;"> Entrar al Grupo </button>
           &nbsp;
-          <button (click)="removeGroup(group)"> Eliminar Grupo </button>
+          <button class="btn btn-danger m-1" (click)="removeGroup(group)"> Eliminar Grupo </button>
         </li>
       </ul> 
     </div>

@@ -85,6 +85,7 @@ export class NavbarComponent implements OnInit {
         this.modalService.dismissAll()
         this.token = data['newToken']
         this.setUserLocal(data['user'])
+        window.scrollTo(0, 0)
       } else alert('Datos inválidos')
     })
   }

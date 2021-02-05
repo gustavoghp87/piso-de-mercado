@@ -1,6 +1,6 @@
 
-<section style="margin-top:120px;" id="mercados">
-  <br/><br/>
+<section style="display:block; margin:auto; margin-top:120px; max-width:1500px;" id="mercados">
+  <br/> <br/>
   <p *ngIf="mobile" style="color:#00d1b2; padding:50px;"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis unde, alias veritatis corrupti ea accusamus quod asperiores excepturi, facere qui in consequuntur? Harum soluta ab totam quasi corrupti cum distinctio. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia, natus consectetur, ipsam temporibus dignissimos est accusantium quidem aut, error corporis deleniti odio incidunt soluta quod odit commodi in sed iusto! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt quo, ea soluta rem, quam voluptate sint repudiandae eum doloremque illo, corporis veniam consequuntur atque laborum qui reiciendis asperiores quas tempora! </p>
   <p *ngIf="!mobile" style="color:#00d1b2; padding-inline:25%;"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis unde, alias veritatis corrupti ea accusamus quod asperiores excepturi, facere qui in consequuntur? Harum soluta ab totam quasi corrupti cum distinctio. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia, natus consectetur, ipsam temporibus dignissimos est accusantium quidem aut, error corporis deleniti odio incidunt soluta quod odit commodi in sed iusto! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt quo, ea soluta rem, quam voluptate sint repudiandae eum doloremque illo, corporis veniam consequuntur atque laborum qui reiciendis asperiores quas tempora! </p>
 
@@ -13,6 +13,12 @@
     Cargando papeles...
   </div>
 
+  <hr/>
+
+  <br/> <br/>
+
+  <h1 style="color:white; text-align:center;"> PANEL GENERAL </h1>
+
   <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
     <div *ngFor="let ticket of ticketsObj" class="card" style="width:18rem; min-height:250px; margin:15px;">
       <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
@@ -20,16 +26,44 @@
         <h3 class="card-title" style="text-align:center;">
           {{ticket.pro_name}}
         </h3>
-        <h3 class="card-title" style="text-align:center;" *ngIf="ticket.bid">
+        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="ticket.bid">
           ${{ticket.bid}} vs ${{ticket.ask}}
         </h3>
-        <p class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </p>
-        <button class="btn btn-primary" style="display:block; margin:auto;" (click)="viewDetails(ticket.pro_name)"> Ver detalles </button>
+        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </h5>
+        <button class="btn" style="display:block; margin:auto; background-color:#00d1b2; color:white;" (click)="viewDetails(ticket.pro_name)"> Ver detalles </button>
         <h5 *ngIf="ticket.details" style="margin-top:20px; text-align:center;">
           <hr>
-          Última actualización: {{ticket.last_update}} <br/> <hr>
-          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/><hr>
-          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}}
+          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/> <hr>
+          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}} <br/> <hr>
+          Última actualización:<br/>{{ticket.last_update}} <br/> <hr>
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <br/> <br/>
+
+  <h1 style="color:white; text-align:center;"> PANEL LÍDER </h1>
+
+  <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
+    <div *ngFor="let ticket of ticketsLeadersObj" class="card" style="width:18rem; min-height:250px; margin:15px;">
+      <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+      <div class="card-body">
+        <h3 class="card-title" style="text-align:center;">
+          {{ticket.pro_name}}
+        </h3>
+        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="ticket.bid">
+          ${{ticket.bid}} vs ${{ticket.ask}}
+        </h3>
+        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </h5>
+        <button class="btn" style="display:block; margin:auto; background-color:#00d1b2; color:white;" (click)="viewDetails(ticket.pro_name)"> Ver detalles </button>
+        <h5 *ngIf="ticket.details" style="margin-top:20px; text-align:center;">
+          <hr>
+          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/> <hr>
+          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}} <br/> <hr>
+          Última actualización:<br/>{{ticket.last_update}} <br/> <hr>
         </h5>
       </div>
     </div>

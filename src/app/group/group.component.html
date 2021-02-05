@@ -21,7 +21,7 @@
                     <h4> Canales en los que estás: </h4>
                     <li *ngFor="let channel of userChannels">
                         Canal: {{channel}}
-                        <button (click)="viewChannel(channel)"> ENTRAR </button>
+                        <button class="btn" style="background-color:#00d1b2; color:white;" (click)="viewChannel(channel)"> ENTRAR </button>
                         <!-- <button (click)="removeChannel(channel)"
                          *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
                             Eliminar Canal
