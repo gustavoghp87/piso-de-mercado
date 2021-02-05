@@ -9,7 +9,7 @@
 
         <h1 class="title is-1"> Canal: {{channelName}} </h1>
 
-        <button (click)="closeChat()"> Cerrar Canal </button>        
+        <button class="btn btn-danger" (click)="closeChat()"> Cerrar Canal </button>        
         
         <div class="hero-body">
             <div class="notification" *ngIf="messages">
@@ -21,7 +21,7 @@
                             <img src="{{server}}/images/{{message.profileImage}}"
                              width="20px" style="margin-right:10px;" alt="">
 
-                            {{message.timeArg}} {{message.username}}:
+                            {{message.timeArg}} - <span style="font-weight:bolder;"> {{message.username}}: </span>
                             
                             <img src="{{server}}/images/{{message.message}}" alt="">
                         </div>
@@ -30,7 +30,7 @@
                          *ngIf="message.username!=='SYSTEM' && message.isFile===false">
                             <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">
 
-                            {{message.timeArg}} hs - <span style="font-weight:bolder;">{{message.username}}:</span> {{message.message}}
+                            {{message.timeArg}} hs - <span style="font-weight:bolder;"> {{message.username}}: </span> {{message.message}}
                         </div>
 
                         <!-- <div class="message-body" *ngIf="message.username==='SYSTEM'">

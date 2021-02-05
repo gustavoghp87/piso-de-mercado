@@ -27,6 +27,30 @@
     </div>
   </div>
 
+  <hr/>
+
+  <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
+    <div *ngFor="let ticket of ticketsLeadersObj" class="card" style="width:18rem; margin:15px;">
+      <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+      <div class="card-body">
+        <h3 class="card-title" style="text-align:center;">
+          {{ticket.pro_name}}
+        </h3>
+        <h3 class="card-title" style="text-align:center;" *ngIf="ticket.bid">
+          Bid ${{ticket.bid}} / Ask ${{ticket.ask}}
+        </h3>
+        <p class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </p>
+        <button class="btn btn-primary" style="display:block; margin:auto;" (click)="viewDetails(ticket.pro_name)"> Ver detalles </button>
+        <h5 *ngIf="ticket.details" style="margin-top:20px; text-align:center;">
+          <hr>
+          Última actualización: {{ticket.last_update}} <br/> <hr>
+          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/><hr>
+          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}}
+        </h5>
+      </div>
+    </div>
+  </div>
+
   <div class="animation" *ngIf="!ticketsObj&&!mobile" style="color:white; font-size:3rem;">
     Cargando papeles...
   </div>

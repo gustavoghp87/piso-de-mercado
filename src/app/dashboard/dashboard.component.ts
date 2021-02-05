@@ -157,8 +157,8 @@ export class DashboardComponent implements OnInit {
     if (this.superAdmin || this.groupAdmin) {
       this.usersService.getGroups().subscribe(
         data => {
-          // console.log("Llegó getGroups()")
-          this.allGroups = data['groups']
+          this.allGroups = data['allGroups']
+          console.log("Llegó getGroups(),", this.allGroups)
         },
         err => console.error(err)
       )
