@@ -13,7 +13,8 @@ import { FooterComponent } from './footer/footer.component'
 import { NavbarComponent } from './navbar/navbar.component'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { StoreModule } from '@ngrx/store'
-import { setUserReducer } from './reducers/user.reducer'
+import { setUserReducer } from './reducers/user.reducer';
+import { TicketCardComponent } from './home/ticket-card/ticket-card.component'
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { setUserReducer } from './reducers/user.reducer'
     GroupComponent,
     ChannelComponent,
     FooterComponent,
-    NavbarComponent
+    NavbarComponent,
+    TicketCardComponent
   ],
   imports: [
     BrowserModule,

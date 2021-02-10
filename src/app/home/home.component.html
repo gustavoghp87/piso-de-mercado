@@ -14,73 +14,44 @@
   </div>
 
   <hr/>
-
   <br/> <br/>
 
   <h1 style="color:white; text-align:center;"> PANEL GENERAL </h1>
 
   <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
-    <div *ngFor="let ticket of ticketsObj" class="card" style="width:18rem; min-height:250px; margin:15px;">
-      <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-      <div class="card-body">
-        <h3 class="card-title" style="text-align:center;">
-          {{ticket.pro_name}}
-        </h3>
-        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="ticket.bid">
-          ${{ticket.bid}} vs ${{ticket.ask}}
-        </h3>
-        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="!ticket.bid">
-          Sin operatoria
-        </h3>
-        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </h5>
-        <button class="btn btn-dark btn-block" style="display:block; margin:auto; color:white;" (click)="viewDetails(ticket.pro_name)">
-          Ver detalles
-        </button>
-        <h5 *ngIf="ticket.details" style="margin-top:20px; text-align:center;">
-          <hr>
-          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/> <hr>
-          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}} <br/> <hr>
-          Última actualización:<br/>{{ticket.last_update}} hs <br/> <hr>
-        </h5>
-        <button class="btn btn-block" style="display:block; margin:auto; background-color:#00d1b2; color:white; margin-top:4px;"
-         (click)="openChannel(ticket.pro_name)"> Abrir Canal </button>
-      </div>
-    </div>
+      
+    <app-ticket-card *ngFor="let ticket of ticketsObj"
+      [pro_name] = "ticket.pro_name"
+      [bid] = "ticket.bid"
+      [ask] = "ticket.ask"
+      [prev_close_price] = "ticket.prev_close_price"
+      [open_price] = "ticket.open_price"
+      [low_price] = "ticket.low_price"
+      [high_price] = "ticket.high_price"
+      [last_update] = "ticket.last_update"
+    ></app-ticket-card>
+
   </div>
 
-  <hr/>
 
+  <hr/>
   <br/> <br/>
 
   <h1 style="color:white; text-align:center;"> PANEL LÍDER </h1>
 
-  <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
-    <div *ngFor="let ticket of ticketsLeadersObj" class="card" style="width:18rem; min-height:250px; margin:15px;">
-      <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
-      <div class="card-body">
-        <h3 class="card-title" style="text-align:center;">
-          {{ticket.pro_name}}
-        </h3>
-        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="ticket.bid">
-          ${{ticket.bid}} vs ${{ticket.ask}}
-        </h3>
-        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="!ticket.bid">
-          Sin operatoria
-        </h3>
-        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{ticket.prev_close_price.toFixed()}} </h5>
-        <button class="btn" style="display:block; margin:auto; background-color:#00d1b2; color:white;" (click)="viewDetails(ticket.pro_name)">
-          Ver detalles
-        </button>
-        <h5 *ngIf="ticket.details" style="margin-top:20px; text-align:center;">
-          <hr>
-          Precio de apertura: ${{ticket.open_price.toFixed(2)}} <br/> <hr>
-          Mínimo y máximo: ${{ticket.low_price.toFixed()}}/${{ticket.high_price.toFixed()}} <br/> <hr>
-          Última actualización:<br/>{{ticket.last_update}} hs <br/> <hr>
-        </h5>
-        <button class="btn btn-block" style="display:block; margin:auto; background-color:#00d1b2; color:white; margin-top:4px;"
-         (click)="openChannel(ticket.pro_name)"> Abrir Canal </button>
-      </div>
-    </div>
+  <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsLeadersObj">
+
+    <app-ticket-card *ngFor="let ticket of ticketsLeadersObj"
+      [pro_name] = "ticket.pro_name"
+      [bid] = "ticket.bid"
+      [ask] = "ticket.ask"
+      [prev_close_price] = "ticket.prev_close_price"
+      [open_price] = "ticket.open_price"
+      [low_price] = "ticket.low_price"
+      [high_price] = "ticket.high_price"
+      [last_update] = "ticket.last_update"
+    ></app-ticket-card>
+
   </div>
 
 </section>

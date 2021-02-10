@@ -66,5 +66,4 @@ export type typeProduct = {
     dividends_yield: number
     beta_1_year: number
     basic_eps_net_income: number
-    details?: boolean
 }

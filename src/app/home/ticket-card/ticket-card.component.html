@@ -1,0 +1,41 @@
+
+<div class="card" style="width:18rem; min-height:250px; margin:15px;">
+
+    <div class="card-body">
+        
+        <h3 class="card-title" style="text-align:center;">
+            {{pro_name}}
+        </h3>
+        
+        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="bid">
+            ${{bid}} vs ${{ask}}
+        </h3>
+        
+        <h3 class="card-title" style="text-align:center; background-color:lightgray;" *ngIf="!bid">
+            Sin operatoria
+        </h3>
+        
+        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{prev_close_price.toFixed()}} </h5>
+        
+        <button class="btn btn-dark btn-block" style="display:block; margin:auto; color:white;" (click)="viewDetails()">
+            Ver detalles
+        </button>
+
+        <h5 *ngIf="showDetails" style="margin-top:20px; text-align:center;">
+            <hr>
+            Precio de apertura: ${{open_price.toFixed(2)}}
+            <br/> <hr>
+            Mínimo y máximo: ${{low_price.toFixed()}}/${{high_price.toFixed()}}
+            <br/> <hr>
+            Última actualización:<br/>{{last_update}} hs
+            <br/> <hr>
+        </h5>
+
+        <button class="btn btn-block" style="display:block; margin:auto; background-color:#00d1b2; color:white; margin-top:4px;"
+         (click)="openChannel(pro_name)">
+            Abrir Canal
+        </button>
+
+    </div>
+
+</div>
