@@ -1,0 +1,6 @@
+.scroll-div {
+    background-color: #292b2c;
+    height: 400px;
+    width: 100%;
+    overflow-y: scroll;
+}

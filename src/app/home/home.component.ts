@@ -68,4 +68,8 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  openChannel(ticketName:string) {
+    alert(`Abriendo el canal de este papel ${ticketName} (próximamente)`)
+  }
+
 }

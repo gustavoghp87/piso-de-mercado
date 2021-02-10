@@ -4,31 +4,28 @@
     <br/> <br/> <br/> <br/> <br/> <br/> <br/>
 </div>
 
-<div class="container">
+<div class="container" style="margin:auto; max-width:90%;">
     <div class="notification">
 
         <h1 class="title is-1"> Canal: {{channelName}} </h1>
 
         <button class="btn btn-danger" (click)="closeChat()"> Cerrar Canal </button>        
         
-        <div class="hero-body">
-            <div class="notification" *ngIf="messages">
+        <div class="hero-body scroll-div">
+            <div class="notification" *ngIf="messages" style="background-color:#292b2c;">
                 <div *ngFor="let message of messages.slice().reverse()">
-                    <article class="message is-primary">
+                    <article class="message is-primary" style="margin:5px;">
                         
                         <div class="message-body"
                          *ngIf="message.username!=='SYSTEM' && message.isFile===true">
-                            <img src="{{server}}/images/{{message.profileImage}}"
-                             width="20px" style="margin-right:10px;" alt="">
-
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
                             {{message.timeArg}} - <span style="font-weight:bolder;"> {{message.username}}: </span>
-                            
-                            <img src="{{server}}/images/{{message.message}}" alt="">
+                            <img src="{{server}}/images/{{message.message}}" alt="" />
                         </div>
                         
                         <div class="message-body"
                          *ngIf="message.username!=='SYSTEM' && message.isFile===false">
-                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
 
                             {{message.timeArg}} hs - <span style="font-weight:bolder;"> {{message.username}}: </span> {{message.message}}
                         </div>
@@ -38,6 +35,27 @@
                         </div> -->
 
                     </article>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="hero-foot" style="display:block;">
+            <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
+            <div class="navbar has-background-primary">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <div class="navbar-item">
+                            <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                            <button (click)="sendMessage()"> Mandar </button>
+                        </div>
+                        <div class="navbar-item">
+                            <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                            <button (click)="sendMessage()">Upload image</button> -->
+                            <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
+                            <button (click)="uploadImageToServer()"> Subir </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,26 +86,6 @@
         
     </div>
     
-</div>
-
-
-<div class="hero-foot" style="display:block;">
-    <div class="navbar is-fixed-bottom has-background-primary">
-        <div class="container">
-            <div class="navbar-brand">
-                <div class="navbar-item">
-                    <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                    <button (click)="sendMessage()"> Mandar </button>
-                </div>
-                <div class="navbar-item">
-                    <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                    <button (click)="sendMessage()">Upload image</button> -->
-                    <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-                    <button (click)="uploadImageToServer()"> Subir </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 </section>
