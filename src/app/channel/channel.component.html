@@ -66,8 +66,7 @@
             <ul>
                 <li *ngFor="let user of listOfUsers">
                     User: {{user}}
-                    <button (click)="removeUser(user)"
-                     *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                    <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
                         Echar usuario
                     </button>
                 </li>

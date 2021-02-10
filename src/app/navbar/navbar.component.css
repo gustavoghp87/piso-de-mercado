@@ -1,5 +1,4 @@
 .dark-modal .modal-content {
-    background-color: #292b2c;
     color: white;
     max-width: 90%;
 }
@@ -10,4 +9,31 @@
 
 .light-blue-backdrop {
     background-color: #5cb3fd;
+}
+
+.blackyClass1 {
+    display: none;
+}
+
+.blackyClass2 {
+    background-color: #1e1e1e;
+    width:100%;
+    height:50px;
+    position:fixed;
+    z-index:1;
+}
+
+.navigClass1 {
+    position: fixed;
+    z-index: 2;
+    right:0;
+    margin-right:10%;
+}
+
+.navigClass2 {
+    position: fixed;
+    z-index: 2;
+    right:0;
+    margin-right:10%;
+    top: 0;
 }

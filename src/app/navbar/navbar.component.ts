@@ -58,7 +58,7 @@ export class NavbarComponent implements OnInit {
   }
 
 
-  doSomethingOnWindowScroll(event) {
+  doSomethingOnWindowScroll(event:any) {
     this.sc = event.target.scrollingElement.scrollTop
     if (this.sc>this.scOld) {
       this.showBottomNavbar = false
@@ -71,9 +71,23 @@ export class NavbarComponent implements OnInit {
       this.showBottomNavbar = true
       this.scOld = this.sc
     }
+
+    try {
+      if (this.sc>115) {
+        document.querySelector('#navig').classList.remove('navigClass1')
+        document.querySelector('#navig').classList.add('navigClass2')
+        document.querySelector('#blacky').classList.remove('blackyClass1')
+        document.querySelector('#blacky').classList.add('blackyClass2')
+      } else {
+        document.querySelector('#navig').classList.remove('navigClass2')
+        document.querySelector('#navig').classList.add('navigClass1')
+        document.querySelector('#blacky').classList.remove('blackyClass2')
+        document.querySelector('#blacky').classList.add('blackyClass1')
+      }
+    } catch {}
   }
 
-  openWindowCustomClass(content) {
+  openModalLogin(content:any) {
     this.modalService.open(content, { windowClass: 'dark-modal' })
   }
 

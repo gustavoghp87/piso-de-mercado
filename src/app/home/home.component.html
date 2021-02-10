@@ -1,6 +1,6 @@
 
-<section style="display:block; margin:auto; margin-top:120px; max-width:1500px;" id="mercados">
-  <br/> <br/>
+<section style="display:block; margin:auto; margin-top:120px; max-width:1500px;" id="panelG">
+
   <!-- <p *ngIf="mobile" style="color:#00d1b2; padding:50px;"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis unde, alias veritatis corrupti ea accusamus quod asperiores excepturi, facere qui in consequuntur? Harum soluta ab totam quasi corrupti cum distinctio. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia, natus consectetur, ipsam temporibus dignissimos est accusantium quidem aut, error corporis deleniti odio incidunt soluta quod odit commodi in sed iusto! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt quo, ea soluta rem, quam voluptate sint repudiandae eum doloremque illo, corporis veniam consequuntur atque laborum qui reiciendis asperiores quas tempora! </p>
   <p *ngIf="!mobile" style="color:#00d1b2; padding-inline:25%;"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis unde, alias veritatis corrupti ea accusamus quod asperiores excepturi, facere qui in consequuntur? Harum soluta ab totam quasi corrupti cum distinctio. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quia, natus consectetur, ipsam temporibus dignissimos est accusantium quidem aut, error corporis deleniti odio incidunt soluta quod odit commodi in sed iusto! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt quo, ea soluta rem, quam voluptate sint repudiandae eum doloremque illo, corporis veniam consequuntur atque laborum qui reiciendis asperiores quas tempora! </p> -->
 
@@ -16,11 +16,11 @@
   <hr/>
   <br/> <br/>
 
-  <h1 style="color:white; text-align:center;"> PANEL GENERAL </h1>
+  <h1 class="title is-1" style="color:white; text-align:center;"> PANEL GENERAL </h1>
 
   <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsObj">
       
-    <app-ticket-card *ngFor="let ticket of ticketsObj"
+    <app-ticket-card *ngFor="let ticket of ticketsObj" data-aos="fade-up"
       [pro_name] = "ticket.pro_name"
       [bid] = "ticket.bid"
       [ask] = "ticket.ask"
@@ -33,15 +33,21 @@
 
   </div>
 
+</section>
+
+
+
+
+<section style="display:block; margin:auto; margin-top:120px; max-width:1500px;" id="panelL">
 
   <hr/>
   <br/> <br/>
 
-  <h1 style="color:white; text-align:center;"> PANEL LÍDER </h1>
+  <h1 class="title is-1" style="color:white; text-align:center;"> PANEL LÍDER </h1>
 
   <div class="row" style="display:flex; align-items:center; justify-content:center; margin-top:50px;" *ngIf="ticketsLeadersObj">
 
-    <app-ticket-card *ngFor="let ticket of ticketsLeadersObj"
+    <app-ticket-card *ngFor="let ticket of ticketsLeadersObj" data-aos="fade-up"
       [pro_name] = "ticket.pro_name"
       [bid] = "ticket.bid"
       [ask] = "ticket.ask"
@@ -57,12 +63,14 @@
 </section>
 
 
-<section>
-  <div style="margin-bottom:60px;" data-aos="fade-up">
-    <img *ngIf="mobile" src="assets/bcra.png" style="width:90%; height:auto; display:block; margin:auto;" />
-    <img *ngIf="!mobile" src="assets/bcra.png" style="width:40%; height:auto; display:block; margin:auto;" />
-  </div>
-</section>
+<br/><br/>
+<hr/>
+<br/> <br/>
+
+<div style="margin-top:70px; margin-bottom:60px;" data-aos="fade-up">
+  <img *ngIf="mobile" src="assets/bcra.png" style="width:90%; height:auto; display:block; margin:auto;" />
+  <img *ngIf="!mobile" src="assets/bcra.png" style="width:40%; height:auto; display:block; margin:auto;" />
+</div>
 
 
 
