@@ -15,14 +15,14 @@
 
 
 <div *ngIf="!mobile" class="navigClass1" id="navig">
-    <h4 *ngIf="(user$ | async)" style="display:inline; color:gray;"> {{(user$ | async).username | json}} </h4>
+    <!-- <h4 *ngIf="(user$ | async)" style="display:inline; color:gray;"> {{(user$ | async).username | json}} </h4> -->
     <!-- <h4 *ngIf="(user$ | async)" style="display:inline;"> - Email {{(user$ | async).email | json}} </h4> -->
-    <button class="btn btn-danger" *ngIf="!(user$ | async)" (click)="openModalLogin(content)"> Loguear </button>
-    <button class="button is-light" (click)="subir()"> Inicio </button>
-    <a class="button is-light" href="#panelG"> Panel General </a>
-    <a class="button is-light" href="#panelL"> Panel Líder </a>
-    <a class="button is-light" href="#footer"> FAQ y Contacto </a>
-    <button class="btn btn-danger" *ngIf="(user$ | async)" (click)="logOut()"> Log out </button>
+    <button class="btn btn-danger mr-1" *ngIf="!(user$ | async)" (click)="openModalLogin(content)"> Loguear </button>
+    <button class="btn mr-1" style="background-color:#00d1b2; color:white;" (click)="subir()"> Inicio </button>
+    <a class="btn mr-1" style="background-color:#00d1b2; color:white;" href="#panelG"> Panel General </a>
+    <a class="btn mr-1" style="background-color:#00d1b2; color:white;" href="#panelL"> Panel Líder </a>
+    <a class="btn mr-1" style="background-color:#00d1b2; color:white;" href="#footer"> FAQ y Contacto </a>
+    <a class="btn btn-danger" *ngIf="(user$ | async)" (click)="logOut()" style="color:white;"> Log out {{(user$ | async).username | json}} </a>
 </div>
 
 
@@ -142,7 +142,7 @@
                     <div class="control">
                         <div class="columns">
                             <div class="column is-five-fifths">
-                                <input class="input" type="text" placeholder="Username sin espacios ni mayúsculas" [(ngModel)]="newUserUsername" name="newUserUsername">
+                                <input class="input" type="text" placeholder="Username sin espacios ni mayúsculas (máx. 15)" [(ngModel)]="newUserUsername" name="newUserUsername">
                             </div>
                         </div>
                     </div>

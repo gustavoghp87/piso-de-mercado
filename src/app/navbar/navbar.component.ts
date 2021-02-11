@@ -40,19 +40,10 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.user$ = this.store.pipe(select('user'))
     if (localStorage.getItem('username') && localStorage.getItem('token')) {
-      // console.log("Procediendo a loguear en autom")
       this.username = localStorage.getItem('username')
       this.token = localStorage.getItem('token')
       this.userService.getUser().subscribe(
-        data => {
-          console.log("Data de getUser", data)
-          if (data['success']) {
-            // console.log("Éxito en getUser automático")
-            this.setUserLocal(data['userData'])
-          } else {
-            //console.log("No hubo éxito en getUser automático"); localStorage.clear()
-          }
-        }
+        data => {if (data['success']) this.setUserLocal(data['userData'])}
       )
     }
   }
@@ -123,11 +114,14 @@ export class NavbarComponent implements OnInit {
   }
   
   createUser() {
-    if(!this.newUserUsername) {alert('Falta el username'); return}
-    if(!this.newUserPassword) {alert('Falta el password'); return}
-    if(this.newUserPassword.length<10) {alert('Mínimo 10 caracteres para que no molesten los navegadores con que el sitio no es seguro'); return}
-    this.newUserUsername = this.newUserUsername.toLowerCase()
-    if (this.newUserUsername.includes(' ')) this.newUserUsername = this.newUserUsername.replace(' ', '')
+    if (!this.newUserUsername) {alert('Falta el username'); return}
+    if (!this.newUserPassword) {alert('Falta el password'); return}
+    if (this.newUserPassword.length<10) {alert('Mínimo 10 caracteres para que no molesten los navegadores con que el sitio no es seguro'); return}
+    this.newUserUsername = this.newUserUsername.toLowerCase().trim()
+    if (this.newUserUsername.includes(' ')){
+      this.newUserUsername = this.newUserUsername.replace(' ', '-')
+      alert("Los espacios en el username serán reemplazados por guiones")
+    }
     this.userService.createUser(
       this.newUserUsername,
       this.newUserPassword,

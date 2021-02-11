@@ -34,6 +34,7 @@ export type typeProduct = {
     rchp: number
     s: string
     last_update: string
+    my_last_update?: string
     bid: number
     ask: number
     volume: number
