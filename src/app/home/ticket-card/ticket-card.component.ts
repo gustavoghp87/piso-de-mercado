@@ -1,12 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { typeProduct } from '../../models/types'
 import { mobile } from '../../app.component'
+import { select, Store } from '@ngrx/store'
+import { Observable } from 'rxjs'
+import { typeUser, typeGroup } from '../../models/types'
+
 
 @Component({
   selector: 'app-ticket-card',
   templateUrl: './ticket-card.component.html',
   styleUrls: ['./ticket-card.component.css']
 })
+
 export class TicketCardComponent implements OnInit {
 
   @Input() pro_name: string;
@@ -22,10 +27,36 @@ export class TicketCardComponent implements OnInit {
   ticketsObj: typeProduct[]
   ticketsLeadersObj:typeProduct[]
   showDetails:boolean = false
+  user$:Observable<typeUser>
+  groupName:string = ''
+  username:string = ''
+  email:string
+  token:string
+  groups:typeGroup[]
+  profileImage:string
+  showGroup:string
+  groupAdmin = false
+  superAdmin = false
+  isLogged = false
 
-  constructor() {}
+  constructor(private store:Store<{user:typeUser}>) {}
 
   ngOnInit() {
+    this.user$ = this.store.pipe(select('user'))
+    this.user$.subscribe((user:typeUser) => {
+      if (user) {
+        this.isLogged = true
+        this.groupName = user.showGroup
+        this.groupAdmin = user.groupAdmin
+        this.superAdmin = user.superAdmin
+        this.username = user.username
+        this.email = user.email
+        this.token = user.token
+        this.groups = user.groups
+        this.profileImage = user.profileImage
+        this.showGroup = user.showGroup
+      }
+    })
   }
 
   viewDetails() {
@@ -33,7 +64,8 @@ export class TicketCardComponent implements OnInit {
   }
 
   openChannel(ticketName:string) {
-    alert(`Abriendo el canal de este papel ${ticketName} (próximamente)`)
+    if (this.isLogged) alert(`Abriendo el canal de este papel ${ticketName} (próximamente)`)
+    else alert(`Hay que loguearse primero`)
   }
 
 }

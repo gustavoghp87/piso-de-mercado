@@ -1,16 +1,22 @@
 
-<div *ngIf="(user$ | async)" class="container" style="min-height:800px;">
+<div *ngIf="(user$ | async)" class="container">
 
-  <div *ngIf="!mobile"> <br/> <br/> <br/> <br/> <br/> </div>
+  <div *ngIf="!mobile"> <br/> <br/> </div>
   
   <div class="notification" style="background-color: #1e1e1e; color:#39a6ff;">
   
-    <h2 class="subtitle is-3" *ngIf="(user$ | async).superAdmin && (user$ | async).groupAdmin"> Dashboard de {{(user$ | async).username}}, eres SUPER ADMIN </h2>
-    <h2 class="subtitle is-3" *ngIf="!(user$ | async).groupAdmin"> Dashboard de {{(user$ | async).username}} </h2>
-    <h2 class="subtitle is-3" *ngIf="(user$ | async).groupAdmin && !(user$ | async).superAdmin"> Dashboard de {{(user$ | async).username}}, eres GROUP ADMIN </h2>
+    <h2 class="subtitle is-3" *ngIf="(user$ | async).superAdmin && (user$ | async).groupAdmin" style="color:#00d1b2;">
+      Dashboard de {{(user$ | async).username}}, eres SUPER ADMIN
+    </h2>
+    <h2 class="subtitle is-3" *ngIf="!(user$ | async).groupAdmin" style="color:#00d1b2;">
+      Dashboard de {{(user$ | async).username}}
+    </h2>
+    <h2 class="subtitle is-3" *ngIf="(user$ | async).groupAdmin && !(user$ | async).superAdmin" style="color:#00d1b2;">
+      Dashboard de {{(user$ | async).username}}, eres GROUP ADMIN
+    </h2>
 
 
-    <div class="box">
+    <div class="box" *ngIf="((user$ | async).groupAdmin || (user$ | async).superAdmin)">
       <h2 class="title is-3 center"> GRUPOS </h2>
 
       <ul *ngIf="(user$ | async).groups && (!(user$ | async).isGroupAdmin && !(user$ | async).isSuperAdmin)">
@@ -38,52 +44,47 @@
     </div>
     
     
+
     <div class="box" *ngIf="(user$ | async).groupAdmin || (user$ | async).superAdmin">
-        <div class="container">
-          <form (submit)="createGroup($event)">
-            <div class="field has-addons has-addons-centered">
-                <label class="label is-large"> Nombre de nuevo Grupo: &nbsp; </label>
-                <div class="control">
-                    <input class="input" type="text" placeholder="Group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName'>
-                </div>
-                <div class="control">
-                  <button class="button is-primary"> Crear Grupo </button>
-                </div>
-            </div>
-          </form>
-        </div>
+      <div class="container">
+        <form (submit)="createGroup($event)">
+          <div class="field has-addons has-addons-centered">
+              <label class="label is-large"> Nombre de nuevo Grupo: &nbsp; </label>
+              <div class="control">
+                <input class="input" type="text" placeholder="Group name" [(ngModel)]='createGroupName' id='createGroupName' name='createGroupName' />
+              </div>
+              <div class="control">
+                <button class="button is-primary"> Crear Grupo </button>
+              </div>
+          </div>
+        </form>
+      </div>
     </div>
 
 
 
     <!-- upload -->
     <div class="box">
-
       <div>
           <img src="{{server}}/images/{{(user$ | async).profileImage}}" width=100px>
       </div>
-
       <p> Subir nueva imagen de perfil </p>
-        <form>
-          
-          <div>
-            <input class="file-input" type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-          </div>
-          
-          <button class="button is-light" (click)="uploadImageToServer()"> Subir </button>
-        
-        </form>
-
+      <form>
+        <div>
+          <input class="file-input" type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
+        </div>
+        <button class="button is-light" (click)="uploadImageToServer()"> Subir </button>
+      </form>
     </div>
     
     
       
     
-    <div class="content">
+    <div class="content" *ngIf="((user$ | async).groupAdmin || (user$ | async).superAdmin)">
       <div class="box">
           <p> Tu correo registrado: {{(user$ | async).email}} </p>
           <form (submit)="updateEmail($event)">
-            <input class="input" type="email" [(ngModel)]='emailField' name='emailField' placeholder="example@email.com">
+            <input class="input" type="email" [(ngModel)]='emailField' name='emailField' placeholder="example@email.com" />
             <div class="control">
               <button class="button is-primary"> Cambiar email </button>
             </div>
@@ -92,11 +93,11 @@
     </div>
 
 
-    <div class="box" *ngIf="(user$ | async).superAdmin">
+    <div class="box" *ngIf="((user$ | async).groupAdmin || (user$ | async).superAdmin)">
 
       <h2 class="title is-3"> Usuarios: </h2>
       <!-- <div class="box">
-          <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin'>
+          <input class="input" type="text" placeholder="username" [(ngModel)]='usernameMakeAdmin' id='usernameMakeAdmin' name='usernameMakeAdmin' />
           <button (click)="userMakeAdminGroup()"> Hacer a un usuario administrador de tema </button>
           <button (click)="userMakeAdminSuper()"> Hacer a un usuario administrador de todo el sitio </button>
       </div> -->
@@ -133,4 +134,9 @@
     </div>
 
   </div>
+
+  
+  <br/> <br/>
+  <hr/>
+
 </div>

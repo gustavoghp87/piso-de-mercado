@@ -1,30 +1,32 @@
 <section id="channel" *ngIf="(user$ | async)?.currentChannel">
 
-<div *ngIf="!mobile">
-    <br/> <br/> <br/> <br/> <br/> <br/> <br/>
-</div>
+<div class="container notification" style="margin:auto; margin-top:30px; max-width:90%; padding:0px !important;">
 
-<div class="container" style="margin:auto; max-width:90%;">
-    <div class="notification">
 
-        <h1 class="title is-1"> Canal: {{channelName}} </h1>
+    <!-- !MOBILE -->
+    <div *ngIf="!mobile">
 
-        <button class="btn btn-danger" (click)="closeChat()"> Cerrar Canal </button>        
-        
-        <div class="hero-body scroll-div">
-            <div class="notification" *ngIf="messages" style="background-color:#292b2c;">
+        <div>
+            <h1 class="d-inline"> Canal: {{channelName}} </h1>
+            <button class="btn btn-danger" style="position:absolute; right:0; margin-right:5%;" (click)="closeChat()">
+                Cerrar Canal
+            </button>
+        </div>
+
+        <div *ngIf="messages" class="hero-body scroll-div">
+            <div class="notification" style="background-color:#292b2c;">
                 <div *ngFor="let message of messages.slice().reverse()">
                     <article class="message is-primary" style="margin:5px;">
                         
                         <div class="message-body"
-                         *ngIf="message.username!=='SYSTEM' && message.isFile===true">
+                            *ngIf="message.username!=='SYSTEM' && message.isFile===true">
                             <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
                             {{message.timeArg}} - <span style="font-weight:bolder;"> {{message.username}}: </span>
                             <img src="{{server}}/images/{{message.message}}" alt="" />
                         </div>
                         
                         <div class="message-body"
-                         *ngIf="message.username!=='SYSTEM' && message.isFile===false">
+                            *ngIf="message.username!=='SYSTEM' && message.isFile===false">
                             <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
 
                             {{message.timeArg}} hs - <span style="font-weight:bolder;"> {{message.username}}: </span> {{message.message}}
@@ -39,15 +41,14 @@
             </div>
         </div>
 
-
-        <div class="hero-foot" style="display:block;">
+        <div class="hero-foot" style="display:block; margin-bottom:30px;">
             <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
             <div class="navbar has-background-primary">
                 <div class="container">
                     <div class="navbar-brand">
                         <div class="navbar-item">
                             <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                            <button (click)="sendMessage()"> Mandar </button>
+                            <button class="btn btn-dark" (click)="sendMessage()"> Mandar </button>
                         </div>
                         <div class="navbar-item">
                             <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
@@ -59,7 +60,6 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="box">
             <h2 class="title is-3"> Usuarios en el Canal: </h2>
@@ -80,10 +80,87 @@
             </div>
         </div>
 
-        <br/>
-        <br/>
-        
     </div>
+
+
+
+    <!-- MOBILE -->
+    <div *ngIf="mobile">
+
+        <div style="margin: 20px auto;">
+            <h1 class="d-inline"> Canal: {{channelName}} </h1>
+            <button *ngIf="mobile" class="btn btn-danger btn-sm" style="position: absolute; right:0;" (click)="closeChat()">
+                Cerrar Canal
+            </button>
+        </div>
+
+        <div *ngIf="messages" class="hero-body scroll-div" style="padding:0; margin-top:12px;">
+            <div class="notification" style="background-color:#292b2c; padding:0;">
+                <div *ngFor="let message of messages.slice().reverse()">
+                    <article class="message is-primary" style="margin:5px;">
+                        
+                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===true">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
+                            {{message.timeArg}} - <span style="font-weight:bolder;"> {{message.username}}: </span>
+                            <img src="{{server}}/images/{{message.message}}" alt="" />
+                        </div>
+                    
+                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===false">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
+                            {{message.timeArg}} hs - <span style="font-weight:bolder;"> {{message.username}}: </span> {{message.message}}
+                        </div>
+                
+                    </article>
+                </div>
+    
+                <div class="hero-foot" style="display:block; margin-bottom:30px;">
+                    <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
+                    <div class="navbar has-background-primary">
+                        <div class="container">
+                            <div class="navbar-brand">
+                                <div class="navbar-item">
+                                    <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                                    <button class="btn btn-dark" (click)="sendMessage()"> Mandar </button>
+                                </div>
+                                <div class="navbar-item">
+                                <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                                    <button (click)="sendMessage()">Upload image</button> -->
+                                    <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
+                                    <button (click)="uploadImageToServer()"> Subir </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <h2 class="title is-3"> Usuarios en el Canal: </h2>
+                    <ul>
+                        <li *ngFor="let user of listOfUsers">
+                            User: {{user}}
+                            <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                                Echar usuario
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                    <div>
+                        <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
+                        <button (click)="addUserToChannel()"> Agregar usuario </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <br/>
+    <br/>
     
 </div>
 

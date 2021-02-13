@@ -78,7 +78,7 @@ export class NavbarComponent implements OnInit {
     } catch {}
   }
 
-  openModalLogin(content:any) {
+  openModal(content:any) {
     this.modalService.open(content, { windowClass: 'dark-modal' })
   }
 

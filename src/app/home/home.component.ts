@@ -9,10 +9,7 @@ import { typeProduct } from '../models/types'
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-
-// This component handles all the functionality of the home page
 export class HomeComponent implements OnInit {
-  
   mobile:boolean = mobile
   ticketsObj: typeProduct[]
   ticketsLeadersObj:typeProduct[]
