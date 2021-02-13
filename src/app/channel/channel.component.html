@@ -1,5 +1,7 @@
 <section id="channel" *ngIf="(user$ | async)?.currentChannel">
 
+<br /> <br />
+
 <div class="container notification" style="margin:auto; margin-top:30px; max-width:90%; padding:0px !important;">
 
 
@@ -36,6 +38,10 @@
                             {{message.timeArg}} {{message.username}}: {{message.message}}
                         </div> -->
 
+                        <div>
+                            
+                        </div>
+
                     </article>
                 </div>
             </div>
@@ -43,7 +49,7 @@
 
         <div class="hero-foot" style="display:block; margin-bottom:30px;">
             <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
-            <div class="navbar has-background-primary">
+            <div class="has-background-primary">
                 <div class="container">
                     <div class="navbar-brand">
                         <div class="navbar-item">

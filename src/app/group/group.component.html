@@ -1,4 +1,4 @@
-<div *ngIf="(user$ | async) && (user$ | async).showGroup">
+<div *ngIf="(user$ | async) && (user$ | async).showGroup && ((user$ | async).superAdmin || (user$ | async).groupAdmin)">
 
 
     <div *ngIf="!mobile"> <br/> <br/> <br/> <br/> <br/> <br/> </div>

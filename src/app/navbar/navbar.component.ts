@@ -64,7 +64,7 @@ export class NavbarComponent implements OnInit {
     }
 
     try {
-      if (this.sc>115) {
+      if (this.sc>85) {
         document.querySelector('#navig').classList.remove('navigClass1')
         document.querySelector('#navig').classList.add('navigClass2')
         document.querySelector('#blacky').classList.remove('blackyClass1')

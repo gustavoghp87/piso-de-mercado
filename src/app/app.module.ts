@@ -14,7 +14,8 @@ import { NavbarComponent } from './navbar/navbar.component'
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 import { StoreModule } from '@ngrx/store'
 import { setUserReducer } from './reducers/user.reducer';
-import { TicketCardComponent } from './home/ticket-card/ticket-card.component'
+import { TicketCardComponent } from './home/ticket-card/ticket-card.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { TicketCardComponent } from './home/ticket-card/ticket-card.component'
     StoreModule.forRoot({}, {}),
     StoreModule.forRoot({
       user: setUserReducer
-    })
+    }),
+    NoopAnimationsModule
   ],
   providers: [SocketService],
   bootstrap: [AppComponent]

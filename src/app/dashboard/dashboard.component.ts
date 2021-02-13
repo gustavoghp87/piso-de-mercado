@@ -128,13 +128,13 @@ export class DashboardComponent implements OnInit {
     )
   }
 
-  viewGroup(group) {
+  viewGroup(group:string) {
     this.userData = {
       username: this.username,
-      email: localStorage.getItem('email'),
+      email: this.email,
       superAdmin: this.superAdmin,
       groupAdmin: this.groupAdmin,
-      profileImage: localStorage.getItem('profileImage'),
+      profileImage: this.profileImage,
       groups: this.groups,
       token: this.token,
       showGroup: group,
