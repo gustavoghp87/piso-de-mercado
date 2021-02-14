@@ -22,7 +22,7 @@ export class SocketService {
       channelName: localStorage.getItem("currentChannel"),
       message: localStorage.getItem("username") + " has joined the chat"
     }
-    console.log(`Conectado al socker ${localStorage.getItem("currentGroup")+localStorage.getItem("currentChannel")}`)
+    // console.log(`Conectado al socker ${localStorage.getItem("currentGroup")+localStorage.getItem("currentChannel")}`)
     this.socket.emit('join', content)
   }
 

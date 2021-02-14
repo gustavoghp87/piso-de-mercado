@@ -6,10 +6,12 @@
 <!-- <section *ngIf="!mobile" style="position:fixed; z-index:2; width:100%; background-color:#00d1b2;"> -->
 
 <div style="width:100%; background-color:#00d1b2;" *ngIf="!(user$ | async)?.currentGroup">
-    <h1 *ngIf="mobile" style="text-align:center; font-size:2rem;"> PISO DE MERCADO </h1>
     <h1 *ngIf="!mobile" style="text-align:center; padding-top:15px;"> <b>PISO DE MERCADO</b> </h1>
-    <h2 *ngIf="mobile" style="text-align:center; font-size:1.2rem; color:white;"> El lugar de encuentro para operadores e inversores </h2>
-    <h2 *ngIf="!mobile" style="text-align:center; color:white; padding-bottom:15px;"> El lugar de encuentro para operadores e inversores </h2>
+    <h2 *ngIf="!mobile" style="text-align:center; color:white; padding-bottom:18px;"> El lugar de encuentro para operadores e inversores </h2>
+    <div *ngIf="mobile" style="padding:12px 15px;">
+        <h1 style="text-align:center; font-size:2rem;"> PISO DE MERCADO </h1>
+        <h2 style="text-align:center; font-size:1.2rem; color:white;"> El lugar de encuentro para operadores e inversores </h2>
+    </div>
 </div>
 
 <!-- <div style="position:absolute; right:0;"> barra </div> -->
@@ -30,28 +32,28 @@
 
 
 <section *ngIf="mobile && showBottomNavbar" class="mobileNavbar">
-<div class="container">
-    <div class="row" style="display:flex; text-align:center;">
-        <div *ngIf="!(user$ | async)" class="col-3 mobileNavbarItem">
-            <a (click)="openModal(content)" style="color:white;"> <span class="material-icons"> person_outline </span> <br /> Log in </a>
-        </div>
-        <div class="col-3 mobileNavbarItem">
-            <a style="color:white;" (click)="subir()"> <span class="material-icons"> vertical_align_top </span> <br /> Subir </a>
-        </div>
-        <div class="col-3 mobileNavbarItem">
-            <a href="#panelG" style="color:white;"> <span class="material-icons"> content_paste </span> <br /> General </a>
-        </div>
-        <div class="col-3 mobileNavbarItem">
-            <a href="#panelL" style="color:white;"> <span class="material-icons"> content_paste </span> <br /> Líder </a>
-        </div>
-        <!-- <div class="col-3 mobileNavbarItem">
-            <a href="#footer" style="color:white;"> FAO </a>
-        </div> -->
-        <div *ngIf="(user$ | async)" class="col-3 mobileNavbarItem">
-            <a (click)="logOut()" style="color:white;"> <span class="material-icons"> logout </span> <br /> Log out </a>
+    <div class="container">
+        <div class="row" style="display:flex; text-align:center;">
+            <div *ngIf="!(user$ | async)" class="col-3 mobileNavbarItem">
+                <a (click)="openModal(content)" style="color:white;"> <span class="material-icons"> person_outline </span> <br /> Log in </a>
+            </div>
+            <div class="col-3 mobileNavbarItem">
+                <a style="color:white;" (click)="subir()"> <span class="material-icons"> vertical_align_top </span> <br /> Subir </a>
+            </div>
+            <div class="col-3 mobileNavbarItem">
+                <a href="#panelG" style="color:white;"> <span class="material-icons"> content_paste </span> <br /> General </a>
+            </div>
+            <div class="col-3 mobileNavbarItem">
+                <a href="#panelL" style="color:white;"> <span class="material-icons"> content_paste </span> <br /> Líder </a>
+            </div>
+            <!-- <div class="col-3 mobileNavbarItem">
+                <a href="#footer" style="color:white;"> FAO </a>
+            </div> -->
+            <div *ngIf="(user$ | async)" class="col-3 mobileNavbarItem">
+                <a (click)="logOut()" style="color:white;"> <span class="material-icons"> logout </span> <br /> Log out </a>
+            </div>
         </div>
     </div>
-</div>
 </section>
 
 

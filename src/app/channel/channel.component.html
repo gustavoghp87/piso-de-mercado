@@ -1,22 +1,22 @@
 <section id="channel" *ngIf="(user$ | async)?.currentChannel">
 
-<br />
+    <br />
 
-<div class="container notification noMobileCard" style="margin:auto; margin-top:30px; max-width:90%; padding:0px !important;">
 
 
     <!-- !MOBILE -->
-    <div *ngIf="!mobile">
+    <div *ngIf="!mobile && ticketData" class="container notification noMobileCard">
 
-        <div>
+        <div style="background-color:#00d1b2;">
             <h1 class="d-inline"> Canal: {{currentChannel}} | </h1>
-            <h4 class="d-inline"> ${{ticketData?.ask}} vs ${{ticketData?.bid}} | {{ticketData?.my_last_update}} </h4>
-            <button class="btn btn-danger" style="position:absolute; right:0; margin-right:5%;" (click)="closeChat()">
+            <h4 class="d-inline" *ngIf="ticketData.ask"> ${{ticketData.ask}} vs ${{ticketData.bid}} | </h4>
+            <h4 class="d-inline"> {{ticketData?.my_last_update}} </h4>
+            <button class="btn btn-danger" style="position:absolute; right:0; margin-right:5%; margin-top:5px;" (click)="closeChat()">
                 Cerrar Canal
             </button>
         </div>
 
-        <div *ngIf="messages" class="hero-body scroll-div" style="padding-top:0;">
+        <div *ngIf="messages" class="hero-body scroll-div">
             <div class="notification" style="background-color:#292b2c;">
                 <div *ngFor="let message of messages.slice().reverse()">
                     <article class="message is-primary" style="margin:5px;">
@@ -48,47 +48,49 @@
             </div>
         </div>
 
+        
+
         <div class="hero-foot" style="display:block; margin-bottom:30px;">
             <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
             <div class="has-background-primary">
-
-                    <div class="navbar-brand" style="width:100%; margin:0;">
-                        <div class="navbar-item" style="width:100%;">
-                            <div class="col-md-7">
-                                <input class="d-inline" style="width:80%;" [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                                &nbsp;
-                                <button class="btn btn-dark d-inline" (click)="sendMessage()"> Mandar </button>
+                <div class="navbar-brand" style="width:100%; margin:0;">
+                    <div class="navbar-item" style="width:100%;">
+                        <div class="col-md-7">
+                            <input class="d-inline" style="width:80%;" [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+                            &nbsp;
+                            <button class="btn btn-dark d-inline" (click)="sendMessage()"> Mandar </button>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="d-inline" style="width:10px !important;">
+                                <input type="file" class="custom-file-input" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
+                                <label class="custom-file-label" for="uploadFile"> Elegir imagen </label>
                             </div>
-                            <div class="col-md-3">
-                                <div class="d-inline" style="width:10px !important;">
-                                    <input type="file" class="custom-file-input" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
-                                    <label class="custom-file-label" for="uploadFile"> Elegir imagen </label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="d-inline">
-                                    <button class="btn btn-dark" (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
-                                </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-inline">
+                                <button class="btn btn-dark" (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
                             </div>
                         </div>
                     </div>
-                
+                </div>  
             </div>
-        </div>    
+        </div>
     </div>
 
 
-    <!-- MOBILE -->
-    <div *ngIf="mobile">
+    <!--    MOBILE -->
+    <div *ngIf="mobile && ticketData" class="container notification mobileCard">
 
-        <div style="margin: 20px auto;">
-            <h1 class="d-inline"> Canal: {{currentChannel}} </h1>
-            <button *ngIf="mobile" class="btn btn-danger btn-sm" style="position: absolute; right:0;" (click)="closeChat()">
+        <div style="background-color:#00d1b2; padding: 10px 6px 0 12px;">
+            <button *ngIf="mobile" class="btn btn-danger btn-sm" style="position:absolute; right:0;" (click)="closeChat()">
                 Cerrar Canal
             </button>
+            <h4> Canal: {{currentChannel}} </h4>
+            <h6 class="d-inline" *ngIf="ticketData.ask"> ${{ticketData.ask}} vs ${{ticketData.bid}} | </h6>
+            <h6 class="d-inline"> {{ticketData?.my_last_update}} </h6>
         </div>
 
-        <div *ngIf="messages" class="hero-body scroll-div" style="padding:0; margin-top:12px;">
+        <div *ngIf="messages" class="hero-body scroll-div-mobile" style="padding-top:12px;">
             <div class="notification" style="background-color:#292b2c; padding:0;">
                 <div *ngFor="let message of messages.slice().reverse()">
                     <article class="message is-primary" style="margin:5px;">
@@ -106,96 +108,94 @@
                 
                     </article>
                 </div>
-    
-                <div class="hero-foot" style="display:block; margin-bottom:30px;">
-                    <!-- <div class="navbar is-fixed-bottom has-background-primary"> -->
-                    <div class="navbar has-background-primary">
-                        <div class="container">
-                            <div class="navbar-brand">
-                                <div class="navbar-item">
-                                    <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                                    <button class="btn btn-dark" (click)="sendMessage()"> Mandar </button>
-                                </div>
-                                <div class="navbar-item">
-                                <!-- <input [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-                                    <button (click)="sendMessage()">Upload image</button> -->
-                                    <input type="file" class="form-control" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile"/>
-                                    <button (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="box">
-                    <h2 class="title is-3"> Usuarios en el Canal: </h2>
-                    <ul>
-                        <li *ngFor="let user of listOfUsers">
-                            User: {{user}}
-                            <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-                                Echar usuario
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-                    <div>
-                        <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-                        <button (click)="addUserToChannel()"> Agregar usuario </button>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
+
+
+    <div (window:scroll)="doSomethingOnWindowScroll($event)"></div>
 
 
 
-<div *ngIf="!mobile" class="container notification noMobileCard">
-    <div class="box">
-        <h2 class="title is-3"> Usuarios en el Canal: </h2>
-        <ul>
-            <li *ngFor="let user of listOfUsers">
-                User: {{user}}
-                <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-                    Echar usuario
-                </button>
-            </li>
-        </ul>
+
+
+
+        
+    <div style="background-color:#00d1b2; display:block; margin-bottom:30px; width:100%; height:120px; position:fixed; z-index:5;" id="chatNavbarMobile">
+
+        <input style="width:80%;" [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
+
+        <button class="btn btn-dark" style="display:block; margin: 5px auto" (click)="sendMessage()"> Mandar </button>
+
+
+        <input type="file" class="custom-file" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
+        <label class="custom-file-label" for="uploadFile"> Elegir imagen </label>
+
+
+        <div>
+            <button class="btn btn-dark" (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
+        </div>
+
     </div>
 
-    <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-        <div>
-            <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-            <button (click)="addUserToChannel()"> Agregar usuario </button>
+
+
+
+
+
+
+
+
+    <br />
+
+
+    <!-- !mobile -->
+
+    <div *ngIf="!mobile" class="container notification noMobileCard">
+        <div class="box">
+            <h2 class="title is-3"> Usuarios en el Canal: </h2>
+            <ul>
+                <li *ngFor="let user of listOfUsers">
+                    User: {{user}}
+                    <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+                        Echar usuario
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+            <div>
+                <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
+                <button (click)="addUserToChannel()"> Agregar usuario </button>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div *ngIf="mobile">
-    <div class="box">
-        <h2 class="title is-3"> Usuarios en el Canal: </h2>
-        <ul>
-            <li *ngFor="let user of listOfUsers">
-                User: {{user}}
-                <button (click)="removeUser(user)" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-                    Echar usuario
-                </button>
-            </li>
-        </ul>
-    </div>
 
-    <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
-        <div>
-            <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
-            <button (click)="addUserToChannel()"> Agregar usuario </button>
+    <!--   mobile -->
+
+    <div *ngIf="mobile">
+        <div class="box">
+            <h2 class="title is-3"> Usuarios en el Canal: </h2>
+            <ul>
+                <li *ngFor="let user of listOfUsers">
+                    User: {{user}}
+                    <button *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin" (click)="removeUser(user)">
+                        Echar usuario
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="box" *ngIf="(user$ | async).superAdmin || (user$ | async).groupAdmin">
+            <div>
+                <input class="" type="text" placeholder="username" [(ngModel)]='newUsername' id='newUsername' name='newUsername'>
+                <button (click)="addUserToChannel()"> Agregar usuario </button>
+            </div>
         </div>
     </div>
-</div>
-
 
 
 </section>

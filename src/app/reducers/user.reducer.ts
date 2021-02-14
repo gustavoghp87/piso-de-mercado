@@ -21,7 +21,7 @@ const _setUserReducer = createReducer(
             localStorage.setItem('currentChannel', '')
             return null
         }
-         console.log("ESTABLECIENDO EL USUARIO", action.userData)
+        // console.log("ESTABLECIENDO EL USUARIO", action.userData)
         localStorage.setItem('username', action.userData.username)
         localStorage.setItem('token', action.userData.token)
         localStorage.setItem('groups', JSON.stringify({groups:action.userData.groups}))

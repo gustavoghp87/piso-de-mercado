@@ -119,7 +119,8 @@ export class NavbarComponent implements OnInit {
     if (this.newUserPassword.length<10) {alert('Mínimo 10 caracteres para que no molesten los navegadores con que el sitio no es seguro'); return}
     this.newUserUsername = this.newUserUsername.toLowerCase().trim()
     if (this.newUserUsername.includes(' ')){
-      this.newUserUsername = this.newUserUsername.replace(' ', '-')
+      while (this.newUserUsername.includes(' '))
+        this.newUserUsername = this.newUserUsername.replace(' ', '-')
       alert("Los espacios en el username serán reemplazados por guiones")
     }
     this.userService.createUser(

@@ -65,7 +65,7 @@ export class GroupComponent implements OnInit {
 
   
     getGroupUsers() {
-        console.log(`Function: Getting users for group... ${this.groupName}`)
+        // console.log(`Function: Getting users for group... ${this.groupName}`)
         this.usersService.getGroupUsers(this.groupName).subscribe(
             data => this.allUsers = data['allUsers'],
             err => console.error(err)
@@ -87,7 +87,7 @@ export class GroupComponent implements OnInit {
     
     getDataAllUsers() {
         if (!this.groupAdmin) return
-        console.log('Getting all user data from server')
+        // console.log('Getting all user data from server')
         this.usersService.getDataAllUsers().subscribe(
             data => {
                 this.allUserData = data['users']

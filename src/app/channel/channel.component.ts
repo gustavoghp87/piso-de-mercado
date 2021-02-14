@@ -77,14 +77,14 @@ export class ChannelComponent implements OnInit {
                     )
                     this.socketPanelService.retrieveData().subscribe(
                         data => {
-                            console.log("tickets:", data)
+                            // console.log("tickets:", data)
                             data['ticketsObj'].forEach((ticket:typeProduct) => {
                                 if (ticket.pro_name==this.currentChannel) this.ticketData = ticket
                             })
                             data['ticketsLeadersObj'].forEach((ticket:typeProduct) => {
                                 if (ticket.pro_name==this.currentChannel) this.ticketData = ticket
                             })
-                            console.log("Logrado:", this.ticketData)
+                            // console.log("Logrado:", this.ticketData)
                         }
                     )
                 }
@@ -204,4 +204,17 @@ export class ChannelComponent implements OnInit {
         }}))
     }
 
+    doSomethingOnWindowScroll(event:any) {
+        const sc = event.target.scrollingElement.scrollTop
+        if (sc>50) {
+            console.log("Mayor a 50");
+            
+            document.getElementById('chatNavbarMobile').style.display = 'none'
+        }
+        else {
+            console.log("Menor a 50");
+            
+            document.getElementById('chatNavbarMobile').style.display = 'block'
+        }
+    }
 }
