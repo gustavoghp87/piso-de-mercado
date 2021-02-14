@@ -1,10 +1,11 @@
 
 <div *ngIf="!mobile" class="blackyClass1" id="blacky"></div>
+<div (window:scroll)="doSomethingOnWindowScroll($event)"></div>
 
 
 <!-- <section *ngIf="!mobile" style="position:fixed; z-index:2; width:100%; background-color:#00d1b2;"> -->
 
-<div style="width:100%; background-color:#00d1b2;">
+<div style="width:100%; background-color:#00d1b2;" *ngIf="!(user$ | async)?.currentGroup">
     <h1 *ngIf="mobile" style="text-align:center; font-size:2rem;"> PISO DE MERCADO </h1>
     <h1 *ngIf="!mobile" style="text-align:center; padding-top:15px;"> <b>PISO DE MERCADO</b> </h1>
     <h2 *ngIf="mobile" style="text-align:center; font-size:1.2rem; color:white;"> El lugar de encuentro para operadores e inversores </h2>
@@ -26,11 +27,6 @@
         Log out {{(user$ | async).username | json}}
     </a>
 </div>
-
-
-
-<div (window:scroll)="doSomethingOnWindowScroll($event)"></div>
-
 
 
 <section *ngIf="mobile && showBottomNavbar" class="mobileNavbar">

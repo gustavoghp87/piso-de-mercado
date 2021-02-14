@@ -180,4 +180,8 @@ export class UsersService {
     return this.http.post(`${this.server}/api/channels/remove-user`, JSON.stringify({username, token, usernameToRemove, groupName, channelName}), this.genHeadersJSON())
   }
 
+  getTicket(ticket:string) {
+    return this.http.get(`${this.server}/api/panel`, {params: {ticket}})
+  }
+
 }

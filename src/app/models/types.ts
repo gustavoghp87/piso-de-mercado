@@ -8,7 +8,7 @@ export type typeUser = {
     profileImage: string
     groups: typeGroup[]
     token: string
-    showGroup?: string
+    currentGroup?: string
     currentChannel?:string
 }
 

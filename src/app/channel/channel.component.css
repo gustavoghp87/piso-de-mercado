@@ -1,6 +1,13 @@
+.noMobileCard {
+    margin: auto;
+    margin-top: 30px;
+    max-width: 90%;
+    padding: 0px !important;
+}
+
 .scroll-div {
     background-color: #292b2c;
-    height: 400px;
+    height: 780px;
     width: 100%;
     overflow-y: scroll;
 }

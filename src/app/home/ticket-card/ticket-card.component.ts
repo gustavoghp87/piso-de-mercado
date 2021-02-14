@@ -7,6 +7,11 @@ import { typeUser, typeGroup } from '../../models/types'
 import { setUser } from '../../reducers/actions'
 
 
+interface INumber {
+    parseFloat: Function
+}
+declare var Number: INumber;
+
 @Component({
     selector: 'app-ticket-card',
     templateUrl: './ticket-card.component.html',
@@ -35,7 +40,7 @@ export class TicketCardComponent implements OnInit {
     token:string
     groups:typeGroup[]
     profileImage:string
-    showGroup:string
+    currentGroup:string
     groupAdmin = false
     superAdmin = false
     isLogged = false
@@ -47,7 +52,7 @@ export class TicketCardComponent implements OnInit {
         this.user$.subscribe((user:typeUser) => {
             if (user) {
                 this.isLogged = true
-                this.groupName = user.showGroup
+                this.groupName = user.currentGroup
                 this.groupAdmin = user.groupAdmin
                 this.superAdmin = user.superAdmin
                 this.username = user.username
@@ -55,7 +60,7 @@ export class TicketCardComponent implements OnInit {
                 this.token = user.token
                 this.groups = user.groups
                 this.profileImage = user.profileImage
-                this.showGroup = user.showGroup
+                this.currentGroup = user.currentGroup
             }
         })
     }
@@ -76,15 +81,23 @@ export class TicketCardComponent implements OnInit {
                 profileImage: this.profileImage,
                 groups: this.groups,
                 token: this.token,
-                showGroup: ticketName,
+                currentGroup: ticketName,
                 currentChannel: ticketName
             }
-            const userData2 = {...this.user$, showGroup:ticketName}
+            const userData2 = {...this.user$, currentGroup:ticketName}
             this.store.dispatch(setUser({userData:userData}))
         
             window.scrollTo(0, 0)
         }
         else alert(`Hay que loguearse primero`)
+    }
+
+    fixed0function(price:string) {
+        return parseFloat(price).toFixed()
+    }
+
+    fixed2function(price:string) {
+        return parseFloat(price).toFixed(2)
     }
 
 }

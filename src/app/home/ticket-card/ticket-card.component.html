@@ -15,7 +15,7 @@
             Sin operatoria
         </h3>
         
-        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{prev_close_price.toFixed()}} </h5>
+        <h5 class="card-text" style="text-align:center;"> Último cierre: ${{fixed0function(prev_close_price)}} </h5>
         
         <button class="btn btn-dark btn-block" style="display:block; margin:auto; color:white;" (click)="viewDetails()">
             Ver detalles
@@ -23,12 +23,12 @@
 
         <h5 *ngIf="showDetails" style="margin-top:20px; text-align:center;">
             <hr>
-            Precio de apertura:<br/>${{open_price.toFixed(2)}}
-            <br/> <hr>
-            Mínimo y máximo:<br/>${{low_price.toFixed()}}/${{high_price.toFixed()}}
-            <br/> <hr>
-            Última actualización:<br/>{{last_update}} hs
-            <br/> <hr>
+            Precio de apertura:<br />${{fixed2function(open_price)}}
+            <br /> <hr>
+            Mínimo y máximo:<br />${{fixed0function(low_price)}}/${{fixed0function(high_price)}}
+            <br /> <hr>
+            Última actualización:<br />{{last_update}} hs
+            <br /> <hr>
         </h5>
 
         <button class="btn btn-block" style="display:block; margin:auto; background-color:#00d1b2; color:white; margin-top:4px;"

@@ -137,7 +137,7 @@ export class DashboardComponent implements OnInit {
       profileImage: this.profileImage,
       groups: this.groups,
       token: this.token,
-      showGroup: group,
+      currentGroup: group,
     }    
     this.store.dispatch(setUser({userData:this.userData}))
 

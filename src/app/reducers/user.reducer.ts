@@ -17,11 +17,11 @@ const _setUserReducer = createReducer(
             localStorage.setItem('superAdmin', '')
             localStorage.setItem('groupAdmin', '')
             localStorage.setItem('profileImage', '')
-            localStorage.setItem('showGroup', '')
+            localStorage.setItem('currentGroup', '')
             localStorage.setItem('currentChannel', '')
             return null
         }
-        // console.log("ESTABLECIENDO EL USUARIO", action.userData)
+         console.log("ESTABLECIENDO EL USUARIO", action.userData)
         localStorage.setItem('username', action.userData.username)
         localStorage.setItem('token', action.userData.token)
         localStorage.setItem('groups', JSON.stringify({groups:action.userData.groups}))
@@ -29,7 +29,7 @@ const _setUserReducer = createReducer(
         localStorage.setItem('superAdmin', action.userData.superAdmin.toString())
         localStorage.setItem('groupAdmin', action.userData.groupAdmin.toString())
         localStorage.setItem('profileImage', action.userData.profileImage)
-        if (action.userData.showGroup) localStorage.setItem('showGroup', action.userData.showGroup)
+        if (action.userData.currentGroup) localStorage.setItem('currentGroup', action.userData.currentGroup)
         if (action.userData.currentChannel) localStorage.setItem('currentChannel', action.userData.currentChannel)
         //console.log("Storage:", localStorage.getItem("username"))
         return action.userData

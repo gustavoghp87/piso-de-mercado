@@ -21,7 +21,7 @@ export class GroupComponent implements OnInit {
     token:string
     groups:typeGroup[]
     profileImage:string
-    showGroup:string
+    currentGroup:string
     userChannels:string[]
     allChannels:string[]         // para admins
     groupAdmin = false
@@ -43,7 +43,7 @@ export class GroupComponent implements OnInit {
         this.user$ = this.store.pipe(select('user'))
         this.user$.subscribe((user:typeUser) => {
         if (user) {
-            this.groupName = user.showGroup
+            this.groupName = user.currentGroup
             this.groupAdmin = user.groupAdmin
             this.superAdmin = user.superAdmin
             this.username = user.username
@@ -51,7 +51,7 @@ export class GroupComponent implements OnInit {
             this.token = user.token
             this.groups = user.groups
             this.profileImage = user.profileImage
-            this.showGroup = user.showGroup
+            this.currentGroup = user.currentGroup
             if (user && user.groups) user.groups.forEach((group:typeGroup) => {
                 if (group.name===this.groupName) this.userChannels = group.channels
             })
@@ -110,7 +110,7 @@ export class GroupComponent implements OnInit {
             profileImage: this.profileImage,
             groups: this.groups,
             token: this.token,
-            showGroup: this.showGroup,
+            currentGroup: this.currentGroup,
             currentChannel: channel
         }}))
         window.scrollTo(0,0)
@@ -201,7 +201,7 @@ export class GroupComponent implements OnInit {
                 profileImage: this.profileImage,
                 groups: data['userData'].groups,
                 token: this.token,
-                showGroup: this.showGroup
+                currentGroup: this.currentGroup
                 }}))
             } else console.log("Falló actualización de datos x-22")
         })
@@ -216,7 +216,7 @@ export class GroupComponent implements OnInit {
             profileImage: this.profileImage,
             groups: this.groups,
             token: this.token,
-            showGroup: '',
+            currentGroup: '',
             currentChannel: ''
         }}))
     }

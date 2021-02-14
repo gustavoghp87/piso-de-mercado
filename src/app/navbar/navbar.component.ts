@@ -96,7 +96,7 @@ export class NavbarComponent implements OnInit {
   }
 
   setUserLocal(userData:typeUser|null) {
-    if (userData) userData.showGroup = ''
+    if (userData) userData.currentGroup = ''
     // console.log("Estableciendo user,", userData, "y", this.token)
     this.store.dispatch(setUser({userData}))
   }
