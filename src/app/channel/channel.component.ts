@@ -20,8 +20,8 @@ import { SocketPanelService } from '../services/socket-panel.service'
 
 export class ChannelComponent implements OnInit {
     currentChannel:string = ''
+    currentGroup:string = ''
     username:string = ''
-    groupName:string = ''
     userData:typeUser
     groupAdmin = false
     superAdmin = false
@@ -29,7 +29,6 @@ export class ChannelComponent implements OnInit {
     token:string
     groups:typeGroup[]
     profileImage:string
-    currentGroup:string
     allUsersData:typeUser[]
     listOfUsers:string[] = []
     newUsername:string = ''
@@ -55,7 +54,6 @@ export class ChannelComponent implements OnInit {
         this.user$ = this.store.pipe(select('user'))
         this.user$.subscribe((user:typeUser) => {
             if (user) {
-                this.groupName = user.currentGroup
                 this.groupAdmin = user.groupAdmin
                 this.superAdmin = user.superAdmin
                 this.username = user.username
@@ -67,7 +65,7 @@ export class ChannelComponent implements OnInit {
                 this.currentChannel = user.currentChannel
                 this.getDataAllUsers()
                 if (this.currentChannel) {
-                    this.usersService.getChannelMessages(this.groupName, this.currentChannel).subscribe(
+                    this.usersService.getChannelMessages(this.currentGroup, this.currentChannel).subscribe(
                         data => {
                             this.messages = data['q']
                             this.socketService.joinChannel()
@@ -104,7 +102,7 @@ export class ChannelComponent implements OnInit {
         if (!this.allUsersData) return
         for (let user of this.allUsersData) {
             for (let group of user.groups) {
-                if (group.name===this.groupName && group.channels.includes(this.currentChannel)) {
+                if (group.name===this.currentGroup && group.channels.includes(this.currentChannel)) {
                     this.listOfUsers.push(user.username)
                     //console.log("LISTA DE USUARIOSNAME", this.listOfUsers)
                 }
@@ -127,10 +125,10 @@ export class ChannelComponent implements OnInit {
     addUserToChannel() {
         if (this.currentChannel==='general') {alert('Cannot add users to default channel: general'); return}
         if (!this.newUsername) {alert('New user\'s username cannot be empty'); return}
-        if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot add users in the default channels: newbies and general'); return}
+        if (this.currentGroup==='newbies' || this.currentGroup==='general') {alert('Cannot add users in the default channels: newbies and general'); return}
         if (this.listOfUsers.includes(this.newUsername)) {alert(`User ${this.newUsername} is already in the channel`); return}
         //console.log(`Adding ${this.newUsername} to channel ${this.currentChannel}`)
-        this.usersService.addUserToChannel(this.newUsername, this.groupName, this.currentChannel).subscribe(
+        this.usersService.addUserToChannel(this.newUsername, this.currentGroup, this.currentChannel).subscribe(
             data => {
                 if (data['success']) {
                     //console.log('Received data from adding user to channel')
@@ -143,14 +141,14 @@ export class ChannelComponent implements OnInit {
     }
 
     removeUser(usernameToRemove:string) {
-        if (this.groupName==='newbies' || this.groupName==='general') {alert('Cannot remove users in this default channel'); return}
+        if (this.currentGroup==='newbies' || this.currentGroup==='general') {alert('Cannot remove users in this default channel'); return}
         if (usernameToRemove===this.username) {alert('Cannot remove yourself'); return}
         for (let user of this.allUsersData) {
             if (user.username===usernameToRemove && (user.groupAdmin || user.superAdmin)) {alert(`Cannot remove admin: ${usernameToRemove}`); return}
         }
         if (this.currentChannel==='general') {alert('Cannot remove users from the default channel: general'); return}
         //console.log(`Removing user ${usernameToRemove}`)
-        this.usersService.removeUserFromChannel(usernameToRemove, this.groupName, this.currentChannel).subscribe(
+        this.usersService.removeUserFromChannel(usernameToRemove, this.currentGroup, this.currentChannel).subscribe(
             data => {
                 if (data['success']) {
                 this.allUsersData = data['users']
@@ -163,8 +161,10 @@ export class ChannelComponent implements OnInit {
 
     sendMessage() {
         //console.log(`User typed: ${this.message}`)
-        this.socketService.sendMessage(this.username, this.groupName, this.currentChannel, this.message, this.profileImage, this.isFile)
+        if (this.message)
+            this.socketService.sendMessage(this.username, this.currentGroup, this.currentChannel, this.message, this.profileImage, this.isFile)
         this.message = ''
+        this.selectedFile = null
         this.isFile = false
     }
 
@@ -206,15 +206,13 @@ export class ChannelComponent implements OnInit {
 
     doSomethingOnWindowScroll(event:any) {
         const sc = event.target.scrollingElement.scrollTop
-        if (sc>50) {
-            console.log("Mayor a 50");
-            
-            document.getElementById('chatNavbarMobile').style.display = 'none'
+        if (sc>50) { 
+            document.getElementById('chatNavbarMobile1').style.display = 'none'
+            document.getElementById('chatNavbarMobile2').style.display = 'none'
         }
         else {
-            console.log("Menor a 50");
-            
-            document.getElementById('chatNavbarMobile').style.display = 'block'
+            document.getElementById('chatNavbarMobile1').style.display = 'block'
+            document.getElementById('chatNavbarMobile2').style.display = 'block'
         }
     }
 }

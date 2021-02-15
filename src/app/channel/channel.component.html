@@ -78,6 +78,7 @@
     </div>
 
 
+
     <!--    MOBILE -->
     <div *ngIf="mobile && ticketData" class="container notification mobileCard">
 
@@ -95,15 +96,19 @@
                 <div *ngFor="let message of messages.slice().reverse()">
                     <article class="message is-primary" style="margin:5px;">
                         
-                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===true">
-                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
+                        <div class="message-body" style="padding:10px; font-size:0.8rem;" *ngIf="message.username!=='SYSTEM' && message.isFile===true">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="30px" style="margin-right:10px;" alt="" />
                             {{message.timeArg}} - <span style="font-weight:bolder;"> {{message.username}}: </span>
+                            <br />
+                            <br />
                             <img src="{{server}}/images/{{message.message}}" alt="" />
                         </div>
                     
-                        <div class="message-body" *ngIf="message.username!=='SYSTEM' && message.isFile===false">
-                            <img src="{{server}}/images/{{message.profileImage}}" width="20px" style="margin-right:10px;" alt="" />
-                            {{message.timeArg}} hs - <span style="font-weight:bolder;"> {{message.username}}: </span> {{message.message}}
+                        <div class="message-body" style="padding:10px; font-size:0.8rem;" *ngIf="message.username!=='SYSTEM' && message.isFile===false">
+                            <img src="{{server}}/images/{{message.profileImage}}" width="30px" style="margin-right:10px;" alt="" />
+                            {{message.timeArg}} hs
+                            <br />
+                            <span style="font-weight:bolder; margin-top:18px;"> {{message.username}}: </span> {{message.message}}
                         </div>
                 
                     </article>
@@ -115,32 +120,26 @@
 
     <div (window:scroll)="doSomethingOnWindowScroll($event)"></div>
 
-
-
-
-
-
-        
-    <div style="background-color:#00d1b2; display:block; margin-bottom:30px; width:100%; height:120px; position:fixed; z-index:5;" id="chatNavbarMobile">
-
-        <input style="width:80%;" [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
-
-        <button class="btn btn-dark" style="display:block; margin: 5px auto" (click)="sendMessage()"> Mandar </button>
-
-
-        <input type="file" class="custom-file" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
-        <label class="custom-file-label" for="uploadFile"> Elegir imagen </label>
-
-
-        <div>
-            <button class="btn btn-dark" (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
-        </div>
-
+    <div style="position:fixed; left:0; bottom:0; background-color:#00d1b2; display:block; width:96%; height:60px; z-index:5; margin-bottom:80px;" id="chatNavbarMobile1">
+        <input style="width:94%; display:block; margin:auto; margin-top:5px;" [(ngModel)]="message" (keyup)="$event.keyCode == 13 && sendMessage()" />
     </div>
 
-
-
-
+    <div style="position:fixed; left:0; bottom:0; background-color:#00d1b2; display:block; width:96%; height:100px; z-index:5; padding-top:10px;" id="chatNavbarMobile2">
+        <div class="container">
+            <div class="row">
+                <div class="col" style="margin-left:5px; width:90%;">
+                    <input type="file" class="custom-file-input" (change)="uploadSelected($event)" name="uploadFile" id="uploadFile" />
+                    <label class="custom-file-label" for="uploadFile"> Imagen </label>
+                </div>
+                <div class="col">
+                    <button class="btn btn-dark btn-sm d-inline mt-1" (click)="uploadImageToServer()" *ngIf="this.selectedFile"> Subir </button>
+                    <button class="btn btn-sm d-inline mt-1" style="background-color:#00d1b2; color:white;" *ngIf="!this.selectedFile"> Subir </button>
+                    &nbsp;
+                    <button class="btn btn-dark btn-sm d-inline mt-1" (click)="sendMessage()"> Mandar </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -151,7 +150,7 @@
 
     <!-- !mobile -->
 
-    <div *ngIf="!mobile" class="container notification noMobileCard">
+    <!-- <div *ngIf="!mobile" class="container notification noMobileCard">
         <div class="box">
             <h2 class="title is-3"> Usuarios en el Canal: </h2>
             <ul>
@@ -170,13 +169,13 @@
                 <button (click)="addUserToChannel()"> Agregar usuario </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 
     <!--   mobile -->
 
-    <div *ngIf="mobile">
+    <!-- <div *ngIf="mobile">
         <div class="box">
             <h2 class="title is-3"> Usuarios en el Canal: </h2>
             <ul>
@@ -195,7 +194,7 @@
                 <button (click)="addUserToChannel()"> Agregar usuario </button>
             </div>
         </div>
-    </div>
+    </div> -->
 
 
 </section>
