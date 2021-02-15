@@ -79,6 +79,7 @@ export class NavbarComponent implements OnInit {
   }
 
   openModal(content:any) {
+    this.showBottomNavbar = false
     this.modalService.open(content, { windowClass: 'dark-modal' })
   }
 
